@@ -1,0 +1,31 @@
+---
+import type { Article, SiteData } from '../lib/data';
+import { authorsFor, fmtDate } from '../lib/data';
+import { thumb } from '../lib/images';
+import { topicSlug } from '../lib/taxonomy';
+import Logo from './Logo.astro';
+
+interface Props { site: SiteData; a: Article; showFr?: boolean; heading?: 'h2' | 'h3'; image?: boolean; width?: number; transition?: boolean }
+const { site, a, showFr = true, heading = 'h3', image = true, width = 400, transition = true } = Astro.props;
+const H = heading;
+const names = authorsFor(site, a).map((x) => x.name).join(', ');
+const pic = a.image ? thumb(a.image, width) : null;
+// The title morphs into the edition page's headline on navigation (View Transitions; names must be unique per page).
+const vt = transition ? `view-transition-name: ed-${a.id}` : undefined;
+---
+<article class="card" data-reveal>
+  {image && (
+    <div class:list={['thumb', { blank: !pic }]}>
+      {pic ? <img src={pic.src} srcset={pic.srcset} sizes={`(max-width: 640px) 100vw, ${width}px`} alt="" loading="lazy" decoding="async" width="16" height="9" /> : <Logo variant="mark" height={60} />}
+    </div>
+  )}
+  <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}>{a.topic}</a>
+  <H><a href={`/editions/${a.id}/`} style={vt}>{a.title}</a></H>
+  {a.dek && <p class="dek">{a.dek}</p>}
+  {showFr && a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
+  <div class="meta">
+    {names && <span>{names}</span>}
+    <time datetime={a.publishedAt}>{fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+    <span>{a.readMins} min read</span>
+  </div>
+</article>

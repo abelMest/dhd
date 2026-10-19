@@ -1,0 +1,90 @@
+---
+import Base from '../layouts/Base.astro';
+import Contribute from '../islands/Contribute';
+import { loadSite } from '../lib/data';
+import { lines } from '../lib/copy';
+
+const { copy } = await loadSite();
+const steps = [
+  { t: 'Pitch', d: 'Send the idea in a few sentences. No finished draft needed.', icon: 'M4 4h16v12H8l-4 4z M8 9h8 M8 12h5' },
+  { t: 'Draft', d: 'If it fits, the editor invites a draft and says what to focus on.', icon: 'M4 20h4l10-10-4-4L4 16z M13 7l4 4' },
+  { t: 'Review', d: 'An editor reviews it, checks every source and suggests changes.', icon: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-4-4 M8 11l2 2 4-4' },
+  { t: 'Publish', d: 'It runs here, on Substack and on LinkedIn, with your byline and bio.', icon: 'M4 12l16-8-6 16-3-7z M11 13l9-9' },
+];
+const standard = lines(copy.standard);
+---
+<Base title="Write for the Digest" description="Pitch an article, interview, case study or explainer, suggest a resource, or send an opportunity tip.">
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Contribute</p>
+      <h1 class="display">{copy.ctaTitle}</h1>
+      <p class="lede">{copy.ctaSub}</p>
+      <ol class="pipeline">
+        {steps.map((s, i) => (
+          <li data-reveal>
+            <span class="pipeIcon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={s.icon} /></svg></span>
+            <b><span class="num">{String(i + 1).padStart(2, '0')}</span> {s.t}</b>
+            <span>{s.d}</span>
+          </li>
+        ))}
+      </ol>
+      <div class="actions" style="margin-top:32px">
+        <a class="btn" href="#forms" data-magnetic>Start a pitch <span class="arrow" aria-hidden="true">↓</span></a>
+        <a class="btn line" href="#resource">Suggest a resource</a>
+        <a class="btn line" href="#tip">Send an opportunity</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap contribGrid">
+      <div class="contribMain">
+        <Contribute client:load />
+      </div>
+      <aside class="contribSide" aria-label="How it works">
+        <div class="panel">
+          <p class="kicker">After you send it</p>
+          <ol class="timeline">
+            <li><b>Received</b><span>You see it under "Your submissions" straight away.</span></li>
+            <li><b>Accepted or not</b><span>The editor replies with a note. Accepted pitches get an invitation to send a draft.</span></li>
+            <li><b>Draft and review</b><span>Share a link or paste the text. You will get edits and questions back.</span></li>
+            <li><b>Published</b><span>Your piece goes out with your byline and bio, and a link appears in your submissions.</span></li>
+          </ol>
+        </div>
+        <div class="panel" style="margin-top:16px">
+          <p class="kicker">{copy.standardTitle}</p>
+          <ul class="checks">{standard.map((s) => <li>{s}</li>)}</ul>
+          <a class="more" href="/about/#standard" style="margin-top:6px">Read more <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .pipeline { position: relative; list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .pipeline::before { content: ''; position: absolute; left: 23px; right: 12%; top: 23px; height: 2px; background: repeating-linear-gradient(90deg, var(--blue) 0 8px, transparent 8px 14px); opacity: .5; }
+  .pipeline li { position: relative; display: grid; gap: 6px; }
+  .pipeIcon { position: relative; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--bg); border: 2px solid var(--blue); color: var(--blue-ink); margin-bottom: 8px; transition: transform .35s var(--ease-spring), background-color .25s, color .25s; }
+  .pipeline li:hover .pipeIcon { transform: scale(1.1); background: var(--blue); color: #fff; }
+  .pipeline b { font: 700 1.05rem var(--display); }
+  .pipeline b .num { color: var(--blue); margin-right: 4px; }
+  .pipeline span:not(.pipeIcon):not(.num) { font: 400 .95rem/1.45 var(--sans); color: var(--ink-2); }
+  @media (max-width: 760px) { .pipeline { grid-template-columns: 1fr 1fr; } .pipeline::before { display: none; } }
+  .contribGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: clamp(28px, 4vw, 56px); align-items: start; }
+  .contribSide { position: sticky; top: 96px; }
+  @media (max-width: 1000px) { .contribGrid { grid-template-columns: 1fr; } .contribSide { position: static; } }
+  .timeline { list-style: none; padding: 0; margin: 14px 0 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 18px 20px; display: grid; gap: 2px; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before { content: ''; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--blue); }
+  .timeline b { font: 700 .98rem var(--display); }
+  .timeline span { font: 400 .9rem/1.45 var(--sans); color: var(--ink-2); }
+  .checks { list-style: none; padding: 0; margin: 12px 0 8px; display: grid; gap: 10px; }
+  .checks li { position: relative; padding-left: 28px; font: 400 .95rem/1.45 var(--sans); color: var(--ink-2); }
+  .checks li::before { content: ''; position: absolute; left: 0; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--blue-wash) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23136396' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 11px no-repeat; }
+  .progress { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 4px; }
+  .progress li { font: 600 .74rem var(--sans); padding: 4px 9px; border-radius: 6px; background: var(--bg-2); color: var(--muted); }
+  .progress li.done { background: var(--blue-wash); color: var(--blue-ink); }
+</style>

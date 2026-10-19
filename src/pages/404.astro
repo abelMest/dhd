@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" noindex>
+  <header class="pageHead" style="border:0">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap narrow" style="margin:0 auto">
+      <p class="kicker line">404</p>
+      <h1 class="display">We couldn't find that page</h1>
+      <p class="lede">It may have moved when the Digest got its new home. Try a search, or start from the archive.</p>
+      <form action="/search/" method="get" class="subscribe" style="margin-top:24px" role="search">
+        <label class="sr" for="q404">Search</label>
+        <input id="q404" name="q" type="search" placeholder="Search editions" />
+        <button class="btn" type="submit">Search</button>
+      </form>
+      <p style="margin-top:20px"><a href="/editions/">All editions →</a></p>
+    </div>
+  </header>
+</Base>

@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import EditionList from '../../components/EditionList.astro';
+import { loadSite, authorsFor, fmtDate } from '../../lib/data';
+import { thumb } from '../../lib/images';
+import { TOPICS, topicSlug } from '../../lib/taxonomy';
+
+export function getStaticPaths() {
+  return TOPICS.map((t) => ({ params: { slug: topicSlug(t) }, props: { topic: t } }));
+}
+const { topic } = Astro.props as { topic: string };
+const site = await loadSite();
+const items = site.articles.filter((a) => a.topic === topic);
+const [lead, ...rest] = items;
+const resources = site.resources.filter((r) => r.topic === topic).slice(0, 6);
+const pic = lead?.image ? thumb(lead.image, 560) : null;
+const writers = new Set(items.flatMap((a) => a.authorIds)).size;
+const minutes = items.reduce((n, a) => n + a.readMins, 0);
+---
+<Base title={topic} description={`Digital Health Digest editions and resources on ${topic.toLowerCase()} in health systems across Africa.`}>
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line"><a class="kicker" href="/editions/">Topic</a></p>
+      <h1 class="display">{topic}</h1>
+      <dl class="statStrip">
+        <div><dt>Editions</dt><dd class="num">{items.length}</dd></div>
+        <div><dt>Latest</dt><dd class="small">{lead ? fmtDate(lead.publishedAt, { month: 'short', year: 'numeric' }) : 'None yet'}</dd></div>
+        <div><dt>Authors</dt><dd class="num">{writers}</dd></div>
+        <div><dt>Reading time</dt><dd class="small">{minutes} min</dd></div>
+      </dl>
+      <nav class="chips topicNav" aria-label="Other topics">
+        {TOPICS.map((t) => <a class="chip" href={`/topics/${topicSlug(t)}/`} aria-current={t === topic ? 'page' : undefined}>{t}</a>)}
+      </nav>
+    </div>
+  </header>
+
+  {lead ? (
+    <section class="section tight">
+      <div class="wrap">
+        <div class="lead" data-reveal>
+          <a href={`/editions/${lead.id}/`} class="thumb leadThumb" aria-hidden="true" tabindex="-1">
+            {pic && <img src={pic.src} srcset={pic.srcset} sizes="(max-width: 860px) 100vw, 560px" alt="" width="4" height="3" decoding="async" style="width:100%;height:100%;object-fit:cover" />}
+          </a>
+          <div>
+            <p class="kicker line">Latest on {topic.toLowerCase()}</p>
+            <h2><a href={`/editions/${lead.id}/`} style={`view-transition-name: ed-${lead.id}`}>{lead.title}</a></h2>
+            {lead.dek && <p class="dek">{lead.dek}</p>}
+            <div class="meta" style="margin:16px 0 22px">
+              {authorsFor(site, lead).length > 0 && <span>{authorsFor(site, lead).map((x) => x.name).join(', ')}</span>}
+              <time datetime={lead.publishedAt}>{fmtDate(lead.publishedAt)}</time>
+              <span>{lead.readMins} min read</span>
+            </div>
+            <a class="btn" href={`/editions/${lead.id}/`} data-magnetic>Read the edition <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="section"><div class="wrap narrow"><div class="panel emptyState"><h2>Nothing on this topic yet</h2><p>Have a story from the field on {topic.toLowerCase()}?</p><a class="btn" href="/contribute/">Pitch it <span class="arrow" aria-hidden="true">→</span></a></div></div></section>
+  )}
+
+  {rest.length > 0 && (
+    <section class="section tight">
+      <div class="wrap">
+        <h2 class="sr">More editions on {topic}</h2>
+        <EditionList site={site} items={rest} showTopic={false} />
+      </div>
+    </section>
+  )}
+
+  {resources.length > 0 && (
+    <section class="section tight tint">
+      <div class="wrap">
+        <div class="secHead"><div><p class="kicker line">From the library</p><h2>Resources on {topic.toLowerCase()}</h2></div><a class="more" href="/library/">The library <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="resGrid">
+          {resources.map((r) => (
+            <article class="resCard" data-reveal>
+              <span class="label">{r.type}</span>
+              <h3 style="font-size:1.15rem;margin:0"><a href={r.url} rel="noopener" target="_blank" style="color:var(--ink);text-decoration:none">{r.title}</a></h3>
+              {r.summary && <p>{r.summary}</p>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .topicNav { margin-top: 28px; }
+</style>

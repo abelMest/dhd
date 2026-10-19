@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import TypeIcon from '../components/TypeIcon.astro';
+import { loadSite, fmtDate } from '../lib/data';
+import { TOPICS, RESOURCE_TYPES, AUDIENCES } from '../lib/taxonomy';
+
+const site = await loadSite();
+const items = [...site.resources].sort((a, b) => b.addedAt.localeCompare(a.addedAt));
+const countries = [...new Set(items.flatMap((r) => r.countries))].sort();
+const topics = TOPICS.filter((t) => items.some((r) => r.topic === t));
+const types = RESOURCE_TYPES.filter((t) => items.some((r) => r.type === t));
+const audiences = AUDIENCES.filter((a) => items.some((r) => r.audience.includes(a)));
+const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+// What the library collects, shown while it is being built and as a legend once it holds resources.
+const KINDS: Record<string, string> = {
+  'Guide or toolkit': 'Step-by-step help for planning, running and scaling programmes.',
+  'Standard or specification': 'FHIR profiles, terminologies and the specs systems must meet.',
+  'Report or research': 'Evidence, evaluations and landscape reviews worth citing.',
+  'Course or learning': 'Free and low-cost training for health and digital teams.',
+  'Dataset': 'Open data you can analyse, map or build on.',
+  'Open-source tool': 'Software you can deploy, adapt and maintain yourself.',
+  'Policy document': 'National strategies, laws and guidance that set the rules.',
+};
+---
+<Base title="Library" description="Guides, standards, research and learning material for digital health, searchable by topic, type, country and audience.">
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Knowledge library</p>
+      <h1 class="display">{site.copy.libTitle}</h1>
+      <p class="lede">{site.copy.libSub}</p>
+      {items.length > 0 && (
+        <dl class="statStrip">
+          <div><dt>Resources</dt><dd class="num">{items.length}</dd></div>
+          <div><dt>Types</dt><dd class="num">{types.length}</dd></div>
+          <div><dt>Topics</dt><dd class="num">{topics.length}</dd></div>
+          <div><dt>Latest added</dt><dd class="small">{fmtDate(items[0].addedAt, { day: 'numeric', month: 'short' })}</dd></div>
+        </dl>
+      )}
+    </div>
+  </header>
+
+  {items.length === 0 ? (
+    <section class="section">
+      <div class="wrap">
+        <div class="secHead">
+          <div>
+            <p class="kicker line">Being built</p>
+            <h2>Every resource is checked before it goes in</h2>
+            <p>Editors are verifying the first resources against their sources. Here is what the library will hold.</p>
+          </div>
+          <a class="btn" href="/contribute/#resource" data-magnetic>Suggest a resource <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div class="kindGrid">
+          {RESOURCE_TYPES.map((t) => (
+            <a class="kindTile" href="/contribute/#resource" data-reveal>
+              <span class="kindIcon"><TypeIcon type={t} size={26} /></span>
+              <b>{t}</b>
+              <span>{KINDS[t]}</span>
+            </a>
+          ))}
+          <div class="kindTile cta" data-reveal>
+            <b>Know a good one?</b>
+            <span>Guides, standards, datasets and tools that helped your work will help someone else's.</span>
+            <a class="more" href="/contribute/#resource">Suggest it <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <>
+      <div class="filterBar" id="libFilters">
+        <div class="wrap">
+          <form role="search" onsubmit="return false" aria-label="Filter the library">
+            <label class="sr" for="lq">Search the library</label>
+            <div class="searchBox">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+              <input id="lq" type="search" placeholder="Search titles, summaries and publishers" autocomplete="off" />
+            </div>
+            <div class="chips" role="group" aria-label="Type">
+              <button class="chip" type="button" data-type="" aria-pressed="true">All <span class="n">{items.length}</span></button>
+              {types.map((t) => <button class="chip" type="button" data-type={t} aria-pressed="false">{t} <span class="n">{items.filter((r) => r.type === t).length}</span></button>)}
+            </div>
+            {topics.length > 1 && <><label class="sr" for="ltopic">Topic</label><select id="ltopic" data-facet="topic"><option value="">Any topic</option>{topics.map((t) => <option>{t}</option>)}</select></>}
+            {audiences.length > 1 && <><label class="sr" for="laud">Audience</label><select id="laud" data-facet="audience"><option value="">Any audience</option>{audiences.map((a) => <option>{a}</option>)}</select></>}
+            {countries.length > 1 && <><label class="sr" for="lcountry">Country</label><select id="lcountry" data-facet="country"><option value="">Anywhere</option>{countries.map((c) => <option>{c}</option>)}</select></>}
+          </form>
+          <p class="meta resultCount" aria-live="polite"><span id="libCount">{items.length} resources</span></p>
+        </div>
+      </div>
+      <section class="section tight">
+        <div class="wrap">
+          <div class="resGrid">
+            {items.map((r) => (
+              <article class="resCard" data-reveal data-type={r.type} data-topic={r.topic} data-audience={r.audience.join('|')} data-country={r.countries.join('|')}
+                data-text={`${r.title} ${r.summary} ${r.publisher}`.toLowerCase()}>
+                <div class="resTop">
+                  <span class="kindIcon"><TypeIcon type={r.type} /></span>
+                  <span class="label">{r.type}{r.year && ` · ${r.year}`}</span>
+                </div>
+                <h2><a href={r.url} rel="noopener" target="_blank">{r.title}<span class="sr"> (opens the source)</span></a></h2>
+                {r.summary && <p>{r.summary}</p>}
+                <div class="resMeta">
+                  {r.topic && <span class="pill brand">{r.topic}</span>}
+                  {r.audience.map((a) => <span class="pill">{a}</span>)}
+                </div>
+                <div class="resFoot">
+                  <span>{r.publisher || host(r.url)}{r.countries.length > 0 && ` · ${r.countries.join(', ')}`}</span>
+                  <span class="go" aria-hidden="true">↗</span>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p class="empty" id="libNone" hidden>Nothing matches those filters. <button type="button" class="linkBtn" id="libReset">Clear filters</button></p>
+          <div class="panel tipPanel" style="margin-top:48px" data-reveal>
+            <p class="kicker">Know a good one?</p>
+            <h2 style="font-size:1.7rem;margin:10px 0 14px">Suggest a resource</h2>
+            <p>A guide, standard, dataset, course or tool that helped your work. An editor checks it before it goes in.</p>
+            <a class="btn" href="/contribute/#resource">Suggest a resource <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+    </>
+  )}
+</Base>
+
+<script>
+  const bar = document.getElementById('libFilters');
+  if (bar) {
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.resCard'));
+    const chips = Array.from(bar.querySelectorAll<HTMLButtonElement>('.chip'));
+    const q = bar.querySelector<HTMLInputElement>('#lq')!;
+    const selects = Array.from(bar.querySelectorAll<HTMLSelectElement>('select'));
+    const count = document.getElementById('libCount')!;
+    const none = document.getElementById('libNone')!;
+    let type = '';
+    const apply = () => {
+      const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+      let n = 0;
+      cards.forEach((el) => {
+        const ok = (!type || el.dataset.type === type)
+          && words.every((w) => el.dataset.text!.includes(w))
+          && selects.every((s) => !s.value || (el.dataset[s.dataset.facet!] || '').split('|').includes(s.value));
+        el.hidden = !ok; if (ok) n++;
+      });
+      count.textContent = n === cards.length ? `${n} resources` : `${n} of ${cards.length} shown`;
+      none.hidden = n > 0;
+    };
+    chips.forEach((ch) => ch.addEventListener('click', () => {
+      type = ch.dataset.type || '';
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(x === ch)));
+      apply();
+    }));
+    q.addEventListener('input', apply);
+    selects.forEach((s) => s.addEventListener('change', apply));
+    document.getElementById('libReset')?.addEventListener('click', () => {
+      q.value = ''; selects.forEach((s) => (s.value = '')); type = '';
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(!x.dataset.type)));
+      apply();
+    });
+  }
+</script>

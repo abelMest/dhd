@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import OppCard from '../components/OppCard.astro';
+import { loadSite, openOpportunities, fmtDate, today, daysBetween } from '../lib/data';
+import { OPP_KINDS } from '../lib/taxonomy';
+
+const site = await loadSite();
+const t = today();
+const opps = openOpportunities(site, t);
+const soon = opps.filter((o) => o.deadline && daysBetween(t, o.deadline) <= 14);
+const dated = opps.filter((o) => o.deadline && daysBetween(t, o.deadline) > 14);
+const rolling = opps.filter((o) => !o.deadline);
+const kinds = OPP_KINDS.filter((k) => opps.some((o) => o.kind === k));
+const countries = [...new Set(opps.flatMap((o) => o.countries))].sort();
+const lastVerified = opps.map((o) => o.verifiedAt).filter(Boolean).sort().at(-1);
+const groups = [
+  { id: 'soon', title: 'Closing soon', note: 'Deadlines in the next two weeks.', items: soon },
+  { id: 'open', title: 'Open', note: 'Dated calls, soonest deadline first.', items: dated },
+  { id: 'rolling', title: 'Rolling', note: 'No fixed deadline. Check the source for the current round.', items: rolling },
+].filter((g) => g.items.length);
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'ItemList', name: 'Digital health opportunities',
+  itemListElement: opps.map((o, i) => ({ '@type': 'ListItem', position: i + 1, name: o.title, url: o.url })),
+};
+---
+<Base title="Opportunities" description="Fellowships, grants, jobs, calls for papers and training in digital health, each checked against its source by an editor." jsonLd={jsonLd}>
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Opportunity board</p>
+      <h1 class="display">Opportunities</h1>
+      <p class="lede">Fellowships, grants, calls and training for people working in digital health. Every listing shows when an editor last checked it against the source. Always confirm details there before you apply.</p>
+      <dl class="statStrip">
+        <div><dt>Open now</dt><dd class="num" data-count={opps.length}>{opps.length}</dd></div>
+        <div class:list={{ hot: soon.length > 0 }}><dt>Closing in 14 days</dt><dd class="num">{soon.length}</dd></div>
+        <div><dt>Rolling</dt><dd class="num">{rolling.length}</dd></div>
+        <div><dt>Last checked</dt><dd class="small">{lastVerified ? fmtDate(lastVerified, { day: 'numeric', month: 'short' }) : 'Not yet'}</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  {opps.length === 0 ? (
+    <section class="section">
+      <div class="wrap narrow">
+        <div class="panel emptyState">
+          <h2>No open opportunities right now</h2>
+          <p>Editors add listings as they find and check them. Know of one that belongs here?</p>
+          <a class="btn" href="/contribute/#tip">Send us a tip <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <>
+      <div class="filterBar" id="oppFilters">
+        <div class="wrap">
+          <form role="search" onsubmit="return false" aria-label="Filter opportunities">
+            <label class="sr" for="oq">Search opportunities</label>
+            <div class="searchBox">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+              <input id="oq" type="search" placeholder="Search by title, organisation or eligibility" autocomplete="off" />
+            </div>
+            <div class="chips" role="group" aria-label="Type">
+              <button class="chip" type="button" data-kind="" aria-pressed="true">All <span class="n">{opps.length}</span></button>
+              {kinds.map((k) => <button class="chip" type="button" data-kind={k} aria-pressed="false">{k} <span class="n">{opps.filter((o) => o.kind === k).length}</span></button>)}
+            </div>
+            {countries.length > 1 && (
+              <>
+                <label class="sr" for="ocountry">Country or region</label>
+                <select id="ocountry"><option value="">Anywhere</option>{countries.map((c) => <option>{c}</option>)}</select>
+              </>
+            )}
+          </form>
+          <p class="meta resultCount" aria-live="polite"><span id="oppCount">{opps.length} open</span></p>
+        </div>
+      </div>
+
+      {groups.map((g) => (
+        <section class:list={['section', 'tight', 'oppGroup', { tint: g.id === 'soon' }]} data-group={g.id} aria-labelledby={`g-${g.id}`}>
+          <div class="wrap">
+            <div class="groupHead">
+              <h2 id={`g-${g.id}`}>{g.id === 'soon' && <span class="pulse-dot" aria-hidden="true"></span>}{g.title} <span class="n num">{g.items.length}</span></h2>
+              <p>{g.note}</p>
+            </div>
+            <div class="oppGrid">{g.items.map((o) => <OppCard o={o} level="h3" />)}</div>
+          </div>
+        </section>
+      ))}
+      <div class="wrap"><p class="empty" id="oppNone" hidden>Nothing matches those filters. <button type="button" class="linkBtn" id="oppReset">Clear filters</button></p></div>
+    </>
+  )}
+
+  <section class="section">
+    <div class="wrap grid2">
+      <div class="panel" data-reveal>
+        <p class="kicker">How we check</p>
+        <h2 style="font-size:1.7rem;margin:10px 0 14px">Every listing is checked against its source</h2>
+        <p style="color:var(--ink-2)">An editor opens the official page, confirms the deadline and who can apply, and records the date. Listings disappear from the board the day after they close. If a date looks wrong, the source is right: tell us and we will fix it.</p>
+        <p class="meta" style="margin:0">Updated {fmtDate(today())}</p>
+      </div>
+      <div class="panel tipPanel" data-reveal>
+        <p class="kicker">Know of one?</p>
+        <h2 style="font-size:1.7rem;margin:10px 0 14px">Send us an opportunity</h2>
+        <p style="color:var(--ink-2)">A fellowship, grant, job, call for papers or training for people in digital health. Share the link and we will check it before it goes up.</p>
+        <a class="btn" href="/contribute/#tip" data-magnetic>Send a tip <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Filters: text, type and country together. Groups hide when empty; the URL keeps the type so links can share a view.
+  const bar = document.getElementById('oppFilters');
+  if (bar) {
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.oppCard'));
+    const chips = Array.from(bar.querySelectorAll<HTMLButtonElement>('.chip'));
+    const q = bar.querySelector<HTMLInputElement>('#oq')!;
+    const country = bar.querySelector<HTMLSelectElement>('#ocountry');
+    const count = document.getElementById('oppCount')!;
+    const none = document.getElementById('oppNone')!;
+    let kind = '';
+    const apply = () => {
+      const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+      const c = country?.value || '';
+      let n = 0;
+      cards.forEach((el) => {
+        const ok = (!kind || el.dataset.kind === kind)
+          && (!c || (el.dataset.countries || '').split('|').includes(c))
+          && words.every((w) => el.dataset.text!.includes(w));
+        el.hidden = !ok; if (ok) n++;
+      });
+      document.querySelectorAll<HTMLElement>('.oppGroup').forEach((g) => {
+        const shown = g.querySelectorAll('.oppCard:not([hidden])').length;
+        g.hidden = !shown;
+        const badge = g.querySelector('.groupHead .n'); if (badge) badge.textContent = String(shown);
+      });
+      count.textContent = n === cards.length ? `${n} open` : `${n} of ${cards.length} shown`;
+      none.hidden = n > 0;
+      const url = new URL(location.href);
+      kind ? url.searchParams.set('type', kind) : url.searchParams.delete('type');
+      history.replaceState(null, '', url);
+    };
+    chips.forEach((ch) => ch.addEventListener('click', () => {
+      kind = ch.dataset.kind || '';
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(x === ch)));
+      apply();
+    }));
+    q.addEventListener('input', apply);
+    country?.addEventListener('change', apply);
+    document.getElementById('oppReset')?.addEventListener('click', () => {
+      q.value = ''; if (country) country.value = ''; kind = '';
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(!x.dataset.kind)));
+      apply();
+    });
+    const initial = new URLSearchParams(location.search).get('type');
+    const match = chips.find((ch) => ch.dataset.kind === initial);
+    if (match) match.click();
+  }
+
+  // Add to calendar: a one-day reminder on the deadline, as a standard .ics file any calendar app opens.
+  document.querySelectorAll<HTMLButtonElement>('[data-ics]').forEach((b) => b.addEventListener('click', () => {
+    const d = b.dataset.date!.replace(/-/g, '');
+    const next = new Date(b.dataset.date + 'T00:00:00Z'); next.setUTCDate(next.getUTCDate() + 1);
+    const end = next.toISOString().slice(0, 10).replace(/-/g, '');
+    const esc = (s: string) => s.replace(/[\\,;]/g, (m) => '\\' + m).replace(/\n/g, '\\n');
+    const ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Digital Health Digest//Opportunities//EN', 'BEGIN:VEVENT',
+      `UID:${d}-${Math.random().toString(36).slice(2)}@dhdigest`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
+      `DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${end}`,
+      `SUMMARY:${esc('Deadline: ' + b.dataset.title)}`,
+      `DESCRIPTION:${esc(`${b.dataset.org ? b.dataset.org + '. ' : ''}Confirm details at ${b.dataset.url}`)}`,
+      `URL:${b.dataset.url}`,
+      'BEGIN:VALARM', 'TRIGGER:-P7D', 'ACTION:DISPLAY', 'DESCRIPTION:Deadline in one week', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR',
+    ].join('\r\n');
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })),
+      download: `deadline-${b.dataset.date}.ics`,
+    });
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }));
+
+  // Copy a link straight to one listing.
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-opp]').forEach((b) => b.addEventListener('click', async () => {
+    const url = `${location.origin}${location.pathname}#${b.dataset.copyOpp}`;
+    try { await navigator.clipboard.writeText(url); } catch { return; }
+    b.classList.add('copied'); setTimeout(() => b.classList.remove('copied'), 1600);
+  }));
+</script>

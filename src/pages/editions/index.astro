@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import EditionList from '../../components/EditionList.astro';
+import { loadSite } from '../../lib/data';
+import { TOPICS } from '../../lib/taxonomy';
+
+const site = await loadSite();
+const { articles, settings } = site;
+const total = Math.max(settings.editionsTotal, articles.length);
+---
+<Base title="All editions" description={`Every edition of the Digital Health Digest: ${articles.length} on this site so far, by topic and year.`}>
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Archive</p>
+      <h1 class="display">All editions</h1>
+      <p class="lede">
+        {articles.length < total
+          ? `Showing ${articles.length} of ${total} editions. Older editions from LinkedIn are being added.`
+          : `${articles.length} editions.`}
+      </p>
+    </div>
+  </header>
+  <div class="filterBar">
+    <div class="wrap">
+      <form role="search" onsubmit="return false" aria-label="Filter editions">
+        <label class="sr" for="eq">Search editions</label>
+        <div class="searchBox">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input id="eq" type="search" placeholder="Search titles, authors and summaries" autocomplete="off" />
+        </div>
+        <div class="chips" id="topicChips" role="group" aria-label="Topic">
+          <button class="chip" type="button" data-topic="" aria-pressed="true">All topics <span class="n">{articles.length}</span></button>
+          {TOPICS.map((t) => {
+            const n = articles.filter((a) => a.topic === t).length;
+            return n > 0 && <button class="chip" type="button" data-topic={t} aria-pressed="false">{t} <span class="n">{n}</span></button>;
+          })}
+        </div>
+      </form>
+      <p class="meta resultCount" aria-live="polite"><span id="count">{articles.length} editions</span></p>
+    </div>
+  </div>
+  <section class="section" style="padding-top:24px">
+    <div class="wrap">
+      <EditionList site={site} items={articles} />
+      <p class="empty" id="edNone" hidden>No editions match. <button type="button" class="linkBtn" id="edReset">Clear filters</button> or try the <a href="/search/">full-text search</a>, which reads every word of every edition.</p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Topic and text filters. Without JavaScript every edition is listed; the URL keeps the topic so views can be shared.
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('#topicChips .chip'));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.row[data-topic]'));
+  const q = document.getElementById('eq') as HTMLInputElement;
+  const count = document.getElementById('count')!;
+  const none = document.getElementById('edNone')!;
+  let topic = '';
+  const apply = () => {
+    chips.forEach((c) => c.setAttribute('aria-pressed', String((c.dataset.topic || '') === topic)));
+    const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let n = 0;
+    rows.forEach((r) => {
+      const on = (!topic || r.dataset.topic === topic) && words.every((w) => r.dataset.text!.includes(w));
+      r.hidden = !on; if (on) { n++; r.classList.add('in'); }
+    });
+    document.querySelectorAll<HTMLElement>('.yearGroup').forEach((g) => { g.hidden = !g.querySelector('.row:not([hidden])'); });
+    count.textContent = n === rows.length ? `${n} editions` : `${n} of ${rows.length} editions`;
+    none.hidden = n > 0;
+    const url = new URL(location.href);
+    topic ? url.searchParams.set('topic', topic) : url.searchParams.delete('topic');
+    history.replaceState(null, '', url);
+  };
+  chips.forEach((c) => c.addEventListener('click', () => { topic = c.dataset.topic || ''; apply(); }));
+  q.addEventListener('input', apply);
+  document.getElementById('edReset')?.addEventListener('click', () => { topic = ''; q.value = ''; apply(); });
+  const initial = new URLSearchParams(location.search).get('topic');
+  if (initial && chips.some((c) => c.dataset.topic === initial)) { topic = initial; apply(); }
+</script>

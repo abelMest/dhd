@@ -1,0 +1,7 @@
+---
+// A heartbeat used as a section divider. motion.ts draws it in when it scrolls into view.
+const { class: cls = '' } = Astro.props as { class?: string };
+---
+<svg class:list={['beat-rule', cls]} viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 24 H520 L536 24 L546 8 L560 38 L574 2 L588 34 L598 24 H1200" pathLength="1" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round" data-draw />
+</svg>

@@ -1,0 +1,30 @@
+# Every night: bring in new Substack posts as draft editions, then rebuild the site
+# (closed opportunities drop off the board on each rebuild).
+# Repository secrets needed: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, DEPLOY_HOOK_URL.
+name: Nightly import and rebuild
+
+on:
+  schedule:
+    - cron: '30 2 * * *'   # 02:30 UTC, 05:30 in Addis Ababa
+  workflow_dispatch: {}
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Import new Substack posts as drafts
+        run: node scripts/import-substack.mjs --create-drafts
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: Rebuild the site
+        run: curl -fsS -X POST "$DEPLOY_HOOK_URL"
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}

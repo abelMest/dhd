@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import EditionList from '../../components/EditionList.astro';
+import { loadSite, type Author } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const site = await loadSite();
+  return site.authors.map((a) => ({ params: { id: a.id }, props: { author: a } }));
+}
+const { author } = Astro.props as { author: Author };
+const site = await loadSite();
+const items = site.articles.filter((a) => a.authorIds.includes(author.id));
+const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Person', name: author.name,
+  jobTitle: author.role || undefined, worksFor: author.org ? { '@type': 'Organization', name: author.org } : undefined,
+  sameAs: [author.linkedinUrl, author.substackUrl].filter(Boolean),
+};
+---
+<Base title={author.name} description={author.bio || `${author.name} writes for the Digital Health Digest.`} jsonLd={jsonLd} noindex={items.length === 0}>
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap profileHead">
+      <span class="avatar xl" aria-hidden="true">{author.photoUrl ? <img src={author.photoUrl} alt="" /> : initials(author.name)}</span>
+      <div>
+      <p class="kicker line">{author.isEditor ? 'Editor' : 'Contributor'}</p>
+      <h1 class="display">{author.name}</h1>
+      <div class="meta">{[author.role, author.org, author.country].filter(Boolean).map((v) => <span>{v}</span>)}<span>{items.length} {items.length === 1 ? 'edition' : 'editions'}</span></div>
+      {author.bio && <p class="lede" style="margin-top:16px">{author.bio}</p>}
+      <div class="actions" style="margin-top:20px">
+        {author.linkedinUrl && <a class="btn line sm" href={author.linkedinUrl} rel="noopener">LinkedIn ↗</a>}
+        {author.substackUrl && <a class="btn line sm" href={author.substackUrl} rel="noopener">Substack ↗</a>}
+      </div>
+      </div>
+    </div>
+  </header>
+  <section class="section" style="padding-top:28px">
+    <div class="wrap">
+      {items.length ? <EditionList site={site} items={items} /> : <p class="empty">No published editions yet.</p>}
+    </div>
+  </section>
+</Base>

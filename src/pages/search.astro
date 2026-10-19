@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search" description="Search every Digital Health Digest edition." noindex>
+  <Fragment slot="head"><link rel="stylesheet" href="/pagefind/pagefind-ui.css" /></Fragment>
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap narrow" style="margin:0 auto">
+      <p class="kicker line">Search</p>
+      <h1 class="display">Search the Digest</h1>
+      <p class="lede">Searches the full text of every edition on this site.</p>
+    </div>
+  </header>
+  <section class="section" style="padding-top:28px">
+    <div class="wrap narrow" style="margin:0 auto">
+      <div id="search"></div>
+      <noscript><p class="notice">Search needs JavaScript. Browse <a href="/editions/">all editions</a> instead.</p></noscript>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!window.PagefindUI) {
+      document.getElementById('search').innerHTML = '<p class="notice">The search index is built when the site is published. Run <code>npm run build</code> to try it locally.</p>';
+      return;
+    }
+    const ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: false, resetStyles: false, autofocus: true });
+    const q = new URLSearchParams(location.search).get('q');
+    if (q) ui.triggerSearch(q);
+  });
+</script>
+
+<style is:global>
+  #search { --pagefind-ui-scale: 1; --pagefind-ui-primary: var(--brand-ink); --pagefind-ui-text: var(--ink); --pagefind-ui-background: var(--card); --pagefind-ui-border: var(--line-2); --pagefind-ui-tag: var(--paper-2); --pagefind-ui-border-radius: 8px; --pagefind-ui-font: var(--sans); }
+  #search .pagefind-ui__result-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 500; }
+  #search .pagefind-ui__result-excerpt { font-family: var(--serif); }
+</style>

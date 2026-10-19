@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro';
+import BeatRule from '../components/BeatRule.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { loadSite } from '../lib/data';
+import { lines, commaList } from '../lib/copy';
+import { TOPICS } from '../lib/taxonomy';
+
+const site = await loadSite();
+const { copy, articles, authors, settings } = site;
+// Contributors row: authors with published editions, shown once there are two or more (as in v6).
+const contributors = authors
+  .map((a) => ({ a, n: articles.filter((x) => x.authorIds.includes(a.id)).length }))
+  .filter((x) => x.n > 0)
+  .sort((p, q) => q.n - p.n)
+  .slice(0, 12);
+const partners = commaList(copy.partners.replace(/\n/g, ','));
+const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
+const numbers = [
+  { n: settings.editionsTotal, label: 'Editions published' },
+  ...(settings.subscribers > 0 ? [{ n: settings.subscribers, label: settings.subscribersLabel ? `Subscribers, ${settings.subscribersLabel}` : 'Subscribers' }] : []),
+  { n: TOPICS.length, label: 'Topics we follow' },
+  { n: contributors.length, label: contributors.length === 1 ? 'Contributor' : 'Contributors' },
+];
+const roles = lines(copy.aboutRoles);
+const standard = lines(copy.standard);
+---
+<Base title="About" description="Who edits the Digital Health Digest, how we work, and the editorial standard every piece meets.">
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">About the Digest</p>
+      <h1 class="display">Built by people <span class="blue">doing the work</span></h1>
+      <p class="lede">{copy.lede}</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap editorBlock">
+      <div class="portrait" data-reveal>
+        <div class="portraitRing">
+          {copy.aboutPhoto
+            ? <img src={copy.aboutPhoto} alt={copy.aboutName} width="360" height="360" />
+            : <span class="mono" aria-hidden="true">{initials(copy.aboutName)}</span>}
+        </div>
+        <svg class="portraitBeat" viewBox="0 0 300 60" aria-hidden="true"><path d="M0 34 H110 L122 34 L130 18 L142 54 L154 6 L166 50 L174 34 H300" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1" data-draw /></svg>
+      </div>
+      <div data-reveal>
+        <p class="kicker line">{copy.aboutTitle}</p>
+        <h2 class="editorName">{copy.aboutName}</h2>
+        <ul class="roleList">
+          {roles.map((r) => { const [what, where] = r.split(/,\s*(.+)/); return <li><b>{what}</b>{where && <span>{where}</span>}</li>; })}
+        </ul>
+        <p class="editorBio">{copy.aboutBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight tint">
+    <div class="wrap">
+      <dl class="numbers">
+        {numbers.map((x) => (
+          <div data-reveal><dd class="num" data-count={x.n}>{x.n.toLocaleString('en-GB')}</dd><dt>{x.label}</dt></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="standard">
+    <div class="wrap">
+      <div class="secHead">
+        <div><p class="kicker line">How we work</p><h2 class="display">{copy.standardTitle}</h2><p>Five commitments every edition, listing and guest piece is held to.</p></div>
+      </div>
+      <ol class="commitments">
+        {standard.map((s, i) => (
+          <li data-reveal><span class="cn num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><p>{s}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {contributors.length >= 2 && (
+    <section class="section tint">
+      <div class="wrap">
+        <div class="secHead"><div><p class="kicker line">Bylines</p><h2 class="display">Contributors</h2></div><a class="more" href="/contribute/">Join them <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="people">
+          {contributors.map(({ a, n }) => (
+            <a class="person" href={`/authors/${a.id}/`} data-reveal>
+              <span class="avatar">{a.photoUrl ? <img src={a.photoUrl} alt="" /> : initials(a.name)}</span>
+              <span><b>{a.name}</b><small>{a.role || a.org || 'Contributor'}</small><small class="n">{n} {n === 1 ? 'edition' : 'editions'}</small></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {partners.length > 0 && (
+    <section class="section tight">
+      <div class="wrap">
+        <p class="kicker line">Partners</p>
+        <ul class="partnerRow">{partners.map((p) => <li>{p}</li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <BeatRule />
+      <div class="grid2" style="margin-top:clamp(36px,5vw,64px)">
+        <div class="panel" data-reveal>
+          <p class="kicker">Write for the Digest</p>
+          <h2 style="font-size:1.7rem;margin:10px 0 12px">{copy.ctaTitle}</h2>
+          <p style="color:var(--ink-2)">{copy.ctaSub}</p>
+          <a class="btn" href="/contribute/" data-magnetic>Pitch an idea <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div class="panel tipPanel" data-reveal>
+          <p class="kicker">{copy.subTitle}</p>
+          <h2 style="font-size:1.7rem;margin:10px 0 16px">One edition a week or so</h2>
+          <Subscribe id="sub-about" note={false} />
+          <p class="subNote">{copy.subSub}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

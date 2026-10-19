@@ -1,0 +1,34 @@
+---
+// The Digest's logo, rebuilt as live SVG from the original artwork (public/brand/logo-original.webp),
+// so it stays sharp at any size, follows light/dark themes and can draw itself in.
+//   variant="full" : heartbeat + two-line wordmark, with the line running on under "DIGITAL HEALTH"
+//   variant="mark" : the heartbeat alone (favicon, tight spaces)
+interface Props { variant?: 'full' | 'mark'; height?: number; class?: string; animate?: boolean }
+const { variant = 'full', height = 40, class: cls = '', animate = false } = Astro.props;
+
+// Geometry measured from the original 2000×815 artwork.
+const BEAT = 'M265 348 H378 L432 481 L482 229 L532 612 L557 407';
+const RUN = 'M557 407 H1880';
+const vb = variant === 'full' ? '250 215 1650 410' : '250 215 320 410';
+const ratio = variant === 'full' ? 1650 / 410 : 320 / 410;
+---
+<svg
+  class:list={['logo-svg', cls, { 'logo-animate': animate }]}
+  viewBox={vb}
+  height={height}
+  width={Math.round(height * ratio)}
+  role="img"
+  aria-label="Digital Health Digest"
+  data-logo
+>
+  <path class="logo-beat" d={BEAT} pathLength="1" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+  {variant === 'full' && (
+    <>
+      <path class="logo-run" d={RUN} pathLength="1" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" />
+      <g class="logo-words" fill="currentColor" font-family="'League Spartan Variable', 'League Spartan', 'Avenir Next', 'Segoe UI', sans-serif" font-weight="800">
+        <text x="670" y="374" font-size="150" textLength="1153" lengthAdjust="spacingAndGlyphs">DIGITAL HEALTH</text>
+        <text x="670" y="547" font-size="150" textLength="506" lengthAdjust="spacingAndGlyphs">DIGEST</text>
+      </g>
+    </>
+  )}
+</svg>

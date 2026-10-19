@@ -1,0 +1,43 @@
+---
+// Archive-style list, grouped by year. Used on /editions/, topic pages and author pages.
+import type { Article, SiteData } from '../lib/data';
+import { authorsFor, fmtDate } from '../lib/data';
+import { thumb } from '../lib/images';
+import { topicSlug } from '../lib/taxonomy';
+
+interface Props { site: SiteData; items: Article[]; showTopic?: boolean }
+const { site, items, showTopic = true } = Astro.props;
+const years = [...new Set(items.map((a) => a.publishedAt.slice(0, 4)))];
+---
+{years.map((y) => (
+  <section class="yearGroup" data-year={y} aria-labelledby={`y-${y}`}>
+    <h2 id={`y-${y}`} class="yearHead display"><span>{y}</span></h2>
+    <ul class="list">
+      {items.filter((a) => a.publishedAt.startsWith(y)).map((a) => {
+        const pic = a.image ? thumb(a.image, 180) : null;
+        const names = authorsFor(site, a).map((x) => x.name).join(', ');
+        return (
+          <li class:list={['row', { noimg: !pic }]} data-topic={a.topic} data-reveal data-text={`${a.title} ${a.dek} ${a.fr} ${names} ${a.topic}`.toLowerCase()}>
+            <div class="when"><time datetime={a.publishedAt}>{fmtDate(a.publishedAt, { day: 'numeric', month: 'short' })}</time></div>
+            <div class="card">
+              {showTopic && <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}>{a.topic}</a>}
+              <h3><a href={`/editions/${a.id}/`} style={`view-transition-name: ed-${a.id}`}>{a.title}</a></h3>
+              {a.dek && <p class="dek">{a.dek}</p>}
+              {a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
+              <div class="meta">
+                {names && <span>{names}</span>}
+                <span>{a.readMins} min read</span>
+              </div>
+            </div>
+            {pic && <div class="rthumb"><img src={pic.src} srcset={pic.srcset} sizes="180px" alt="" loading="lazy" decoding="async" /></div>}
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+))}
+<style>
+  .yearHead { display: flex; align-items: center; gap: 18px; font-size: clamp(2.4rem, 5vw, 3.6rem); color: var(--blue); margin: 56px 0 18px; }
+  .yearHead::after { content: ''; flex: 1; height: 2px; background: var(--line); }
+  .yearGroup:first-child .yearHead { margin-top: 8px; }
+</style>
