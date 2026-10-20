@@ -50,8 +50,12 @@ export function Field({ f, value, onChange }: { f: FieldDef; value: unknown; onC
           {f.options!.map((o) => <option value={o}>{o}</option>)}
         </select>
       ) : (
-        <input {...common} type={f.type || 'text'} value={String(value ?? '')}
-          onInput={(e) => onChange(f.type === 'number' ? Number((e.target as HTMLInputElement).value) : (e.target as HTMLInputElement).value)} />
+        <>
+          <input {...common} type={f.type || 'text'} value={String(value ?? '')} list={f.options?.length ? `${id}-list` : undefined}
+            onInput={(e) => { const raw = (e.target as HTMLInputElement).value; onChange(f.type === 'number' ? Number(raw) : raw); }} />
+          {/* Free text with suggestions, e.g. existing series names. */}
+          {f.options?.length ? <datalist id={`${id}-list`}>{f.options.map((o) => <option value={o} />)}</datalist> : null}
+        </>
       )}
       {hint}
     </label>

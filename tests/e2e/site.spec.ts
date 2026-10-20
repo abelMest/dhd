@@ -95,6 +95,16 @@ test('an edition page has the full text, En bref, author and share tags', async 
   await noSideScroll(page);
 });
 
+test('an edition can be cited: APA, BibTeX and Scholar tags', async ({ page }) => {
+  await page.goto('/editions/why-pilots-fail/');
+  await expect(page.locator('meta[name="citation_title"]')).toHaveAttribute('content', /Why Digital Health Pilots Fail/);
+  await expect(page.locator('meta[name="citation_author"]').first()).toHaveAttribute('content', 'Abel Mestie Mekonnen');
+  await page.locator('.cite summary').click();
+  await expect(page.locator('.citeText')).toContainText('Mekonnen, A. M. (');
+  await expect(page.locator('.citeText')).toContainText('/editions/why-pilots-fail/');
+  await expect(page.locator('.citeBody pre')).toContainText('@online{mekonnen');
+});
+
 test('opportunities show deadlines and last-checked dates, and filter by type', async ({ page }) => {
   await page.goto('/opportunities/');
   const items = page.locator('.oppCard');

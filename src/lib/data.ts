@@ -16,6 +16,10 @@ export interface Article {
   id: string; title: string; dek: string; fr: string; topic: string; publishedAt: string;
   substackUrl: string; linkedinUrl: string; featured: boolean; pinned: boolean; startFor: string[];
   readMins: number; body: string; authorIds: string[];
+  /** Hand-picked related editions (ids), shown before same-topic ones. */
+  related: string[];
+  /** Series name shared by every part ('' when not in a series), and this edition's part number. */
+  series: string; seriesPart: number | null;
   /** First image in the body, used on cards. Empty when the edition has none. */
   image: string;
 }
@@ -65,6 +69,7 @@ function fromSeed(): SiteData {
       id: a.id, title: str(a.title), dek: str(a.dek), fr: str(a.fr), topic: str(a.topic), publishedAt: str(a.publishedAt),
       substackUrl: str(a.substackUrl), linkedinUrl: str(a.linkedinUrl), featured: !!a.featured, pinned: !!a.pinned,
       startFor: arr(a.startFor), readMins: Number(a.readMins) || 0, body: str(a.body), authorIds: arr(a.authorIds),
+      related: arr(a.related), series: str(a.series).trim(), seriesPart: Number(a.seriesPart) || null,
     }))
     .sort(byDateDesc);
   const authors = s.authors.map((a) => ({
@@ -116,6 +121,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     id: a.id, title: str(a.title), dek: str(a.dek), fr: str(a.fr), topic: str(a.topic), publishedAt: str(a.published_at),
     substackUrl: str(a.substack_url), linkedinUrl: str(a.linkedin_url), featured: !!a.featured, pinned: !!a.pinned,
     startFor: arr(a.start_for), readMins: Number(a.read_mins) || 0, body: str(a.body_md), authorIds: authorsOf(a.id),
+    related: arr(a.related), series: str(a.series).trim(), seriesPart: Number(a.series_part) || null,
   })).sort(byDateDesc);
   return {
     articles, source: 'supabase',
@@ -186,3 +192,50 @@ export function fmtDate(iso: string, opts: Intl.DateTimeFormatOptions = { day: '
   if (!iso) return '';
   return new Date(iso + (iso.length === 10 ? 'T00:00:00Z' : '')).toLocaleDateString('en-GB', { ...opts, timeZone: 'UTC' });
 }
+
+/** Up to `n` editions to read next: the hand-picked ones first (in the editor's order), then the same topic. */
+export function relatedTo(site: SiteData, a: Article, n = 3) {
+  const byId = new Map(site.articles.map((x) => [x.id, x]));
+  const picked = a.related.map((id) => byId.get(id)).filter((x): x is Article => !!x && x.id !== a.id);
+  const rest = site.articles.filter((x) => x.topic === a.topic && x.id !== a.id && !picked.includes(x));
+  return { picked: picked.length > 0, list: [...picked, ...rest].slice(0, n) };
+}
+
+/** Every published part of this edition's series, in part order (then date). Empty when it is not in one. */
+export function seriesOf(site: SiteData, a: Article) {
+  if (!a.series) return [];
+  const key = a.series.toLowerCase();
+  return site.articles
+    .filter((x) => x.series.toLowerCase() === key)
+    .sort((x, y) => (x.seriesPart ?? 1e9) - (y.seriesPart ?? 1e9) || x.publishedAt.localeCompare(y.publishedAt));
+}
+
+/** APA 7 style: Mekonnen, A. M. (2026, July 20). Title. Digital Health Digest. URL */
+export function apaCitation(a: Article, authors: Author[], url: string) {
+  const name = (full: string) => {
+    const w = full.replace(/^(Dr|Prof)\.?\s+/i, '').trim().split(/\s+/);
+    const last = w.pop() || '';
+    return w.length ? `${last}, ${w.map((x) => `${x[0]}.`).join(' ')}` : last;
+  };
+  const names = authors.map((x) => name(x.name));
+  const who = !names.length ? 'Digital Health Digest' : names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')}, & ${names[names.length - 1]}`;
+  const d = new Date(`${a.publishedAt}T00:00:00Z`);
+  const when = `${d.getUTCFullYear()}, ${d.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', timeZone: 'UTC' }).split(' ').reverse().join(' ')}`;
+  return `${who} (${when}). ${a.title}. Digital Health Digest. ${url}`;
+}
+
+export function bibtex(a: Article, authors: Author[], url: string) {
+  const year = a.publishedAt.slice(0, 4);
+  const first = (authors[0]?.name || 'dhd').replace(/^(Dr|Prof)\.?\s+/i, '').split(/\s+/).pop()!.toLowerCase().replace(/[^a-z]/g, '');
+  const esc = (t: string) => t.replace(/[{}]/g, '');
+  return [
+    `@online{${first}${year}${a.id.split('-')[0]},`,
+    `  author = {${authors.map((x) => esc(x.name)).join(' and ') || 'Digital Health Digest'}},`,
+    `  title = {${esc(a.title)}},`,
+    `  date = {${a.publishedAt}},`,
+    `  organization = {Digital Health Digest},`,
+    `  url = {${url}},`,
+    `}`,
+  ].join('\n');
+}
+

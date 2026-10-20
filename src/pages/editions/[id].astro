@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import EditionCard from '../../components/EditionCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
-import { loadSite, authorsFor, fmtDate, type Article } from '../../lib/data';
+import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, type Article } from '../../lib/data';
 import { renderMarkdown, outline } from '../../lib/markdown';
 import { topicSlug } from '../../lib/taxonomy';
 
@@ -13,10 +13,17 @@ export async function getStaticPaths() {
 const { a } = Astro.props as { a: Article };
 const site = await loadSite();
 const authors = authorsFor(site, a);
-const related = site.articles.filter((x) => x.topic === a.topic && x.id !== a.id).slice(0, 3);
+const rel = relatedTo(site, a);
+const related = rel.list;
+// Series: every published part, in order, with this edition's neighbours inside the series.
+const parts = seriesOf(site, a);
+const at = parts.findIndex((x) => x.id === a.id);
+const partNo = (x: Article, i: number) => x.seriesPart ?? i + 1;
 const html = a.body ? renderMarkdown(a.body) : '';
 const toc = outline(html);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const apa = apaCitation(a, authors, canonical);
+const bib = bibtex(a, authors, canonical);
 // Older and newer editions, for reading on.
 const idx = site.articles.findIndex((x) => x.id === a.id);
 const newer = idx > 0 ? site.articles[idx - 1] : null;
@@ -40,6 +47,7 @@ const jsonLd = {
   author: authors.map((x) => ({ '@type': 'Person', name: x.name, jobTitle: x.role || undefined, url: new URL(`/authors/${x.id}/`, Astro.site).href })),
   publisher: { '@type': 'Organization', name: 'Digital Health Digest', url: Astro.site?.href },
   sameAs: [a.substackUrl, a.linkedinUrl].filter(Boolean),
+  ...(parts.length > 1 ? { isPartOf: { '@type': 'CreativeWorkSeries', name: a.series }, position: partNo(a, at) } : {}),
 };
 const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
 ---
@@ -48,6 +56,11 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
     {html.includes('substackcdn.com') && <link rel="preconnect" href="https://substackcdn.com" crossorigin />}
     <meta property="article:published_time" content={a.publishedAt} />
     <meta property="article:section" content={a.topic} />
+    {/* Read by Google Scholar and reference managers (Zotero, Mendeley). */}
+    <meta name="citation_title" content={a.title} />
+    {authors.map((x) => <meta name="citation_author" content={x.name} />)}
+    <meta name="citation_publication_date" content={a.publishedAt.replaceAll('-', '/')} />
+    <meta name="citation_publisher" content="Digital Health Digest" />
   </Fragment>
   <article class="article" data-pagefind-body>
     <div class="wrap">
@@ -55,6 +68,7 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
         <a class="kicker line" href={`/topics/${topicSlug(a.topic)}/`} data-pagefind-filter="topic">{a.topic}</a>
         <h1 data-pagefind-meta="title" style={`view-transition-name: ed-${a.id}`}>{a.title}</h1>
         {a.dek && <p class="dek">{a.dek}</p>}
+        {parts.length > 1 && <p class="seriesTag"><a href="#series">Part {partNo(a, at)} of the series <b>{a.series}</b></a></p>}
         <div class="byline">
           {authors.length > 0 && (
             <span class="who">
@@ -105,6 +119,23 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
             Also published on {a.substackUrl && <a href={a.substackUrl} rel="noopener">Substack</a>}{a.substackUrl && a.linkedinUrl && ' and '}{a.linkedinUrl && <a href={a.linkedinUrl} rel="noopener">LinkedIn</a>}. Join the discussion there.
           </p>
         )}
+        {parts.length > 1 && (
+          <nav class="seriesBox" id="series" aria-labelledby="series-h">
+            <p class="kicker">A series in {parts.length} parts so far</p>
+            <h2 id="series-h">{a.series}</h2>
+            <ol>
+              {parts.map((x, i) => (
+                <li>
+                  <span class="no">{partNo(x, i)}</span>
+                  {x.id === a.id
+                    ? <span aria-current="page"><b>{x.title}</b> <span class="meta">You are reading this</span></span>
+                    : <a href={`/editions/${x.id}/`}>{x.title}</a>}
+                </li>
+              ))}
+            </ol>
+            {at < parts.length - 1 && <a class="btn sm" href={`/editions/${parts[at + 1].id}/`}>Next in the series: part {partNo(parts[at + 1], at + 1)} <span class="arrow" aria-hidden="true">→</span></a>}
+          </nav>
+        )}
         {authors.map((x) => (
           <div class="authorCard">
             <div class="avatar">{x.photoUrl ? <img src={x.photoUrl} alt="" width="56" height="56" /> : initials(x.name)}</div>
@@ -115,6 +146,17 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
             </div>
           </div>
         ))}
+        <details class="cite">
+          <summary>Cite this edition</summary>
+          <div class="citeBody">
+            <p class="label">APA</p>
+            <p class="citeText">{apa}</p>
+            <button class="btn line sm" type="button" data-copy-text={apa}>Copy citation</button><span class="copyMsg" role="status"></span>
+            <p class="label">BibTeX</p>
+            <pre>{bib}</pre>
+            <button class="btn line sm" type="button" data-copy-text={bib}>Copy BibTeX</button><span class="copyMsg" role="status"></span>
+          </div>
+        </details>
         <div class="panel" style="margin-top:28px">
           <p class="kicker">Free, about once a week</p>
           <h2 style="font-size:1.6rem;margin:8px 0 16px">Get the next edition in your inbox</h2>
@@ -133,7 +175,7 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
   {related.length > 0 && (
     <section class="section" data-pagefind-ignore>
       <div class="wrap">
-        <div class="secHead"><div><p class="kicker line">Keep reading</p><h2>More on {a.topic}</h2></div><a class="more" href={`/topics/${topicSlug(a.topic)}/`}>All {a.topic} <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="secHead"><div><p class="kicker line">Keep reading</p><h2>{rel.picked ? 'Related reading' : `More on ${a.topic}`}</h2></div><a class="more" href={`/topics/${topicSlug(a.topic)}/`}>All {a.topic} <span class="arrow" aria-hidden="true">→</span></a></div>
         <div class="grid3">{related.map((x) => <EditionCard site={site} a={x} showFr={false} transition={false} />)}</div>
       </div>
     </section>
@@ -147,6 +189,14 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
     if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ url, title: document.title }); return; } catch { /* cancelled */ } }
     try { await navigator.clipboard.writeText(url); } catch { return; }
     b.classList.add('copied'); setTimeout(() => b.classList.remove('copied'), 1600);
+  }));
+  // Copy a citation as plain text.
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-text]').forEach((b) => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copyText!); } catch { return; }
+    const msg = b.nextElementSibling as HTMLElement | null;
+    if (!msg) return;
+    msg.textContent = 'Copied';
+    setTimeout(() => { msg.textContent = ''; }, 1600);
   }));
   // Table of contents: highlight the section being read.
   const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('.toc a')].map((a) => [a.hash.slice(1), a]));

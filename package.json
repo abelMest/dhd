@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "test": "playwright test && node --test tests/"
+    "test": "playwright test && node --test tests/db.test.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^5.1.5",

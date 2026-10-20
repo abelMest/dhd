@@ -380,6 +380,23 @@ a.kicker:hover { color: var(--blue); }
 .authorCard h3 { font-size: 1.15rem; margin: 0; }
 .authorCard p { margin: 6px 0 0; font-size: 1rem; color: var(--ink-2); }
 .endmatter { max-width: var(--measure); margin: 56px auto 0; }
+/* Series: tag under the standfirst, and the list of parts at the end. */
+.seriesTag { margin: 14px 0 0; font: 600 .9rem var(--sans); }
+.seriesTag a { color: var(--blue-ink); }
+.seriesBox { margin: 0 0 28px; padding: 22px 24px; border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 0 var(--radius) var(--radius) 0; background: var(--bg-2); }
+.seriesBox h2 { font-size: 1.35rem; margin: 6px 0 14px; }
+.seriesBox ol { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 10px; }
+.seriesBox li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.seriesBox .no { font: 700 .82rem var(--sans); color: var(--blue-ink); }
+.seriesBox [aria-current] .meta { margin-left: 6px; }
+/* Cite this edition. */
+.cite { margin: 24px 0 0; border-top: 1px solid var(--line); padding-top: 18px; }
+.cite summary { cursor: pointer; font: 600 1rem var(--sans); color: var(--ink); }
+.citeBody { display: grid; gap: 8px; justify-items: start; margin-top: 14px; }
+.citeBody .label { margin: 10px 0 0; font: 700 .7rem var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.citeText { margin: 0; font-size: 1rem; color: var(--ink-2); overflow-wrap: anywhere; }
+.citeBody pre { margin: 0; width: 100%; padding: 12px 14px; background: var(--bg-2); border-radius: 10px; font: .82rem/1.5 ui-monospace, Consolas, monospace; overflow-x: auto; white-space: pre; }
+.copyMsg { font: 600 .82rem var(--sans); color: var(--blue-ink); min-height: 1em; }
 .readNext { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
 .readNext a { display: grid; gap: 8px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink); text-decoration: none; transition: border-color .25s, transform .3s var(--ease), box-shadow .3s; }
 .readNext a:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: var(--shadow-lift); color: var(--ink); }

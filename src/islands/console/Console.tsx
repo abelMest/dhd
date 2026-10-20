@@ -143,10 +143,14 @@ function CollectionView({ table, openId }: { table: TableName; openId: string | 
   }, [rows, q]);
 
   if (editing) {
-    const fields = c.fields.map((f) => (f.name === 'authors' ? { ...f, options: authors.map((a) => String(a.id)) } : f));
+    const editions: Edition[] = table === 'articles'
+      ? rows.map((r) => ({ id: String(r.id), title: String(r.title || r.id), date: String(r.published_at || ''), status: String(r.status || '') }))
+      : [];
+    const seriesNames = [...new Set(rows.map((r) => String(r.series || '').trim()).filter(Boolean))].sort();
+    const fields = c.fields.map((f) => (f.name === 'authors' ? { ...f, options: authors.map((a) => String(a.id)) } : f.name === 'series' ? { ...f, options: seriesNames } : f));
     return (
       <Editor
-        table={table} fields={fields} initial={editing} authorNames={Object.fromEntries(authors.map((a) => [a.id, a.name]))}
+        table={table} fields={fields} initial={editing} authorNames={Object.fromEntries(authors.map((a) => [a.id, a.name]))} editions={editions}
         onClose={() => { setEditing(null); load(); }}
       />
     );
@@ -188,9 +192,41 @@ function VerifyToday({ id, onDone }: { id: string; onDone: () => void }) {
   return <button class="btn line sm" type="button" onClick={mark} title="I checked this against the source today">Checked today</button>;
 }
 
-function Editor({ table, fields, initial, authorNames, onClose }: {
+type Edition = { id: string; title: string; date: string; status: string };
+
+/** Search editions by title and pick one. Used for in-text links and for related editions. */
+function EditionPicker({ editions, exclude = [], label, onPick, onClose }: {
+  editions: Edition[]; exclude?: string[]; label: string; onPick: (e: Edition) => void; onClose: () => void;
+}) {
+  const [q, setQ] = useState('');
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const hits = editions
+    .filter((e) => !exclude.includes(e.id) && words.every((w) => `${e.title} ${e.id}`.toLowerCase().includes(w)))
+    .slice(0, 8);
+  return (
+    <div class="picker" onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); onClose(); } }}>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="search" autoFocus placeholder="Search editions by title" aria-label={label} value={q} onInput={(e) => setQ((e.target as HTMLInputElement).value)} />
+        <button type="button" class="btn line sm" onClick={onClose}>Cancel</button>
+      </div>
+      <ul class="list" style="margin-top:8px">
+        {hits.map((e) => (
+          <li class="crow">
+            <button type="button" onClick={() => onPick(e)}>
+              <b>{e.title}</b>
+              <span class="meta">{[e.date, e.status === 'published' ? '' : 'Draft: not live yet'].filter(Boolean).join(' · ')}</span>
+            </button>
+          </li>
+        ))}
+        {!hits.length && <li class="empty">No edition matches that.</li>}
+      </ul>
+    </div>
+  );
+}
+
+function Editor({ table, fields, initial, authorNames, editions, onClose }: {
   table: TableName; fields: typeof COLLECTIONS[TableName]['fields']; initial: { original: string | null; values: Values };
-  authorNames: Record<string, unknown>; onClose: () => void;
+  authorNames: Record<string, unknown>; editions: Edition[]; onClose: () => void;
 }) {
   const sb = supabase()!;
   const c = COLLECTIONS[table];
@@ -213,6 +249,16 @@ function Editor({ table, fields, initial, authorNames, onClose }: {
 
   // Uploads a picture (scaled to 1600px wide) and drops a Markdown image at the cursor.
   const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const [picking, setPicking] = useState<'' | 'link' | 'related'>('');
+  // Links to another edition. Selected text becomes the link text; otherwise the edition's title does.
+  function insertLink(name: string, e: Edition) {
+    const text = String(v[name] ?? '');
+    const el = bodyRef.current;
+    const from = el?.selectionStart ?? text.length, to = el?.selectionEnd ?? from;
+    const words = text.slice(from, to).trim() || e.title;
+    set(name, `${text.slice(0, from)}[${words}](/editions/${e.id}/)${text.slice(to)}`);
+    setPicking('');
+  }
   const [imgBusy, setImgBusy] = useState(false);
   async function insertImage(name: string, file?: File) {
     if (!file) return;
@@ -237,7 +283,12 @@ ${text.slice(at)}`);
     try {
       const row: Values = {};
       for (const f of c.fields) if (!(VIRTUAL[table] || []).includes(f.name)) row[f.name] = v[f.name] === '' && (f.type === 'date') ? null : v[f.name];
-      if (table === 'articles') row.read_mins = v.body_md ? readingMinutes(String(v.body_md)) : (v.read_mins ?? null);
+      if (table === 'articles') {
+        row.read_mins = v.body_md ? readingMinutes(String(v.body_md)) : (v.read_mins ?? null);
+        row.series = String(v.series || '').trim();
+        row.series_part = row.series && Number(v.series_part) > 0 ? Math.round(Number(v.series_part)) : null;
+        row.related = ((v.related as string[]) || []).slice(0, 3);
+      }
       if (!hasId && !isNew) row.id = initial.original;
       const res = isNew
         ? await sb.from(table).insert(row).select('id').single()
@@ -290,15 +341,42 @@ ${text.slice(at)}`);
                 ? <div class="prose mdPreview" dangerouslySetInnerHTML={{ __html: renderMarkdown(body) }} />
                 : <>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0">
+                      <button type="button" class="btn line sm" aria-expanded={picking === 'link'} onClick={() => setPicking(picking === 'link' ? '' : 'link')}>Link to edition</button>
                       <label class="btn line sm">{imgBusy ? 'Uploading…' : 'Insert image'}
                         <input type="file" accept="image/*" class="sr" disabled={imgBusy} onChange={(e) => { const el = e.target as HTMLInputElement; insertImage(f.name, el.files?.[0]); el.value = ''; }} />
                       </label>
-                      <small>Goes in where the cursor is. Then replace the words in [ ] with a short description.</small>
+                      <small>Both go in where the cursor is. Select words first to turn them into the link. For an image, replace the words in [ ] with a short description.</small>
                     </div>
+                    {picking === 'link' && <EditionPicker editions={editions} exclude={[String(v.id)]} label="Edition to link to" onPick={(e) => insertLink(f.name, e)} onClose={() => setPicking('')} />}
                     <textarea ref={bodyRef} rows={f.rows} value={body} onInput={(e) => set(f.name, (e.target as HTMLTextAreaElement).value)} style="font-family:ui-monospace,Consolas,monospace;font-size:.92rem" />
                   </>}
               {f.hint && <small>{f.hint}</small>}
             </div>
+          );
+        }
+        if (f.name === 'related') {
+          const vals = ((v.related as string[]) || []);
+          const title = (id: string) => editions.find((e) => e.id === id)?.title || id;
+          const move = (i: number) => { const n = [...vals]; [n[i - 1], n[i]] = [n[i], n[i - 1]]; set('related', n); };
+          return (
+            <fieldset class="field" style="border:0;padding:0;margin:0 0 16px">
+              <legend class="label" style="margin-bottom:6px">{f.label}</legend>
+              {vals.length > 0 && (
+                <ol class="list" style="margin:0 0 8px">
+                  {vals.map((id, i) => (
+                    <li class="crow">
+                      <span style="flex:1"><b>{i + 1}. {title(id)}</b></span>
+                      {i > 0 && <button type="button" class="btn line sm" aria-label={`Move ${title(id)} up`} onClick={() => move(i)}>↑</button>}
+                      <button type="button" class="btn line sm" aria-label={`Remove ${title(id)}`} onClick={() => set('related', vals.filter((x) => x !== id))}>Remove</button>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {vals.length < 3 && (picking === 'related'
+                ? <EditionPicker editions={editions} exclude={[String(v.id), ...vals]} label="Related edition" onPick={(e) => { set('related', [...vals, e.id]); setPicking(''); }} onClose={() => setPicking('')} />
+                : <button type="button" class="btn line sm" onClick={() => setPicking('related')}>Add a related edition</button>)}
+              {f.hint && <small style="display:block;margin-top:6px">{f.hint}</small>}
+            </fieldset>
           );
         }
         if (f.name === 'authors') {
