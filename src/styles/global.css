@@ -44,8 +44,13 @@
   --wrap: 1240px;
   --gutter: clamp(16px, 4vw, 48px);
   --radius: 14px;
-  --ease: cubic-bezier(.2, .8, .2, 1);
-  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  /* Motion tokens: the whole site moves on three curves and four durations. */
+  --ease-ui: cubic-bezier(.1, 0, .2, 1);        /* interactions */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);      /* reveals, entrances */
+  --ease-io: cubic-bezier(.625, .05, 0, 1);     /* veils, curtains, menu */
+  --ease: var(--ease-out);
+  --ease-spring: var(--ease-ui);
+  --t-ui: .45s; --t-text: .9s; --t-img: 1.3s; --t-line: 1.6s;
   color-scheme: light;
 }
 

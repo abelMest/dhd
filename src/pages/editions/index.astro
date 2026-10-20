@@ -1,12 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
 import EditionList from '../../components/EditionList.astro';
-import { loadSite } from '../../lib/data';
+import { loadSite, fmtDate } from '../../lib/data';
 import { TOPICS } from '../../lib/taxonomy';
 
 const site = await loadSite();
 const { articles, settings } = site;
 const total = Math.max(settings.editionsTotal, articles.length);
+// What the 3D tunnel needs, oldest first so the flight runs forward through time.
+const stops = [...articles].reverse().map((a) => ({ id: a.id, title: a.title, dek: a.dek, topic: a.topic, date: fmtDate(a.publishedAt), mins: a.readMins }));
+const topicsHere = TOPICS.filter((t) => articles.some((a) => a.topic === t));
 ---
 <Base title="All editions" description={`Every edition of the Digital Health Digest: ${articles.length} on this site so far, by topic and year.`}>
   <header class="pageHead">
@@ -19,9 +22,34 @@ const total = Math.max(settings.editionsTotal, articles.length);
           ? `Showing ${articles.length} of ${total} editions. Older editions from LinkedIn are being added.`
           : `${articles.length} editions.`}
       </p>
+      <div class="viewToggle" role="group" aria-label="How to view the archive" style="margin-top:28px" data-viewtoggle hidden>
+        <button type="button" data-view="tunnel" aria-pressed="false">Tunnel</button>
+        <button type="button" data-view="list" aria-pressed="true">List</button>
+      </div>
     </div>
   </header>
-  <div class="filterBar">
+
+  <!-- Tunnel view: a flight down the heartbeat road, one stop per edition (oldest first). Built in /scripts/tunnel.ts. -->
+  <section class="tunnel" data-tunnel hidden aria-label="Fly through the archive">
+    <div class="stage3d">
+      <div class="tProgress" aria-hidden="true"><span></span></div>
+      <div class="tFilter">
+        <label class="sr" for="tunnelTopic">Topic</label>
+        <select id="tunnelTopic"><option value="">All topics</option>{topicsHere.map((t) => <option>{t}</option>)}</select>
+      </div>
+      <article class="tCard" aria-live="polite">
+        <span class="cnt num">01 / {String(stops.length).padStart(2, '0')}</span>
+        <p class="kicker kk" style="margin-top:10px"></p>
+        <h2></h2>
+        <p class="d"></p>
+        <div class="meta"></div>
+        <a class="btn" href="#">Read the edition <span class="arrow" aria-hidden="true">→</span></a>
+      </article>
+      <p class="tHint" aria-hidden="true"><span class="pulse-dot"></span>Scroll to travel</p>
+    </div>
+  </section>
+  <script type="application/json" id="tunnelData" set:html={JSON.stringify(stops)} />
+  <div class="filterBar" data-listview>
     <div class="wrap">
       <form role="search" onsubmit="return false" aria-label="Filter editions">
         <label class="sr" for="eq">Search editions</label>
@@ -40,7 +68,7 @@ const total = Math.max(settings.editionsTotal, articles.length);
       <p class="meta resultCount" aria-live="polite"><span id="count">{articles.length} editions</span></p>
     </div>
   </div>
-  <section class="section" style="padding-top:24px">
+  <section class="section" style="padding-top:24px" data-listview>
     <div class="wrap">
       <EditionList site={site} items={articles} />
       <p class="empty" id="edNone" hidden>No editions match. <button type="button" class="linkBtn" id="edReset">Clear filters</button> or try the <a href="/search/">full-text search</a>, which reads every word of every edition.</p>
@@ -76,4 +104,33 @@ const total = Math.max(settings.editionsTotal, articles.length);
   document.getElementById('edReset')?.addEventListener('click', () => { topic = ''; q.value = ''; apply(); });
   const initial = new URLSearchParams(location.search).get('topic');
   if (initial && chips.some((c) => c.dataset.topic === initial)) { topic = initial; apply(); }
+</script>
+
+<script>
+  // Tunnel / List. The tunnel needs motion and WebGL; everyone else keeps the list (which is always in the page).
+  const toggle = document.querySelector<HTMLElement>('[data-viewtoggle]');
+  const tunnel = document.querySelector<HTMLElement>('[data-tunnel]');
+  const lists = document.querySelectorAll<HTMLElement>('[data-listview]');
+  const canFly = () => document.documentElement.classList.contains('motion') && (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  if (toggle && tunnel && canFly()) {
+    toggle.hidden = false;
+    let unmount: (() => void) | null = null;
+    const set = async (view: 'tunnel' | 'list') => {
+      toggle.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+      try { localStorage.setItem('dhd-archive-view', view); } catch { /* private mode */ }
+      const fly = view === 'tunnel';
+      tunnel.hidden = !fly;
+      lists.forEach((l) => (l.hidden = fly));
+      if (fly && !unmount) {
+        const { mountTunnel } = await import('../../scripts/tunnel');
+        const data = JSON.parse(document.getElementById('tunnelData')!.textContent || '[]');
+        unmount = mountTunnel(tunnel, data);
+      } else if (!fly && unmount) { unmount(); unmount = null; }
+    };
+    toggle.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.addEventListener('click', () => set(b.dataset.view as 'tunnel' | 'list')));
+    // Wide screens open in the tunnel unless the reader chose the list before; phones start with the list.
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('dhd-archive-view'); } catch { /* private mode */ }
+    if (saved ? saved === 'tunnel' : innerWidth >= 1024) set('tunnel');
+  }
 </script>

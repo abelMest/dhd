@@ -15,8 +15,8 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   await page.goto('/');
   await expect(page).toHaveTitle(/Digital Health Digest/);
   await expect(page.locator('.lead h2')).toHaveCount(1);
-  await expect(page.locator('.essentials li')).toHaveCount(3);
-  await expect(page.locator('.vital')).toHaveCount(6);
+  await expect(page.locator('.stack .stackCard')).toHaveCount(3);
+  await expect(page.locator('.topicRow')).toHaveCount(6);
   // Hero glass cards link to real pages, and headline accents render as serif emphasis, not asterisks.
   expect(await page.locator('.stage .glass').count()).toBeGreaterThanOrEqual(2);
   await expect(page.locator('h2 .accent').first()).toBeVisible();
@@ -38,8 +38,15 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   await expect(track.locator('.slide')).toHaveCount(10);
   if ((page.viewportSize()?.width ?? 0) > 700) {
     await track.scrollIntoViewIfNeeded();
-    await page.locator('[data-car="1"]').click();
-    await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
+    if (await page.locator('.carousel.railPinned').count()) {
+      // Wide screens: the rail is pinned, and scrolling down carries it sideways.
+      const sectionTop = await page.locator('.carousel').evaluate((s) => s.getBoundingClientRect().top + scrollY);
+      await page.evaluate((y) => scrollTo(0, y + 700), sectionTop);
+      await expect.poll(() => track.evaluate((t) => new DOMMatrix(getComputedStyle(t).transform).m41), { timeout: 5000 }).toBeLessThan(-100);
+    } else {
+      await page.locator('[data-car="1"]').click();
+      await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
+    }
   }
   // Library and opportunities only appear once they hold 5+ live items: library is empty, the board has 5+.
   await expect(page.getByRole('heading', { name: 'Find what you need' })).toHaveCount(0);
@@ -54,6 +61,7 @@ test('subscribe opens Substack with the email filled in', async ({ page }) => {
 });
 
 test('archive is honest about the count and filters by topic', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('dhd-archive-view', 'list'));
   await page.goto('/editions/');
   await expect(page.locator('.pageHead .lede')).toContainText('Showing 20 of 63 editions');
   await expect(page.locator('.row[data-topic]:visible')).toHaveCount(20);
@@ -108,6 +116,7 @@ test('opportunities show deadlines and last-checked dates, and filter by type', 
 });
 
 test('the archive search narrows editions by words', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('dhd-archive-view', 'list'));
   await page.goto('/editions/');
   await page.locator('#eq').fill('fhir');
   const shown = await page.locator('.row[data-topic]:visible').count();
@@ -218,4 +227,47 @@ test('back-to-top appears after scrolling and returns to the top', async ({ page
   await expect(btn).toHaveClass(/show/);
   await btn.click();
   await expect.poll(() => page.evaluate(() => scrollY), { timeout: 5000 }).toBeLessThan(10);
+});
+
+test('wide screens fly through the archive in 3D; the list is one click away', async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 0) < 1024, 'The tunnel opens by default on wide screens only');
+  await page.goto('/editions/');
+  const tunnel = page.locator('[data-tunnel]');
+  await expect(tunnel).toBeVisible();
+  await expect(tunnel.locator('canvas')).toHaveCount(1);
+  await expect(tunnel.locator('.tCard h2')).not.toBeEmpty();
+  await expect(tunnel.locator('.tCard .cnt')).toContainText('/ 20');
+  // Filtering by topic rebuilds the road with only that topic's editions.
+  await tunnel.locator('select').selectOption('AI & data');
+  await expect(tunnel.locator('.tCard .cnt')).toContainText('/ 06');
+  // List view brings the plain archive back and removes the 3D scene.
+  await page.locator('[data-viewtoggle] [data-view="list"]').click();
+  await expect(tunnel).toBeHidden();
+  await expect(page.locator('.row[data-topic]').first()).toBeVisible();
+  await expect(tunnel.locator('canvas')).toHaveCount(0);
+});
+
+test('first visit plays the title card once; it never blocks reduced-motion readers', async ({ browser }) => {
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto('/');
+  await expect(page.locator('#preloader')).toBeVisible();
+  await expect(page.locator('#preloader')).toHaveCount(0, { timeout: 5000 });
+  await page.goto('/about/');
+  await expect(page.locator('#preloader')).toBeHidden();
+  await ctx.close();
+  const calm = await browser.newContext({ reducedMotion: 'reduce' });
+  const p2 = await calm.newPage();
+  await p2.goto('/');
+  await expect(p2.locator('#preloader')).toBeHidden();
+  await calm.close();
+});
+
+test('the Contribute timeline and FAQ work', async ({ page }) => {
+  await page.goto('/contribute/');
+  await expect(page.locator('[data-board] .phase')).toHaveCount(6);
+  const first = page.locator('.faq details').first();
+  await first.locator('summary').click();
+  await expect(first).toHaveAttribute('open', '');
+  await expect(first.locator('.ans p')).toBeVisible();
 });

@@ -55,6 +55,16 @@ const vitals = TOPICS.map((t) => {
   return { t, n: mine.length, last: mine[0], line, area: `${line} L100 40 L0 40 Z` };
 });
 const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
+// Stat circle: the numbers it rolls through.
+const stats = [
+  { n: String(settings.editionsTotal), label: 'Editions on LinkedIn and Substack' },
+  ...(settings.subscribers > 0 ? [{ n: fmtNum(settings.subscribers), label: `Subscribers${settings.subscribersLabel ? `, ${settings.subscribersLabel}` : ''}` }] : []),
+  { n: String(TOPICS.length), label: 'Topics we follow' },
+];
+// Image reel: pictures from recent editions.
+const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.image, 1100));
+// Topic rows show a picture from each topic's latest edition while hovered.
+const topicPic = (t: string) => { const a = articles.find((x) => x.topic === t && x.image); return a ? thumb(a.image, 280).src : ''; };
 ---
 <Base>
   <!-- Hero: headline and subscribe on the left; the heartbeat as one bold shape among frosted cards on the right. -->
@@ -64,11 +74,15 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
       <div>
         <p class="kicker" data-hero-fade><span class="pulse-dot" aria-hidden="true"></span> Publication · Knowledge library · Community</p>
         <h1 class="display hero-title">
-          <span class="ln">{copy.heroL1}</span>
-          <span class="ln blue">{emph}</span>
-          <span class="ln">{copy.heroL3}</span>
+          <span class="ln"><span>{copy.heroL1}</span></span>
+          <span class="ln blue"><span>{emph}</span></span>
+          <span class="ln"><span>{copy.heroL3}</span></span>
         </h1>
         <p class="lede" data-hero-fade>{copy.lede}</p>
+        <div class="statRoll" data-statroll data-hero-fade aria-hidden="true">
+          <div class="disc"><ul>{stats.map((x) => <li class="num">{x.n}</li>)}</ul></div>
+          <div class="lbls"><ul>{stats.map((x) => <li>{x.label}</li>)}</ul></div>
+        </div>
         <ul class="badges" data-hero-fade>
           <li><b class="num">{settings.editionsTotal}</b>Editions on LinkedIn and Substack</li>
           {settings.subscribers > 0 && <li><b class="num">{fmtNum(settings.subscribers)}</b>Subscribers{settings.subscribersLabel && `, ${settings.subscribersLabel}`}</li>}
@@ -98,6 +112,19 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
       </div>
     </div>
   </section>
+
+  <!-- Image reel: a pill-shaped frame of edition pictures grows to fill the screen as you scroll. -->
+  {reelPics.length > 0 && (
+    <section class="reel" data-reel aria-label="Pictures from recent editions">
+      <div class="stick">
+        <div class="reelFrame">
+          {reelPics.map((p, i) => <img src={p.src} srcset={p.srcset} sizes="100vw" alt="" loading={i ? 'lazy' : 'eager'} decoding="async" />)}
+        </div>
+        <p class="reelLabel" aria-hidden="true"><span class="pulse-dot"></span>Scroll to open</p>
+        <div class="reelCap"><p>Field lessons <span class="accent">from</span> the people doing the work</p></div>
+      </div>
+    </section>
+  )}
 
   <!-- Statement: the Digest in one paragraph, lighting up as you read; a thick ribbon winds through behind it. -->
   <section class="statement" aria-labelledby="statement-k">
@@ -163,14 +190,23 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
         <div class="secHead">
           <div><p class="kicker line">If you read three</p><h2 class="display"><Accent text={copy.pinsTitle} /></h2><p>{copy.pinsSub}</p></div>
         </div>
-        <ol class="list essentials">
-          {pins.map((a) => (
-            <li data-reveal>
-              <a href={`/editions/${a.id}/`}>{a.title}</a>
-              {a.dek && <p>{a.dek}</p>}
-              <div class="meta" style="margin-top:12px"><span>{a.topic}</span><span>{a.readMins} min</span></div>
-            </li>
-          ))}
+        <ol class="stack" data-stack>
+          {pins.map((a, i) => {
+            const pic = a.image ? thumb(a.image, 640) : null;
+            return (
+              <li class="stackCard" style={`--i:${i}`}>
+                <div class="pic">{pic && <img src={pic.src} srcset={pic.srcset} sizes="(max-width: 760px) 100vw, 600px" alt="" loading="lazy" decoding="async" />}</div>
+                <div class="txt">
+                  <span class="no num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <svg class="draw" viewBox="0 0 120 36" aria-hidden="true"><path d="M0 20h40l6-10 8 20 8-26 8 24 5-8h45" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <h3><a href={`/editions/${a.id}/`}>{a.title}</a></h3>
+                  {a.dek && <p>{a.dek}</p>}
+                  <div class="meta"><span>{a.topic}</span><span>{a.readMins} min read</span></div>
+                </div>
+                <span class="shade" aria-hidden="true"></span>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>
@@ -212,15 +248,24 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
         <div><p class="kicker line">Vital signs</p><h2 class="display"><Accent text={copy.topicsTitle} /></h2><p>{copy.topicsSub}</p></div>
         <a class="more" href="/editions/">The full archive <span class="arrow" aria-hidden="true">→</span></a>
       </div>
-      <div class="vitals">
-        {vitals.map(({ t, n, last, line, area }) => (
-          <a class="vital" href={`/topics/${topicSlug(t)}/`} data-reveal>
-            <div class="top"><b>{t}</b><span class="count num">{n}</span></div>
-            <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path class="area" d={area} /><path d={line} pathLength="1" data-spark /></svg>
-            <div class="foot"><span>{last ? `Latest ${fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })}` : 'Nothing yet'}</span><span class="go" aria-hidden="true">→</span></div>
-          </a>
+      <ul class="topicRows">
+        {vitals.map(({ t, n, last, line }, i) => (
+          <li class="topicRow" data-img={topicPic(t) || undefined} data-reveal>
+            <a href={`/topics/${topicSlug(t)}/`} data-cursor="Open">
+              <span class="tn num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="tt"><span>{t}</span></span>
+              <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d={line} /></svg>
+              <span class="tc num">{n}</span>
+            </a>
+            <div class="band" aria-hidden="true">
+              <div class="run">
+                {[0, 1, 2, 3].map(() => <><b>{t}</b><i>{n} {n === 1 ? 'edition' : 'editions'}</i>{last && <i>Latest {fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })}</i>}<b>→</b></>)}
+              </div>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
+      <div class="floatPreview" aria-hidden="true"><img alt="" /></div>
     </div>
   </section>
 
@@ -276,6 +321,13 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
     </section>
   )}
 
+  <section class="giantWord" aria-labelledby="together-h">
+    <div class="wrap">
+      <h2 id="together-h" data-giant>Together.</h2>
+      <p>The Digest is written by the people building health systems, for each other.</p>
+    </div>
+  </section>
+
   <section class="section">
     <div class="wrap">
       <BeatRule />
@@ -298,14 +350,14 @@ const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
     </div>
   </section>
 
-  <section class="section navy">
+  <section class="section navy wipeOpen">
     <div class="ecg-paper" style="position:absolute;inset:0;opacity:.5" aria-hidden="true"></div>
     <div class="wrap grid2" style="align-items:center;position:relative">
-      <div data-reveal>
+      <div>
         <p class="kicker line">Free, about once a week</p>
         <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.4rem);margin-top:12px"><Accent text={copy.subTitle} /></h2>
       </div>
-      <div data-reveal>
+      <div>
         <Subscribe id="sub-foot" note={false} />
         <p class="subNote">{copy.subSub} Or follow on <a href={settings.substackUrl}>Substack</a>{settings.linkedinUrl && <> and <a href={settings.linkedinUrl}>LinkedIn</a></>}.</p>
       </div>

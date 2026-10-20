@@ -13,6 +13,24 @@ const steps = [
   { t: 'Publish', d: 'It runs here, on Substack and on LinkedIn, with your byline and bio.', icon: 'M4 12l16-8-6 16-3-7z M11 13l9-9' },
 ];
 const standard = lines(copy.standard);
+const phases = [
+  { name: 'Pitch', s: 0, w: 0.8, note: 'You send the idea' },
+  { name: 'Reply', s: 0.8, w: 0.8, note: 'The editor accepts, asks or declines' },
+  { name: 'Draft', s: 1.6, w: 1.6, note: 'You write it' },
+  { name: 'Review', s: 3.2, w: 1.2, note: 'Sources checked, edits suggested' },
+  { name: 'Revise', s: 4.4, w: 0.9, note: 'You polish it' },
+  { name: 'Publish', s: 5.3, w: 0.7, note: 'Here, on Substack and LinkedIn' },
+];
+const icons = ['M4 4h16v12H8l-4 4z', 'M3 11l18-8-8 18-2-8z', 'M4 20h4l10-10-4-4L4 16z', 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4', 'M4 12a8 8 0 0 1 14-5M20 12a8 8 0 0 1-14 5M18 3v4h-4M6 21v-4h4', 'M5 12l5 5L20 7'];
+// Questions answered only from what the Digest already states (formats, steps, the editorial standard).
+const faq = [
+  { q: 'Do I need a finished draft to pitch?', a: 'No. Send the idea in a few sentences. If it fits, the editor invites a draft and says what to focus on.' },
+  { q: 'What kinds of pieces can I pitch?', a: 'Articles, interviews, case studies, explainers and series about building health systems across Africa and beyond.' },
+  { q: 'Where will my piece appear?', a: 'Here on the Digest, on Substack and on LinkedIn, with your byline and bio.' },
+  { q: 'Will an editor change my piece?', a: 'An editor reviews every guest piece before it publishes, checks each source and suggests changes.' },
+  { q: 'Do I need to declare funding or affiliations?', a: 'Yes. Authors declare funding and affiliations relevant to their piece, as part of our editorial standard.' },
+  { q: 'How do I know where my pitch stands?', a: 'Sign in on this page. Under Your submissions you can see each stage, and any note the editor leaves for you.' },
+];
 ---
 <Base title="Write for the Digest" description="Pitch an article, interview, case study or explainer, suggest a resource, or send an opportunity tip.">
   <header class="pageHead">
@@ -38,6 +56,28 @@ const standard = lines(copy.standard);
     </div>
   </header>
 
+  <!-- Timeline board: the stages of a piece, filling as you scroll (pinned on wide screens). -->
+  <section class="board" data-board aria-labelledby="board-h">
+    <div class="stick">
+      <div class="wrap">
+        <p class="kicker line" style="color:var(--blue)">How a piece gets made</p>
+        <h2 id="board-h" class="display">From pitch to <span class="accent">published</span></h2>
+        <p class="sub">Six stages, in order. How long each takes depends on the piece and on you.</p>
+        <div class="boardGrid">
+          <div class="weeks" aria-hidden="true"><span>Start</span><span></span><span></span><span></span><span></span><span style="text-align:right">Published</span></div>
+          {phases.map((ph, i) => (
+            <div class="phase" data-s={ph.s} data-w={ph.w}>
+              <span class="pl"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[i]} /></svg></span>{ph.name}</span>
+              <span class="track"><span class="bar" style={`--s:${ph.s};--w:${ph.w}`}><i></i></span><span class="sr">{ph.note}</span></span>
+            </div>
+          ))}
+          <span class="playhead" aria-hidden="true"></span>
+        </div>
+        <p class="note">{phases.map((ph) => ph.note).join(' · ')}</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="wrap contribGrid">
       <div class="contribMain">
@@ -59,6 +99,24 @@ const standard = lines(copy.standard);
           <a class="more" href="/about/#standard" style="margin-top:6px">Read more <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </aside>
+    </div>
+  </section>
+
+  <section class="section tint" aria-labelledby="faq-h">
+    <div class="wrap grid2" style="align-items:start">
+      <div>
+        <p class="kicker line">Questions</p>
+        <h2 class="display" id="faq-h">Before you <span class="accent">pitch</span></h2>
+        <p style="color:var(--muted);max-width:40ch">Still unsure? Send the pitch anyway: the editor will tell you what would make it work.</p>
+      </div>
+      <div class="faq">
+        {faq.map((f) => (
+          <details>
+            <summary>{f.q}<span class="pm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg></span></summary>
+            <div class="ans"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
 </Base>

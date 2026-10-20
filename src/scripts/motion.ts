@@ -155,3 +155,6 @@ document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
   });
   el.addEventListener('pointerleave', () => { x(0); y(0); });
 });
+
+// The cinematic layer (smooth scroll, cursor, pinned chapters) is its own chunk, fetched right after this one.
+import('./cinema');

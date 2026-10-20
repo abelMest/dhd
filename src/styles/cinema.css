@@ -1,0 +1,267 @@
+/* Cinematic layer. The site plays like a film in chapters: title card, veils between pages, masked text,
+   opening images, pinned chapters, an ending card. Only three curves (--ease-ui, --ease-out, --ease-io) and the
+   --t-* durations from global.css. Loaded after global.css. Everything here degrades to the plain, readable site:
+   motion-only states sit under .motion / .motion-on, which Base.astro sets only when motion is welcome. */
+
+/* ---------- Title card (first visit only) ---------- */
+.preloader { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: grid; place-items: center; transition: transform .7s var(--ease-io); }
+.preloader.done { transform: translateY(-100%); }
+.preloader .plLogo { width: min(440px, 72vw); color: var(--blue); clip-path: inset(0 100% 0 0); animation: plReveal 1s var(--ease-out) .1s forwards; }
+.preloader .plLogo svg { width: 100%; height: auto; }
+.preloader .plRing { position: absolute; right: clamp(20px, 4vw, 48px); bottom: clamp(20px, 4vw, 48px); width: 64px; height: 64px; display: grid; place-items: center; font: 700 .9rem var(--sans); color: var(--ink); }
+.preloader .plRing svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.preloader .plRing circle { fill: none; stroke-width: 3; }
+.preloader .plRing .t { stroke: var(--line); }
+.preloader .plRing .v { stroke: var(--blue); stroke-dasharray: 176; stroke-dashoffset: 176; animation: plRing 1.3s var(--ease-ui) forwards; }
+.preloader .plBar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--blue); transform-origin: left; transform: scaleX(0); animation: plBar 1.3s var(--ease-ui) forwards; }
+@keyframes plReveal { to { clip-path: inset(0 0 0 0); } }
+@keyframes plRing { to { stroke-dashoffset: 0; } }
+@keyframes plBar { to { transform: scaleX(1); } }
+
+/* ---------- Page changes: the new page wipes up over the old one like a curtain (no script). ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: veilOut .6s var(--ease-io) both; }
+  ::view-transition-new(root) { animation: veilIn .6s var(--ease-io) both; }
+}
+@keyframes veilOut { to { transform: translateY(-6%); filter: brightness(.45); } }
+@keyframes veilIn { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* ---------- Header: hides on the way down, returns on the way up, goes light over dark chapters ---------- */
+.masthead { transition: transform var(--t-ui) var(--ease-ui), background-color var(--t-ui) var(--ease-ui), border-color .3s, box-shadow .3s; }
+.masthead.hide { transform: translateY(-100%); }
+html.menu-open .masthead.hide { transform: none; }
+.masthead.onDark { background: color-mix(in srgb, var(--navy) 78%, transparent); border-bottom-color: rgba(255, 255, 255, .08); box-shadow: none; }
+.masthead.onDark .nav a { color: var(--on-navy-2); }
+.masthead.onDark .nav a:hover, .masthead.onDark .nav a[aria-current='page'] { color: #fff; }
+.masthead.onDark .iconBtn { color: #fff; border-color: rgba(255, 255, 255, .25); }
+.masthead.onDark .logo { color: #7cc8f2; }
+.toTop.onDark { background: #fff; color: var(--navy); }
+
+/* ---------- Buttons: a fill rises with its curve flattening, the label rolls up ---------- */
+.btn::before { inset: -2px; transform: translateY(102%); border-radius: 50% 50% 0 0 / 80% 80% 0 0; transition: transform var(--t-ui) var(--ease-io), border-radius var(--t-ui) var(--ease-io); }
+.btn:hover::before { transform: translateY(0); border-radius: 0; }
+.btn .lbl { display: inline-block; height: 1.2em; line-height: 1.2em; overflow: hidden; vertical-align: middle; }
+.btn .lbl > span { display: block; transition: transform var(--t-ui) var(--ease-io); }
+.btn .lbl > span::after { content: attr(data-t); display: block; }
+.btn:hover .lbl > span { transform: translateY(-100%); }
+@media (prefers-reduced-motion: no-preference) { .motion-on .btn:hover { animation: stretch var(--t-ui) var(--ease-out); } }
+@keyframes stretch { 0% { scale: 1 1; } 35% { scale: 1.08 .96; } 100% { scale: 1.02 1; } }
+.btn:hover { scale: 1.02 1; }
+
+/* ---------- Links: the underline wipes in left to right ---------- */
+.prose a, .meta a, .subNote a, .footer a { text-decoration: none; background: linear-gradient(currentColor, currentColor) left 100% / 0 1.5px no-repeat; transition: background-size var(--t-ui) var(--ease-ui), color .2s; }
+.prose a { background-size: 100% 1.5px; background-image: linear-gradient(color-mix(in srgb, var(--blue) 45%, transparent), color-mix(in srgb, var(--blue) 45%, transparent)); }
+.prose a:hover, .meta a:hover, .subNote a:hover, .footer a:hover { background-size: 100% 1.5px; }
+
+/* ---------- Custom cursor (fine pointers only): a blue dot; over editions it grows into a "Read" bubble ---------- */
+.cursor { position: fixed; left: 0; top: 0; z-index: 150; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--blue); pointer-events: none; display: grid; place-items: center; opacity: 0; transition: width var(--t-ui) var(--ease-ui), height var(--t-ui) var(--ease-ui), margin var(--t-ui) var(--ease-ui), opacity .2s, background-color .2s; will-change: transform; }
+.cursor.on { opacity: 1; }
+.cursor span { font: 700 .82rem var(--sans); color: #fff; letter-spacing: .02em; opacity: 0; transition: opacity .2s; white-space: nowrap; }
+.cursor.view { width: 104px; height: 104px; margin: -52px 0 0 -52px; background: color-mix(in srgb, var(--blue) 92%, transparent); }
+.cursor.view span { opacity: 1; }
+.cursor.press { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
+
+/* ---------- Image reveals: images open from a cropped frame while easing out of a zoom ---------- */
+.motion-on [data-img-reveal] { clip-path: inset(12% 6% 0 6% round 24px); }
+.motion-on [data-img-reveal] img { scale: 1.18; }
+.motion-on [data-img-reveal].opened { clip-path: inset(0 0 0 0 round 0); transition: clip-path var(--t-img) var(--ease-out); }
+.motion-on [data-img-reveal].opened img { scale: 1; transition: scale var(--t-line) var(--ease-out); }
+
+/* ---------- Hero: lines rise out of masks; the stat circle rolls through numbers ---------- */
+.motion .hero-title .ln { overflow: hidden; padding-bottom: .04em; animation: none; }
+.motion .hero-title .ln > span { display: inline-block; animation: lineUp 1.1s var(--ease-out) both; }
+.motion .hero-title .ln:nth-child(2) > span { animation-delay: .08s; }
+.motion .hero-title .ln:nth-child(3) > span { animation-delay: .16s; }
+.preloading .hero-title .ln > span { animation-play-state: paused; }
+@keyframes lineUp { from { transform: translateY(105%); } }
+.statRoll { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; }
+.statRoll .disc { position: relative; flex: none; width: 84px; height: 84px; border-radius: 50%; background: var(--ink); color: var(--bg); overflow: hidden; }
+.statRoll .disc ul { list-style: none; margin: 0; padding: 0; transition: transform .8s var(--ease-io); }
+.statRoll .disc li { height: 84px; display: grid; place-items: center; font: 800 1.35rem var(--display); letter-spacing: -0.02em; }
+.statRoll .lbls { position: relative; height: 2.6em; overflow: hidden; font: 600 1rem/1.3 var(--sans); color: var(--ink-2); min-width: 16ch; }
+.statRoll .lbls ul { list-style: none; margin: 0; padding: 0; transition: transform .8s var(--ease-io); }
+.statRoll .lbls li { height: 2.6em; display: flex; align-items: center; }
+
+/* ---------- Image reel: a pill-shaped frame of edition pictures grows to fill the screen as you scroll ---------- */
+.reel { position: relative; height: 260vh; }
+.reel .stick { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; overflow: hidden; }
+.reelFrame { position: relative; width: 40vw; height: 22vw; max-height: 60vh; border-radius: 999px; overflow: hidden; background: var(--navy); will-change: width, height, border-radius; }
+.reelFrame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s var(--ease-io), scale 6s linear; scale: 1.08; }
+.reelFrame img.on { opacity: 1; scale: 1; }
+.reelFrame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 26, 41, .1), rgba(7, 26, 41, .55)); }
+.reelCap { position: absolute; z-index: 2; left: 50%; bottom: 14vh; translate: -50% 0; width: min(92vw, 900px); text-align: center; color: #fff; opacity: 0; pointer-events: none; }
+.reelCap p { font: 800 clamp(1.8rem, 4.4vw, 3.8rem)/1.02 var(--display); text-transform: uppercase; letter-spacing: -0.02em; margin: 0; }
+.reelCap p .accent { color: #8fd0f5; }
+.reelLabel { position: absolute; z-index: 2; top: calc(50% + 12vw); left: 50%; translate: -50% 0; font: 700 .78rem var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+@media (max-width: 760px) { .reel { height: auto; } .reel .stick { position: static; height: auto; padding: 24px var(--gutter); } .reelFrame { width: 100%; height: 56vw; border-radius: 28px; } .reelCap { position: static; translate: none; opacity: 1; color: var(--ink); margin-top: 18px; text-align: left; } .reelCap p .accent { color: var(--blue); } .reelLabel { display: none; } }
+html:not(.motion-on) .reel { height: auto; }
+html:not(.motion-on) .reel .stick { position: static; height: auto; padding: clamp(32px, 6vw, 80px) var(--gutter); }
+html:not(.motion-on) .reelFrame { width: min(100%, 1100px); height: min(56vw, 560px); border-radius: 32px; }
+html:not(.motion-on) .reelCap { opacity: 1; }
+html:not(.motion-on) .reelFrame img:first-child { opacity: 1; }
+
+/* ---------- Stacked chapters: each essential read sticks and the next slides over it ---------- */
+.stack { list-style: none; padding: 0; margin: 0; display: grid; gap: 28px; }
+.stackCard { position: sticky; top: calc(96px + var(--i, 0) * 14px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: min(64vh, 560px); border-radius: 32px; overflow: hidden; background: var(--card); border: 1px solid var(--line); box-shadow: 0 -20px 50px -30px rgba(11, 28, 42, .3); transform-origin: 50% 0; }
+.stackCard .shade { position: absolute; inset: 0; z-index: 3; background: #000; opacity: 0; pointer-events: none; }
+.stackCard .pic { position: relative; min-height: 260px; background: var(--navy); }
+.stackCard .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.stackCard .txt { display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: clamp(28px, 4vw, 56px); }
+.stackCard .no { font: 800 clamp(3.4rem, 6vw, 5.4rem)/.8 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
+.stackCard h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin: 0; }
+.stackCard h3 a { color: var(--ink); text-decoration: none; }
+.stackCard h3 a::after { content: ''; position: absolute; inset: 0; z-index: 2; }
+.stackCard p { margin: 0; color: var(--ink-2); font-size: 1.08rem; }
+.stackCard .draw { width: 120px; height: 36px; color: var(--blue); }
+@media (max-width: 760px) { .stackCard { grid-template-columns: 1fr; position: relative; top: 0; min-height: 0; } .stackCard .pic { min-height: 200px; } }
+
+/* ---------- Topics as full-width rows: hovering opens a band with a running ticker and a floating preview ---------- */
+.topicRows { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.topicRow { position: relative; border-bottom: 1px solid var(--line); overflow: hidden; }
+.topicRow > a { position: relative; z-index: 1; display: grid; grid-template-columns: 64px minmax(0, 1fr) 160px 48px; gap: 20px; align-items: center; padding: clamp(18px, 2.6vw, 30px) 0; color: var(--ink); text-decoration: none; }
+.topicRow .tn { font: 700 .85rem var(--sans); color: var(--muted); }
+.topicRow .tt { position: relative; height: 1.1em; overflow: hidden; font: 800 clamp(1.8rem, 4.6vw, 3.8rem)/1.1 var(--display); letter-spacing: -0.03em; text-transform: uppercase; }
+.topicRow .tt span { display: block; transition: transform var(--t-ui) var(--ease-io); }
+.topicRow svg.spark { width: 160px; height: 40px; color: var(--blue); }
+.topicRow svg.spark path { fill: none; stroke: currentColor; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.topicRow .tc { font: 800 1.6rem var(--display); color: var(--blue); text-align: right; }
+.topicRow .band { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; background: var(--blue-deep); color: #fff; clip-path: inset(50% 0 50% 0); transition: clip-path .55s var(--ease-io); pointer-events: none; overflow: hidden; }
+.topicRow .band .run { display: flex; gap: 22px; white-space: nowrap; padding-left: 64px; animation: marquee 16s linear infinite; animation-play-state: paused; }
+.topicRow .band b { font: 800 clamp(1.8rem, 4.6vw, 3.8rem)/1 var(--display); text-transform: uppercase; letter-spacing: -0.03em; }
+.topicRow .band i { font-style: normal; align-self: center; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); font: 600 .9rem var(--sans); }
+@media (hover: hover) {
+  .topicRow:hover .band, .topicRow:focus-within .band { clip-path: inset(0 0 0 0); }
+  .topicRow:hover .band .run, .topicRow:focus-within .band .run { animation-play-state: running; }
+  .topicRow:hover .tt span { transform: translateY(-110%); }
+}
+@media (max-width: 700px) { .topicRow > a { grid-template-columns: 40px minmax(0, 1fr) 48px; } .topicRow svg.spark { display: none; } .topicRow .band { display: none; } }
+.floatPreview { position: fixed; left: 0; top: 0; z-index: 60; width: 260px; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; pointer-events: none; opacity: 0; scale: .85; transition: opacity .3s var(--ease-ui), scale var(--t-ui) var(--ease-ui); box-shadow: var(--shadow-lift); }
+.floatPreview.on { opacity: 1; scale: 1; }
+.floatPreview img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Giant word: letters settle from blurred and scattered to sharp as you scroll ---------- */
+.giantWord { padding: clamp(40px, 8vw, 120px) 0 clamp(20px, 4vw, 40px); overflow: hidden; }
+.giantWord h2 { margin: 0; font: 800 clamp(4rem, 17vw, 16rem)/.85 var(--display); letter-spacing: -0.05em; text-transform: uppercase; text-align: center; color: var(--ink); white-space: nowrap; }
+.giantWord h2 .ch { display: inline-block; }
+.giantWord p { text-align: center; color: var(--muted); font-size: 1.1rem; margin: 18px auto 0; max-width: 48ch; }
+
+/* ---------- Pinned horizontal rail (desktop with motion): the carousel scrolls sideways as you scroll down ---------- */
+.railPinned .carouselTrack { overflow: visible; scroll-snap-type: none; cursor: default; }
+.railPinned .carouselNav button { display: none; }
+
+/* ---------- Menu: a centred dark card with a blue glow; the page behind blurs; MENU becomes CLOSE ---------- */
+.fsMenu { inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(3, 12, 20, .35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); clip-path: none; opacity: 0; visibility: hidden; transition: opacity var(--t-ui) var(--ease-io), visibility 0s var(--t-ui); }
+.fsMenu.open { opacity: 1; visibility: visible; clip-path: none; transition: opacity var(--t-ui) var(--ease-io); }
+.fsMenu .menuCard { position: relative; width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 22px clamp(20px, 4vw, 34px) 28px; border-radius: 30px; background: radial-gradient(420px 260px at 85% 0%, color-mix(in srgb, var(--blue) 35%, transparent), transparent 70%), var(--navy); color: #fff; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .7); transform: translateY(24px) scale(.97); transition: transform var(--t-ui) var(--ease-io); }
+.fsMenu.open .menuCard { transform: none; }
+.fsMenu nav { padding: 18px 0 26px; margin: 0; }
+.fsMenu nav a { overflow: hidden; border-bottom-color: rgba(255, 255, 255, .08); font-size: clamp(2rem, 9vw, 3.2rem); }
+.fsMenu nav a .mk { display: inline-block; transform: translateY(105%); transition: transform var(--t-ui) var(--ease-out); }
+.fsMenu.open nav a .mk { transform: none; }
+.fsMenu.open nav a:nth-child(1) .mk { transition-delay: .05s; } .fsMenu.open nav a:nth-child(2) .mk { transition-delay: .1s; }
+.fsMenu.open nav a:nth-child(3) .mk { transition-delay: .15s; } .fsMenu.open nav a:nth-child(4) .mk { transition-delay: .2s; }
+.fsMenu.open nav a:nth-child(5) .mk { transition-delay: .25s; } .fsMenu.open nav a:nth-child(6) .mk { transition-delay: .3s; }
+.fsMenu nav a { opacity: 1; transform: none; }
+.menuPill[aria-expanded='true'] { background: var(--blue); }
+.menuPill .closeTxt { display: none; }
+.menuPill[aria-expanded='true'] .openTxt { display: none; }
+.menuPill[aria-expanded='true'] .closeTxt { display: inline; }
+html.menu-open main, html.menu-open .footer { filter: blur(4px); transition: filter var(--t-ui) var(--ease-io); }
+
+/* ---------- Ending: next-chapter card, a dark call to action that wipes open, the giant footer logo ---------- */
+.nextChapter { display: block; position: relative; margin: 0 auto; padding: clamp(40px, 7vw, 96px) 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; overflow: hidden; }
+.nextChapter .k { font: 700 .8rem var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--blue-ink); display: flex; gap: 10px; align-items: center; }
+.nextChapter .t { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 14px; font: 800 clamp(3rem, 10vw, 9rem)/.9 var(--display); letter-spacing: -0.04em; text-transform: uppercase; }
+.nextChapter .t .go { flex: none; width: clamp(64px, 9vw, 120px); height: clamp(64px, 9vw, 120px); border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; transition: transform var(--t-ui) var(--ease-ui), background-color .25s; }
+.nextChapter:hover .t .go { transform: rotate(-45deg) scale(1.06); background: var(--blue-deep); color: #fff; }
+.nextChapter:hover { color: var(--ink); }
+.nextChapter .t .name { transition: transform var(--t-ui) var(--ease-io); }
+.nextChapter:hover .t .name { transform: translateX(14px); }
+.motion-on .wipeOpen { clip-path: inset(0 0 100% 0); }
+.motion-on .wipeOpen.opened { clip-path: inset(0 0 0 0); transition: clip-path 1.1s var(--ease-io); }
+.footer .giantLogo { display: block; margin: 40px 0 0; color: var(--blue); opacity: .9; }
+.footer .giantLogo svg { width: 100%; height: auto; }
+.motion-on .footer .cols > * { opacity: 0; transform: translateY(24px); }
+.motion-on .footer .cols.in > * { opacity: 1; transform: none; transition: opacity var(--t-text) var(--ease-out), transform var(--t-text) var(--ease-out); }
+.motion-on .footer .cols.in > :nth-child(2) { transition-delay: .1s; } .motion-on .footer .cols.in > :nth-child(3) { transition-delay: .2s; } .motion-on .footer .cols.in > :nth-child(4) { transition-delay: .3s; }
+
+/* ---------- FAQ: smooth height; the + turns into × on a blue disc ---------- */
+.faq { border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 0; cursor: pointer; font: 700 clamp(1.1rem, 2vw, 1.35rem)/1.3 var(--display); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary .pm { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--bg-2); display: grid; place-items: center; transition: transform var(--t-ui) var(--ease-ui), background-color var(--t-ui) var(--ease-ui), color .2s; }
+.faq details[open] summary .pm { transform: rotate(45deg); background: var(--blue-deep); color: #fff; }
+.faq .ans { overflow: hidden; }
+.faq .ans p { margin: 0 0 22px; color: var(--ink-2); max-width: 64ch; }
+@supports (interpolate-size: allow-keywords) {
+  .faq { interpolate-size: allow-keywords; }
+  .faq details::details-content { block-size: 0; overflow: hidden; transition: block-size var(--t-ui) var(--ease-ui), content-visibility var(--t-ui) allow-discrete; }
+  .faq details[open]::details-content { block-size: auto; }
+}
+
+/* ---------- Timeline board: how a piece gets made, phase bars filling as you scroll ---------- */
+.board { position: relative; height: 320vh; background: var(--navy); color: var(--on-navy); }
+.board .stick { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.board .stick::before { content: ''; position: absolute; inset: 0; background: radial-gradient(600px 400px at var(--gx, 30%) 30%, color-mix(in srgb, var(--blue) 22%, transparent), transparent 70%); pointer-events: none; }
+.board h2 { color: #fff; font-size: clamp(2.2rem, 5vw, 4rem); margin: 10px 0 8px; }
+.board .sub { color: var(--on-navy-2); margin: 0 0 32px; max-width: 56ch; }
+.boardGrid { position: relative; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 8px 22px; }
+.boardGrid .weeks { grid-column: 2; display: grid; grid-template-columns: repeat(6, 1fr); font: 600 .74rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--on-navy-2); padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.phase { display: contents; }
+.phase .pl { display: flex; align-items: center; gap: 12px; font: 700 1rem var(--display); color: var(--on-navy-2); transition: color .3s; }
+.phase .pl .ic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .08); color: var(--on-navy-2); transition: background-color .3s, color .3s; flex: none; }
+.phase.active .pl { color: #fff; }
+.phase.active .pl .ic { background: var(--blue); color: var(--navy); }
+.phase .track { position: relative; height: 34px; }
+.phase .bar { position: absolute; top: 6px; bottom: 6px; left: calc(var(--s) / 6 * 100%); width: calc(var(--w) / 6 * 100%); border-radius: 999px; background: rgba(255, 255, 255, .07); overflow: hidden; }
+.phase .bar i { position: absolute; inset: 0; background: linear-gradient(90deg, #136396, #4fb0e6); transform-origin: left; transform: scaleX(var(--fill, 1)); border-radius: inherit; }
+.motion-on .phase .bar i { --fill: 0; }
+.playhead { position: absolute; top: 24px; bottom: 0; left: calc(210px + 22px); width: 2px; background: #8fd0f5; box-shadow: 0 0 12px 2px rgba(143, 208, 245, .7); transform: translateX(var(--ph, 0px)); pointer-events: none; display: none; }
+.motion-on .playhead { display: block; }
+.board .note { margin-top: 26px; font: 500 .92rem var(--sans); color: var(--on-navy-2); }
+html:not(.motion-on) .board, .board.static { height: auto; }
+html:not(.motion-on) .board .stick, .board.static .stick { position: static; height: auto; padding: clamp(56px, 8vw, 100px) 0; }
+@media (max-width: 760px) { .board { height: auto; } .board .stick { position: static; height: auto; padding: 64px 0; } .boardGrid { grid-template-columns: 1fr; } .boardGrid .weeks { display: none; } .phase .track { height: 22px; } .playhead { display: none !important; } .phase .bar { left: 0; width: 100%; } }
+
+/* ---------- Form motion: fields rise in; chosen chips fill and their + turns to × ---------- */
+.motion-on form.panel .field, .motion-on form.panel fieldset { animation: fieldIn var(--t-text) var(--ease-out) both; }
+.motion-on form.panel .field:nth-of-type(2) { animation-delay: .04s; } .motion-on form.panel .field:nth-of-type(3) { animation-delay: .08s; }
+.motion-on form.panel .field:nth-of-type(4) { animation-delay: .12s; } .motion-on form.panel .field:nth-of-type(n+5) { animation-delay: .16s; }
+@keyframes fieldIn { from { opacity: 0; transform: translateY(22px); } }
+.chip { position: relative; overflow: hidden; isolation: isolate; }
+.chip::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--ink); transform: translateY(102%); border-radius: 50% 50% 0 0 / 80% 80% 0 0; transition: transform var(--t-ui) var(--ease-io), border-radius var(--t-ui) var(--ease-io); }
+.chip[aria-pressed='true']::before { transform: none; border-radius: 0; }
+.chip[aria-pressed='true'] { background: transparent; }
+form .chip::after { content: '+'; display: inline-block; margin-left: 2px; font-weight: 700; transition: transform var(--t-ui) var(--ease-ui); }
+form .chip[aria-pressed='true']::after { transform: rotate(45deg); }
+.motion-on .notice { animation: wipeIn .7s var(--ease-io) both; }
+@keyframes wipeIn { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* ---------- 3D tunnel (Editions) ---------- */
+.viewToggle { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--card); border: 1px solid var(--line-2); }
+.viewToggle button { min-height: 38px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font: 700 .9rem var(--sans); cursor: pointer; transition: background-color var(--t-ui) var(--ease-ui), color .2s; }
+.viewToggle button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+.tunnel { position: relative; background: #eef4f8; }
+.tunnel .stage3d { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.tunnel canvas { display: block; width: 100%; height: 100%; }
+.tunnel .tCard { position: absolute; left: clamp(16px, 6vw, 96px); bottom: clamp(24px, 8vh, 96px); width: min(520px, calc(100% - 32px)); padding: 26px 28px; border-radius: 26px; background: color-mix(in srgb, #fff 82%, transparent); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); box-shadow: 0 30px 60px -30px rgba(11, 28, 42, .45); color: #0b1c2a; transition: opacity .5s var(--ease-io), transform .5s var(--ease-io); }
+.tunnel .tCard.swap { opacity: 0; transform: translateY(14px); }
+.tunnel .tCard .cnt { display: block; font: 800 .9rem var(--sans); letter-spacing: .12em; color: #136396; }
+.tunnel .tCard h2 { font-size: clamp(1.5rem, 2.8vw, 2.3rem); margin: 10px 0 10px; color: #0b1c2a; }
+.tunnel .tCard p { color: #33475a; margin: 0 0 18px; font-size: 1.02rem; }
+.tunnel .tCard .meta { color: #5a6b7a; margin-bottom: 16px; }
+.tunnel .tHint { position: absolute; right: clamp(16px, 4vw, 48px); bottom: clamp(24px, 8vh, 96px); display: flex; align-items: center; gap: 10px; font: 600 .9rem var(--sans); color: #33475a; }
+.tunnel .tFilter { position: absolute; top: 96px; right: clamp(16px, 4vw, 48px); }
+.tunnel .tFilter select { width: auto; min-height: 42px; border-radius: 999px; background: rgba(255, 255, 255, .85); color: #0b1c2a; }
+.tunnel .tProgress { position: absolute; left: clamp(16px, 6vw, 96px); right: clamp(16px, 6vw, 96px); top: 86px; height: 3px; background: rgba(11, 28, 42, .1); border-radius: 3px; }
+.tunnel .tProgress span { display: block; height: 100%; background: #298fc9; transform-origin: left; transform: scaleX(0); border-radius: 3px; }
+
+/* While the menu is open the header (with its CLOSE pill) sits above the veil and stays sharp. */
+html.menu-open .masthead { z-index: 95; transform: none; background: transparent; box-shadow: none; border-color: transparent; }
+html.menu-open .masthead .nav, html.menu-open .masthead .headActions > :not(.menuPill) { visibility: hidden; }
+
+/* Hero numbers: the rolling stat circle when motion is on, the plain badges otherwise. */
+.statRoll { display: none; }
+.motion .statRoll { display: flex; }
+.motion .studioHero .badges { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

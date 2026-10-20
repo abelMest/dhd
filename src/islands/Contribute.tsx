@@ -110,7 +110,7 @@ export default function Contribute() {
     setBusy(false);
     if (error) return setMsg({ kind: 'err', text: friendlyError(error) });
     setValues((all) => ({ ...all, [tab]: tab === 'pitch' ? { contact: session?.user.email } : {} }));
-    setMsg({ kind: 'info', text: tab === 'pitch' ? 'Pitch sent. The editor usually replies within a week; the status shows below.' : 'Thank you. An editor will check it against the source.' });
+    setMsg({ kind: 'info', text: tab === 'pitch' ? 'Pitch sent. Its status, and any note from the editor, shows below under Your submissions.' : 'Thank you. An editor will check it against the source.' });
     load();
   }
 
