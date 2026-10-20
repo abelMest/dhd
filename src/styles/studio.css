@@ -57,7 +57,7 @@ html.menu-open { overflow: hidden; }
 /* Sized from the text column itself (container units), so the longest line fits at every width.
    Lines may still wrap as a safety net: a cropped headline is worse than a two-line one. */
 .studioHero .heroCols > :first-child { container-type: inline-size; min-width: 0; }
-.studioHero h1 { font-size: clamp(2.4rem, 11.5cqi, 5.4rem); margin: 18px 0 22px; }
+.studioHero h1 { font-size: clamp(2.4rem, 10cqi, 5.4rem); margin: 18px 0 22px; }
 .studioHero h1 .ln { display: block; white-space: normal; text-wrap: balance; }
 .studioHero .lede { font: 400 clamp(1.1rem, 1.5vw, 1.28rem)/1.55 var(--serif); color: var(--ink-2); max-width: 50ch; margin: 0 0 26px; }
 .badges { display: flex; flex-wrap: wrap; gap: 14px 26px; margin: 0 0 30px; padding: 0; list-style: none; }
