@@ -87,8 +87,11 @@ test('an edition page has the full text, En bref, author and share tags', async 
   if ((page.viewportSize()?.width ?? 0) > 1180) await expect(page.locator(`.toc a[href="#${firstH2}"]`)).toBeVisible();
   await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\/editions\/why-pilots-fail\/$/);
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/og\/why-pilots-fail\.png$/);
-  const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
-  expect(ld['@type']).toBe('NewsArticle');
+  const lds = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((t) => JSON.parse(t));
+  const ld = lds.find((x) => x['@type'] === 'NewsArticle');
+  expect(ld).toBeTruthy();
+  const crumbs = lds.find((x) => x['@type'] === 'BreadcrumbList');
+  expect(crumbs.itemListElement.map((i: { name: string }) => i.name)).toEqual(['Home', 'Editions', ld.articleSection, ld.headline]);
   expect(ld.author[0].name).toBe('Abel Mestie Mekonnen');
   const og = await page.request.get('/og/why-pilots-fail.png');
   expect(og.headers()['content-type']).toContain('image/png');

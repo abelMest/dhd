@@ -30,7 +30,9 @@ md.use({
       return `<a href="${escapeAttr(href)}"${t}${ext ? ' rel="noopener" target="_blank"' : ''}>${text}</a>`;
     },
     // Section headings get stable anchors so the table of contents and shared links can point at them.
-    heading({ tokens, depth }) {
+    heading({ tokens, depth: raw }) {
+      // The edition title is the page's only <h1>; a # heading in the body (common in Substack imports) becomes a section.
+      const depth = Math.max(2, raw);
       const inner = this.parser.parseInline(tokens);
       if (depth !== 2) return `<h${depth}>${inner}</h${depth}>\n`;
       let id = headingSlug(inner), n = 2;

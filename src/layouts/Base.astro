@@ -3,7 +3,7 @@ import '../styles/global.css';
 // Cinematic layer: loaded after global.css so its rules win where they refine global ones (buttons, header).
 import '../styles/cinema.css';
 import Logo from '../components/Logo.astro';
-import { loadSite } from '../lib/data';
+import { loadSite, clip } from '../lib/data';
 import { TOPICS, topicSlug } from '../lib/taxonomy';
 // Preloading the two Latin font files stops the text reflowing when they arrive.
 import serifUrl from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
@@ -16,16 +16,22 @@ interface Props {
   type?: 'website' | 'article';
   noindex?: boolean;
   jsonLd?: Record<string, unknown>;
+  /** Replaces the whole <title> (editions with a search-title override). */
+  searchTitle?: string;
+  /** Trail from the home page to this page, for breadcrumb structured data. The current page goes last. */
+  breadcrumbs?: { name: string; href: string }[];
   /** Show the reading-progress line under the masthead (edition pages). */
   progress?: boolean;
 }
-const { title, description, image, type = 'website', noindex = false, jsonLd, progress = false } = Astro.props;
+const { title, description, image, type = 'website', noindex = false, jsonLd, progress = false, searchTitle, breadcrumbs } = Astro.props;
 const site = await loadSite();
 const { copy, settings } = site;
 
 const SITE_NAME = 'Digital Health Digest';
-const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: ideas, resources and opportunities in digital health`;
-const desc = description || copy.lede;
+// Google shows about 60 characters of a title: keep the site name only when it fits.
+const withName = title ? `${title} | ${SITE_NAME}` : '';
+const fullTitle = searchTitle?.trim() || (!title ? `${SITE_NAME}: ideas and evidence in digital health` : withName.length <= 62 ? withName : title);
+const desc = clip(description || copy.lede);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image || '/og/default.png', Astro.site).href;
 const path = Astro.url.pathname;
@@ -47,6 +53,22 @@ const CHAPTERS: Record<string, { href: string; label: string }> = {
 };
 const next = CHAPTERS[path] || (path.startsWith('/topics/') || path.startsWith('/authors/') ? CHAPTERS['/'] : null);
 const year = new Date().getUTCFullYear();
+// Who publishes the site, and how to search it (home page only).
+const siteUrl = new URL('/', Astro.site).href;
+const siteLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization', '@id': `${siteUrl}#org`, name: SITE_NAME, url: siteUrl,
+      logo: new URL('/brand/logo-original.webp', Astro.site).href,
+      sameAs: [settings.substackUrl, settings.linkedinUrl].filter(Boolean),
+    },
+    {
+      '@type': 'WebSite', '@id': `${siteUrl}#site`, name: SITE_NAME, url: siteUrl, inLanguage: 'en', publisher: { '@id': `${siteUrl}#org` },
+      potentialAction: { '@type': 'SearchAction', target: `${siteUrl}search/?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
+    },
+  ],
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -74,6 +96,11 @@ const year = new Date().getUTCFullYear();
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#07131d" media="(prefers-color-scheme: dark)" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {path === '/' && <script type="application/ld+json" set:html={JSON.stringify(siteLd)} />}
+    {breadcrumbs?.length && <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Home', href: '/' }, ...breadcrumbs].map((b, i) => ({ '@type': 'ListItem', position: i + 1, name: b.name, item: new URL(b.href, Astro.site).href })),
+    })} />}
     <script is:inline>
       // Theme, and whether motion is welcome: never for reduced-motion users, data-saver or 2G connections.
       // .motion hides reveal targets until motion.ts shows them; if it has not started in 4 s, show everything.

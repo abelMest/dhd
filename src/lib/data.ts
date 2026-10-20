@@ -20,6 +20,8 @@ export interface Article {
   related: string[];
   /** Series name shared by every part ('' when not in a series), and this edition's part number. */
   series: string; seriesPart: number | null;
+  /** Optional overrides for search results ('' = automatic). */
+  seoTitle: string; seoDescription: string;
   /** First image in the body, used on cards. Empty when the edition has none. */
   image: string;
 }
@@ -70,6 +72,7 @@ function fromSeed(): SiteData {
       substackUrl: str(a.substackUrl), linkedinUrl: str(a.linkedinUrl), featured: !!a.featured, pinned: !!a.pinned,
       startFor: arr(a.startFor), readMins: Number(a.readMins) || 0, body: str(a.body), authorIds: arr(a.authorIds),
       related: arr(a.related), series: str(a.series).trim(), seriesPart: Number(a.seriesPart) || null,
+      seoTitle: str(a.seoTitle), seoDescription: str(a.seoDescription),
     }))
     .sort(byDateDesc);
   const authors = s.authors.map((a) => ({
@@ -122,6 +125,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     substackUrl: str(a.substack_url), linkedinUrl: str(a.linkedin_url), featured: !!a.featured, pinned: !!a.pinned,
     startFor: arr(a.start_for), readMins: Number(a.read_mins) || 0, body: str(a.body_md), authorIds: authorsOf(a.id),
     related: arr(a.related), series: str(a.series).trim(), seriesPart: Number(a.series_part) || null,
+    seoTitle: str(a.seo_title), seoDescription: str(a.seo_description),
   })).sort(byDateDesc);
   return {
     articles, source: 'supabase',
@@ -191,6 +195,27 @@ export function verifyState(o: Opportunity, on = today()) {
 export function fmtDate(iso: string, opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) {
   if (!iso) return '';
   return new Date(iso + (iso.length === 10 ? 'T00:00:00Z' : '')).toLocaleDateString('en-GB', { ...opts, timeZone: 'UTC' });
+}
+
+/** Shortens text to at most `n` characters at a word boundary, adding an ellipsis when it cuts. */
+export function clip(text: string, n = 158) {
+  const t = text.replace(/\s+/g, ' ').trim();
+  if (t.length <= n) return t;
+  const cut = t.slice(0, n - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), n * 0.6)).replace(/[\s,;:.\-–—]+$/, '')}…`;
+}
+
+/** The search-result snippet: the editor's override, else the standfirst topped up from the opening paragraph. */
+export function searchDescription(a: Article) {
+  if (a.seoDescription.trim()) return clip(a.seoDescription);
+  const dek = a.dek.trim();
+  if (dek.length >= 120 || !a.body) return clip(dek || a.title);
+  const opening = a.body
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .find((p) => p && !/^(#|!\[|>|[-*] |\d+\. |<)/.test(p)) || '';
+  const plain = opening.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_`]/g, '');
+  return clip([dek, plain].filter(Boolean).join(dek && !/[.!?]$/.test(dek) ? '. ' : ' '));
 }
 
 /** Up to `n` editions to read next: the hand-picked ones first (in the editor's order), then the same topic. */

@@ -1,0 +1,6 @@
+# Only digitalhealthdigest.africa should appear in search results. The pages.dev addresses
+# (production alias and per-deploy previews) still work but ask search engines not to index them.
+https://digitalhealthdigest.pages.dev/*
+  X-Robots-Tag: noindex
+https://:deploy.digitalhealthdigest.pages.dev/*
+  X-Robots-Tag: noindex

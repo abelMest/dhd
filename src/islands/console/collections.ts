@@ -48,10 +48,12 @@ export const COLLECTIONS: Record<TableName, Collection> = {
       { name: 'related', label: 'Related editions', type: 'multi', options: [], hint: 'Up to three, shown first under "Keep reading" in the order you pick them. Same-topic editions fill any gap.' },
       { name: 'series', label: 'Series', options: [], hint: 'Type the same name on every part, e.g. Interoperability in practice. Leave empty if this edition stands alone.' },
       { name: 'series_part', label: 'Part number in the series', type: 'number' },
+      { name: 'seo_title', label: 'Search title (optional)', hint: 'What Google shows as the headline. Aim for 60 characters or fewer. Leave empty to use the title.' },
+      { name: 'seo_description', label: 'Search description (optional)', type: 'textarea', rows: 2, hint: 'The snippet under the headline in Google, about 150 characters. Leave empty and it is built from the standfirst and opening paragraph.' },
     ],
     summary: (r) => [r.published_at, r.topic || 'No topic yet'].filter(Boolean).join(' · '),
     state: (r) => (r.status === 'published' ? { label: 'Published', tone: 'ok' } : { label: 'Draft', tone: 'warn' }),
-    defaults: () => ({ status: 'draft', published_at: today(), start_for: [], authors: [], related: [], series: '', series_part: null }),
+    defaults: () => ({ status: 'draft', published_at: today(), start_for: [], authors: [], related: [], series: '', series_part: null, seo_title: '', seo_description: '' }),
     validate: (r) => [
       ...(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(String(r.id || '')) ? ['The web address may only use lowercase letters, numbers and single hyphens.'] : []),
       ...(r.status === 'published' && !(r.authors as string[])?.length ? ['Add at least one author before publishing.'] : []),

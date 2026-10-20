@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import EditionCard from '../../components/EditionCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
-import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, type Article } from '../../lib/data';
+import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, searchDescription, type Article } from '../../lib/data';
 import { renderMarkdown, outline } from '../../lib/markdown';
 import { topicSlug } from '../../lib/taxonomy';
 
@@ -38,7 +38,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
   headline: a.title,
-  description: a.dek,
+  description: searchDescription(a),
   datePublished: a.publishedAt,
   inLanguage: 'en',
   articleSection: a.topic,
@@ -51,7 +51,8 @@ const jsonLd = {
 };
 const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
 ---
-<Base title={a.title} description={a.dek || undefined} image={`/og/${a.id}.png`} type="article" jsonLd={jsonLd} progress>
+<Base title={a.title} searchTitle={a.seoTitle} description={searchDescription(a)} image={`/og/${a.id}.png`} type="article" jsonLd={jsonLd} progress
+  breadcrumbs={[{ name: 'Editions', href: '/editions/' }, { name: a.topic, href: `/topics/${topicSlug(a.topic)}/` }, { name: a.title, href: `/editions/${a.id}/` }]}>
   <Fragment slot="head">
     {html.includes('substackcdn.com') && <link rel="preconnect" href="https://substackcdn.com" crossorigin />}
     <meta property="article:published_time" content={a.publishedAt} />

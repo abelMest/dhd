@@ -194,6 +194,49 @@ function VerifyToday({ id, onDone }: { id: string; onDone: () => void }) {
 
 type Edition = { id: string; title: string; date: string; status: string };
 
+/** Puts rich text (and a plain fallback) on the clipboard, so it pastes into Substack with formatting. */
+async function copyRich(html: string, plain: string) {
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([plain], { type: 'text/plain' }),
+    })]);
+  } catch {
+    await navigator.clipboard.writeText(plain);
+  }
+}
+
+/** Substack emails subscribers only when a post is published there. This hands over a ready-to-paste copy. */
+function SendToSubstack({ id, title, dek, body }: { id: string; title: string; dek: string; body: string }) {
+  const [substack, setSubstack] = useState('https://dhdigest.substack.com/');
+  const [done, setDone] = useState('');
+  useEffect(() => {
+    supabase()!.from('settings').select('substack_url').eq('id', 1).maybeSingle()
+      .then(({ data }) => { if (data?.substack_url) setSubstack(String(data.substack_url).replace(/\/*$/, '/')); });
+  }, []);
+  const url = `${location.origin}/editions/${id}/`;
+  const copy = async (what: string, run: () => Promise<void>) => { await run(); setDone(what); setTimeout(() => setDone(''), 1800); };
+  const bodyHtml = () => {
+    // Links and images that point inside the site must be absolute once they leave it.
+    const html = renderMarkdown(body).replace(/(href|src)="\/(?!\/)/g, `$1="${location.origin}/`);
+    return `${html}<hr><p><em>This edition first appeared on <a href="${url}">Digital Health Digest</a>.</em></p>`;
+  };
+  return (
+    <details class="panel" style="margin:0 0 20px">
+      <summary style="cursor:pointer;font-weight:600">Send to subscribers through Substack</summary>
+      <p class="meta" style="margin:10px 0">Substack emails your subscribers when you publish there. Publish here first, so the link back works, then:</p>
+      <ol style="margin:0 0 12px;padding-left:20px;display:grid;gap:8px">
+        <li><a href={`${substack}publish/post?type=newsletter`} target="_blank" rel="noopener">Open a new Substack post ↗</a></li>
+        <li><button type="button" class="btn line sm" onClick={() => copy('title', () => navigator.clipboard.writeText(title))}>Copy title</button> and paste it as the Substack title.</li>
+        {dek && <li><button type="button" class="btn line sm" onClick={() => copy('subtitle', () => navigator.clipboard.writeText(dek))}>Copy subtitle</button> and paste it as the subtitle.</li>}
+        <li><button type="button" class="btn line sm" disabled={!body} onClick={() => copy('text', () => copyRich(bodyHtml(), `${body}\n\nThis edition first appeared on Digital Health Digest: ${url}`))}>Copy full text</button> and paste it into the body. Headings, links and images come with it.</li>
+        <li>Publish it on Substack and choose to send it to your subscribers by email.</li>
+      </ol>
+      <p class="meta" role="status">{done ? `Copied the ${done}.` : ''}</p>
+    </details>
+  );
+}
+
 /** Search editions by title and pick one. Used for in-text links and for related editions. */
 function EditionPicker({ editions, exclude = [], label, onPick, onClose }: {
   editions: Edition[]; exclude?: string[]; label: string; onPick: (e: Edition) => void; onClose: () => void;
@@ -329,6 +372,9 @@ ${text.slice(at)}`);
         <button class="btn line sm" type="button" onClick={onClose}>← Back to {c.label.toLowerCase()}</button>
       </div>
       {table === 'articles' && !isNew && v.status === 'published' && <p class="meta"><a href={`/editions/${initial.original}/`} target="_blank">View on the site ↗</a></p>}
+      {table === 'articles' && !isNew && v.status === 'published' && (
+        <SendToSubstack id={String(initial.original)} title={String(v.title || '')} dek={String(v.dek || '')} body={String(v.body_md || '')} />
+      )}
       {shownFields.map((f) => {
         if (f.type === 'markdown') {
           return (
