@@ -63,6 +63,7 @@ export const COLLECTIONS: Record<TableName, Collection> = {
       { name: 'role', label: 'Role' },
       { name: 'org', label: 'Organisation' },
       { name: 'country', label: 'Country', type: 'select', options: COUNTRY_OPTIONS },
+      { name: 'photo_path', label: 'Photo', type: 'photo', hint: 'Cropped to a square from the centre. Shown on their author page, bylines and About.' },
       { name: 'bio', label: 'Bio', type: 'textarea', rows: 3 },
       { name: 'linkedin_url', label: 'LinkedIn profile', type: 'url' },
       { name: 'substack_url', label: 'Substack profile', type: 'url' },

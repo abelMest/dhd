@@ -1,8 +1,9 @@
 // /console: the editor's workspace. Everything here is enforced again by the database rules,
 // so hiding a button is a convenience, never the security.
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { supabase, friendlyError } from '../../lib/supabase';
 import { renderMarkdown, readingMinutes } from '../../lib/markdown';
+import { uploadFigure } from '../../lib/upload';
 import { Fields, Notice, SignIn, useSession, missingRequired, fmtDay, type Values } from '../ui';
 import { COLLECTIONS, VIRTUAL, slugify, type TableName } from './collections';
 import Submissions from './Submissions';
@@ -210,6 +211,24 @@ function Editor({ table, fields, initial, authorNames, onClose }: {
   // Show author names on the author chips rather than ids.
   const shownFields = fields.map((f) => (f.name === 'authors' ? { ...f, options: f.options, hint: Object.values(authorNames).length ? undefined : 'Add authors under Authors first.' } : f));
 
+  // Uploads a picture (scaled to 1600px wide) and drops a Markdown image at the cursor.
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const [imgBusy, setImgBusy] = useState(false);
+  async function insertImage(name: string, file?: File) {
+    if (!file) return;
+    setImgBusy(true); setMsg(null);
+    try {
+      const url = await uploadFigure(file);
+      const text = String(v[name] ?? '');
+      const at = bodyRef.current?.selectionStart ?? text.length;
+      set(name, `${text.slice(0, at)}
+
+![Describe the image for readers who cannot see it](${url})
+
+${text.slice(at)}`);
+    } catch (err) { setMsg({ kind: 'err', text: friendlyError(err) }); } finally { setImgBusy(false); }
+  }
+
   async function save(e: Event) {
     e.preventDefault();
     const problems = [...missingRequired(c.fields, v).map((l) => `${l} is required.`), ...(c.validate?.(v) || [])];
@@ -269,7 +288,15 @@ function Editor({ table, fields, initial, authorNames, onClose }: {
               </div>
               {preview
                 ? <div class="prose mdPreview" dangerouslySetInnerHTML={{ __html: renderMarkdown(body) }} />
-                : <textarea rows={f.rows} value={body} onInput={(e) => set(f.name, (e.target as HTMLTextAreaElement).value)} style="font-family:ui-monospace,Consolas,monospace;font-size:.92rem" />}
+                : <>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0">
+                      <label class="btn line sm">{imgBusy ? 'Uploading…' : 'Insert image'}
+                        <input type="file" accept="image/*" class="sr" disabled={imgBusy} onChange={(e) => { const el = e.target as HTMLInputElement; insertImage(f.name, el.files?.[0]); el.value = ''; }} />
+                      </label>
+                      <small>Goes in where the cursor is. Then replace the words in [ ] with a short description.</small>
+                    </div>
+                    <textarea ref={bodyRef} rows={f.rows} value={body} onInput={(e) => set(f.name, (e.target as HTMLTextAreaElement).value)} style="font-family:ui-monospace,Consolas,monospace;font-size:.92rem" />
+                  </>}
               {f.hint && <small>{f.hint}</small>}
             </div>
           );
