@@ -14,17 +14,17 @@ const SETTINGS_FIELDS: FieldDef[] = [
 
 // Grouped so the long list of text keys stays findable. Keys tied to retired v6 features are left out.
 const COPY_GROUPS: { title: string; keys: CopyKey[] }[] = [
-  { title: 'Homepage', keys: ['heroL1', 'heroRotate', 'heroL3', 'lede', 'latestTitle', 'latestSub', 'pinsTitle', 'pinsSub', 'startTitle', 'startSub', 'topicsTitle', 'topicsSub', 'oppTitle', 'libTitle', 'libSub'] },
+  { title: 'Homepage', keys: ['heroL1', 'heroRotate', 'heroL3', 'lede', 'statement', 'latestTitle', 'latestSub', 'pinsTitle', 'pinsSub', 'startTitle', 'startSub', 'topicsTitle', 'topicsSub', 'oppTitle', 'libTitle', 'libSub'] },
   { title: 'Subscribe and contribute', keys: ['subTitle', 'subSub', 'ctaTitle', 'ctaSub', 'builderTitle', 'builderSub'] },
   { title: 'About and standards', keys: ['aboutTitle', 'aboutName', 'aboutRoles', 'aboutBody', 'standardTitle', 'standard', 'partners'] },
   { title: 'Announcement bar and footer', keys: ['announce', 'announceUrl', 'footerAbout'] },
 ];
 const LABELS: Partial<Record<CopyKey, string>> = {
   heroL1: 'Headline, first words', heroRotate: 'Headline, emphasised words (first item is used)', heroL3: 'Headline, last word',
-  lede: 'Introduction', aboutRoles: 'Roles (one per line)', standard: 'Editorial standard (one commitment per line)',
+  lede: 'Introduction', statement: 'Statement (the paragraph that lights up as you scroll)', aboutRoles: 'Roles (one per line)', standard: 'Editorial standard (one commitment per line)',
   partners: 'Partners (one per line; list only organisations that agreed)', announce: 'Announcement (leave empty to hide)', announceUrl: 'Announcement link',
 };
-const LONG = new Set<CopyKey>(['lede', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'ctaSub', 'footerAbout', 'heroRotate']);
+const LONG = new Set<CopyKey>(['lede', 'statement', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'ctaSub', 'footerAbout', 'heroRotate']);
 
 export default function SiteSettings() {
   const sb = supabase()!;

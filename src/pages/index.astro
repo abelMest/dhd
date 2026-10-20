@@ -1,30 +1,48 @@
 ---
 import Base from '../layouts/Base.astro';
-import EditionCard from '../components/EditionCard.astro';
 import Subscribe from '../components/Subscribe.astro';
 import OppCard from '../components/OppCard.astro';
 import BeatRule from '../components/BeatRule.astro';
+import Accent from '../components/Accent.astro';
 import { loadSite, authorsFor, fmtDate, openOpportunities } from '../lib/data';
 import { TOPICS, START_ROLES, HOME_THRESHOLD, topicSlug } from '../lib/taxonomy';
 import { thumb } from '../lib/images';
-import { lines, commaList } from '../lib/copy';
+import { lines, commaList, plain } from '../lib/copy';
 
 const site = await loadSite();
 const { articles, copy, settings } = site;
 const [lead, ...rest] = articles;
-const side = rest.slice(0, 3);
 const pins = articles.filter((a) => a.pinned).slice(0, 3);
-const latest = rest.slice(3).filter((a) => !pins.includes(a)).slice(0, 6);
-const start = START_ROLES.map((r) => ({ ...r, items: articles.filter((a) => a.startFor.includes(r.role)).slice(0, 3) }));
-const firstStart = Math.max(0, start.findIndex((s) => s.items.length));
+const carousel = rest.slice(0, 10);
+const start = START_ROLES.map((r) => ({ ...r, items: articles.filter((a) => a.startFor.includes(r.role)).slice(0, 3) })).filter((s) => s.items.length);
 const opps = openOpportunities(site);
 const showOpps = opps.length >= HOME_THRESHOLD;
 const showLib = site.resources.length >= HOME_THRESHOLD;
 const leadAuthors = lead ? authorsFor(site, lead) : [];
 const leadPic = lead?.image ? thumb(lead.image, 680) : null;
 const emph = commaList(copy.heroRotate)[0] || 'digital health';
+const fmtNum = (n: number) => n.toLocaleString('en-GB');
 
-// Topic sparklines: editions per quarter across the archive, one small trend line per topic.
+// Hero glass cards point at three real things: the newest edition, an essential read, and the next deadline.
+const essential = pins.find((a) => a.id !== lead?.id);
+const nextOpp = opps.find((o) => o.deadline);
+const glassCards = [
+  lead && { cls: 'g1', label: 'Latest edition', title: lead.title, href: `/editions/${lead.id}/` },
+  essential && { cls: 'g2', label: 'Essential read', title: essential.title, href: `/editions/${essential.id}/` },
+  nextOpp && { cls: 'g3', label: `Closes ${fmtDate(nextOpp.deadline, { day: 'numeric', month: 'short' })}`, title: nextOpp.title, href: `/opportunities/#opp-${nextOpp.id}` },
+].filter(Boolean) as { cls: string; label: string; title: string; href: string }[];
+
+// The statement lights up word by word; *asterisked* words are the brand-blue highlight.
+let inHl = false;
+const statementWords = copy.statement.split(/\s+/).filter(Boolean).map((w) => {
+  const opens = w.startsWith('*'), closes = w.endsWith('*') || /\*[.,;:!?]$/.test(w);
+  if (opens) inHl = true;
+  const word = { text: w.replace(/\*/g, ''), hl: inHl };
+  if (closes) inHl = false;
+  return word;
+});
+
+// Topic sparklines: editions per quarter across the archive.
 const quarter = (iso: string) => Number(iso.slice(0, 4)) * 4 + Math.floor((Number(iso.slice(5, 7)) - 1) / 3);
 const qs = articles.map((a) => quarter(a.publishedAt));
 const q0 = Math.min(...qs), q1 = Math.max(...qs);
@@ -36,42 +54,74 @@ const vitals = TOPICS.map((t) => {
   const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
   return { t, n: mine.length, last: mine[0], line, area: `${line} L100 40 L0 40 Z` };
 });
+const Beat = 'M2 22h10l4-10 6 20 6-28 6 26 3-8h11';
 ---
 <Base>
-  <section class="hero" data-glow>
-    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+  <!-- Hero: headline and subscribe on the left; the heartbeat as one bold shape among frosted cards on the right. -->
+  <section class="studioHero" data-glow>
     <div class="glowSpot" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="kicker" data-hero-fade><span class="pulse-dot" aria-hidden="true"></span> Publication · Knowledge library · Community</p>
-      <h1 class="display">
-        <span class="ln">{copy.heroL1}</span>
-        <span class="ln blue">{emph}</span>
-        <span class="ln">{copy.heroL3}</span>
-      </h1>
-      <div class="heroFoot">
+    <div class="wrap heroCols">
+      <div>
+        <p class="kicker" data-hero-fade><span class="pulse-dot" aria-hidden="true"></span> Publication · Knowledge library · Community</p>
+        <h1 class="display hero-title">
+          <span class="ln">{copy.heroL1}</span>
+          <span class="ln blue">{emph}</span>
+          <span class="ln">{copy.heroL3}</span>
+        </h1>
+        <p class="lede" data-hero-fade>{copy.lede}</p>
+        <ul class="badges" data-hero-fade>
+          <li><b class="num">{settings.editionsTotal}</b>Editions on LinkedIn and Substack</li>
+          {settings.subscribers > 0 && <li><b class="num">{fmtNum(settings.subscribers)}</b>Subscribers{settings.subscribersLabel && `, ${settings.subscribersLabel}`}</li>}
+          <li><b class="num">{TOPICS.length}</b>Topics we follow</li>
+        </ul>
         <div data-hero-fade>
-          <p class="lede">{copy.lede}</p>
-          <div class="stats">
-            {settings.subscribers > 0 && (
-              <div class="stat"><b class="num" data-count={settings.subscribers}>{settings.subscribers.toLocaleString('en-GB')}</b><span>Subscribers{settings.subscribersLabel && `, ${settings.subscribersLabel}`}</span></div>
-            )}
-            <div class="stat"><b class="num" data-count={settings.editionsTotal}>{settings.editionsTotal}</b><span>Editions on LinkedIn and Substack</span></div>
-          </div>
-        </div>
-        <div data-hero-fade>
-          <p class="label" style="margin-bottom:12px">{copy.subTitle}</p>
+          <p class="label" style="margin-bottom:12px">{plain(copy.subTitle)}</p>
           <Subscribe id="sub-hero" />
         </div>
+      </div>
+      <div class="stage" data-stage>
+        <svg class="bigBeatShape" viewBox="0 0 600 600" aria-hidden="true" data-depth="6">
+          <defs>
+            <linearGradient id="beatGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7cc8f2" />
+              <stop offset=".5" stop-color="#298fc9" />
+              <stop offset="1" stop-color="#0f5a8a" />
+            </linearGradient>
+          </defs>
+          <path d="M-40 300 H190 L268 470 L350 70 L436 560 L486 300 H660" pathLength="1" data-beat />
+        </svg>
+        {glassCards.map((g) => (
+          <a class:list={['glass', g.cls]} href={g.href} aria-label={`${g.label}: ${g.title}`} data-depth={g.cls === 'g2' ? '18' : g.cls === 'g1' ? '10' : '26'}>
+            <span class="gl"><span>{g.label}</span><b>{g.title}</b></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Statement: the Digest in one paragraph, lighting up as you read; a thick ribbon winds through behind it. -->
+  <section class="statement" aria-labelledby="statement-k">
+    <svg class="ribbon" viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="M560 -40 C 520 140, 300 160, 330 320 C 360 470, 640 430, 660 600 C 680 780, 420 820, 400 980 C 385 1100, 520 1160, 560 1240" pathLength="1" />
+    </svg>
+    <div class="wrap">
+      <p class="kicker line" id="statement-k">Why the Digest exists</p>
+      <p class="statementText" data-words>
+        {statementWords.map((w) => <><span class:list={['w', { hl: w.hl }]}>{w.text}</span>{' '}</>)}
+      </p>
+      <div class="actions">
+        <a class="btn" href="/about/" data-magnetic>How we work <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn line" href="/contribute/">Write for us <span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
 
   {lead && (
-    <section class="section">
+    <section class="section" style="padding-top:clamp(24px,4vw,48px)">
       <div class="wrap">
         <div class="lead" data-reveal>
           <a href={`/editions/${lead.id}/`} class="thumb leadThumb" aria-hidden="true" tabindex="-1">
-            {leadPic ? <img src={leadPic.src} srcset={leadPic.srcset} sizes="(max-width: 860px) 100vw, 680px" alt="" width="4" height="3" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover" /> : null}
+            {leadPic ? <img src={leadPic.src} srcset={leadPic.srcset} sizes="(max-width: 860px) 100vw, 680px" alt="" width="4" height="3" decoding="async" style="width:100%;height:100%;object-fit:cover" /> : null}
           </a>
           <div>
             <p class="kicker line">Latest edition · <a class="kicker" href={`/topics/${topicSlug(lead.topic)}/`} style="letter-spacing:inherit">{lead.topic}</a></p>
@@ -86,21 +136,32 @@ const vitals = TOPICS.map((t) => {
             <a class="btn" href={`/editions/${lead.id}/`} data-magnetic>Read the edition <span class="arrow" aria-hidden="true">→</span></a>
           </div>
         </div>
-        {side.length > 0 && (
-          <div class="grid3" style="margin-top:clamp(48px,6vw,80px)">
-            {side.map((a) => <EditionCard site={site} a={a} width={400} />)}
-          </div>
-        )}
       </div>
     </section>
   )}
+
+  <!-- Marquee: the six topics, sliding by. Decorative; the topic tiles below are the links. -->
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      {[0, 1].map(() => (
+        <div class="group">
+          {TOPICS.map((t, i) => (
+            <>
+              <span class:list={['word', { outline: i % 2 === 1 }]}>{t}</span>
+              <svg class="sep" viewBox="0 0 50 40"><path d={Beat} fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
 
   {pins.length > 0 && (
     <section class="section tint">
       <div class="ecg-paper ecg-fade" style="position:absolute;inset:0;opacity:.6" aria-hidden="true"></div>
       <div class="wrap" style="position:relative">
         <div class="secHead">
-          <div><p class="kicker line">If you read three</p><h2 class="display">{copy.pinsTitle}</h2><p>{copy.pinsSub}</p></div>
+          <div><p class="kicker line">If you read three</p><h2 class="display"><Accent text={copy.pinsTitle} /></h2><p>{copy.pinsSub}</p></div>
         </div>
         <ol class="list essentials">
           {pins.map((a) => (
@@ -115,32 +176,32 @@ const vitals = TOPICS.map((t) => {
     </section>
   )}
 
-  {start.some((s) => s.items.length) && (
-    <section class="section" id="start">
-      <div class="wrap startGrid">
-        <div data-reveal>
+  <!-- Start here: the heading holds still while each role scrolls past (position: sticky; no scroll-jacking). -->
+  {start.length > 0 && (
+    <section class="pinStory" id="start" aria-labelledby="start-h">
+      <div class="wrap">
+        <div class="pinLeft">
           <p class="kicker line">New to the Digest?</p>
-          <h2 class="display" style="font-size:clamp(2.2rem,5vw,4rem);margin:12px 0 18px">{copy.startTitle}</h2>
-          <p style="color:var(--muted);font-size:1.08rem">{copy.startSub}</p>
-          <div class="seg" role="tablist" aria-label="Choose your role" style="margin-top:18px">
-            <span class="thumbBg" aria-hidden="true"></span>
-            {start.map((s, i) => (
-              <button type="button" role="tab" id={`st-${i}`} aria-controls={`sp-${i}`} aria-selected={i === firstStart ? 'true' : 'false'} disabled={!s.items.length}>{s.role}</button>
-            ))}
-          </div>
+          <h2 class="display" id="start-h"><Accent text={copy.startTitle} /></h2>
+          <p>{copy.startSub}</p>
+          <span class="role" aria-live="polite" data-role-name>{start[0].role}</span>
+          <div class="keepScrolling" data-keep aria-hidden="true"><span class="spin"></span>Keep scrolling</div>
         </div>
-        <div>
+        <div class="pinRight">
           {start.map((s, i) => (
-            <div role="tabpanel" id={`sp-${i}`} aria-labelledby={`st-${i}`} hidden={i !== firstStart} class="startPanel">
-              <p class="blurb" style="margin:0 0 20px">{s.blurb}</p>
-              <ol class="list startList">
+            <div class="roleBlock" id={`role-${i}`} data-role={s.role}>
+              <span class="roleKicker">{String(i + 1).padStart(2, '0')} / {String(start.length).padStart(2, '0')}</span>
+              <h3>For {s.role.toLowerCase()}</h3>
+              <p class="blurb">{s.blurb}</p>
+              <ol>
                 {s.items.map((a, j) => (
-                  <li><a href={`/editions/${a.id}/`}><span class="n num">{String(j + 1).padStart(2, '0')}</span><span><b>{a.title}</b>{a.dek && <small>{a.dek}</small>}</span><span class="go" aria-hidden="true">→</span></a></li>
+                  <li><a href={`/editions/${a.id}/`}><span class="n num">{String(j + 1).padStart(2, '0')}</span><b>{a.title}</b><span class="go" aria-hidden="true">→</span></a></li>
                 ))}
               </ol>
             </div>
           ))}
         </div>
+        <div class="pinRail" aria-hidden="true"><span data-rail></span></div>
       </div>
     </section>
   )}
@@ -148,7 +209,7 @@ const vitals = TOPICS.map((t) => {
   <section class="section tint">
     <div class="wrap">
       <div class="secHead">
-        <div><p class="kicker line">Vital signs</p><h2 class="display">{copy.topicsTitle}</h2><p>{copy.topicsSub}</p></div>
+        <div><p class="kicker line">Vital signs</p><h2 class="display"><Accent text={copy.topicsTitle} /></h2><p>{copy.topicsSub}</p></div>
         <a class="more" href="/editions/">The full archive <span class="arrow" aria-hidden="true">→</span></a>
       </div>
       <div class="vitals">
@@ -163,15 +224,35 @@ const vitals = TOPICS.map((t) => {
     </div>
   </section>
 
-  {latest.length > 0 && (
-    <section class="section">
-      <div class="wrap">
-        <div class="secHead">
-          <div><p class="kicker line">From the archive</p><h2 class="display">{copy.latestTitle}</h2><p>{copy.latestSub}</p></div>
-          <a class="more" href="/editions/">All editions <span class="arrow" aria-hidden="true">→</span></a>
+  <!-- Carousel: recent editions as large image cards. Native horizontal scroll with snap; buttons and drag on desktop. -->
+  {carousel.length > 0 && (
+    <section class="section carousel" aria-labelledby="latest-h">
+      <div class="wrap carouselHead">
+        <div class="secHead" style="margin:0">
+          <div><p class="kicker line">From the archive</p><h2 class="display" id="latest-h"><Accent text={copy.latestTitle} /></h2><p>{copy.latestSub}</p></div>
         </div>
-        <div class="grid3">{latest.map((a) => <EditionCard site={site} a={a} />)}</div>
+        <div class="carouselNav">
+          <button type="button" data-car="-1" aria-label="Previous editions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg></button>
+          <button type="button" data-car="1" aria-label="Next editions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg></button>
+          <a class="more" href="/editions/" style="margin-left:12px">All editions <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
+      <div class="carouselTrack" data-track tabindex="0" aria-label="Recent editions, scroll sideways">
+        {carousel.map((a) => {
+          const pic = a.image ? thumb(a.image, 420) : null;
+          return (
+            <a class:list={['slide', { blank: !pic }]} href={`/editions/${a.id}/`}>
+              {pic && <img src={pic.src} srcset={pic.srcset} sizes="(max-width: 640px) 80vw, 420px" alt="" loading="lazy" decoding="async" draggable="false" />}
+              <span class="go" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+              <span class="sBody">
+                <h3 style={`view-transition-name: ed-${a.id}`}>{a.title}</h3>
+                <span class="tagsRow"><span>{a.topic}</span><span>{a.readMins} min</span><span>{fmtDate(a.publishedAt, { month: 'short', year: 'numeric' })}</span></span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+      <div class="wrap"><div class="carouselBar" aria-hidden="true"><span data-bar></span></div></div>
     </section>
   )}
 
@@ -179,7 +260,7 @@ const vitals = TOPICS.map((t) => {
     <section class="section tint">
       <div class="wrap">
         <div class="secHead">
-          <div><p class="kicker line">Opportunity board</p><h2 class="display">{copy.oppTitle}</h2><p>Every listing shows the date an editor last checked it against the source.</p></div>
+          <div><p class="kicker line">Opportunity board</p><h2 class="display"><Accent text={copy.oppTitle} /></h2><p>Every listing shows the date an editor last checked it against the source.</p></div>
           <a class="more" href="/opportunities/">All opportunities <span class="arrow" aria-hidden="true">→</span></a>
         </div>
         <div class="oppGrid">{opps.slice(0, 4).map((o) => <OppCard o={o} compact />)}</div>
@@ -209,7 +290,7 @@ const vitals = TOPICS.map((t) => {
         </div>
         <div class="panel" data-reveal>
           <p class="kicker">Write for the Digest</p>
-          <h3 style="font-size:1.7rem;margin:10px 0 12px">{copy.ctaTitle}</h3>
+          <h3 style="font-size:1.7rem;margin:10px 0 12px"><Accent text={copy.ctaTitle} /></h3>
           <p style="color:var(--ink-2)">{copy.ctaSub}</p>
           <a class="btn" href="/contribute/" data-magnetic>Pitch the Digest <span class="arrow" aria-hidden="true">→</span></a>
         </div>
@@ -222,7 +303,7 @@ const vitals = TOPICS.map((t) => {
     <div class="wrap grid2" style="align-items:center;position:relative">
       <div data-reveal>
         <p class="kicker line">Free, about once a week</p>
-        <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.4rem);margin-top:12px">{copy.subTitle}</h2>
+        <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.4rem);margin-top:12px"><Accent text={copy.subTitle} /></h2>
       </div>
       <div data-reveal>
         <Subscribe id="sub-foot" note={false} />
@@ -233,37 +314,58 @@ const vitals = TOPICS.map((t) => {
 </Base>
 
 <script>
-  // Start here: a segmented control whose highlight slides to the chosen role. Arrow keys move between roles.
-  const seg = document.querySelector<HTMLElement>('#start .seg');
-  if (seg) {
-    const tabs = Array.from(seg.querySelectorAll<HTMLButtonElement>('[role=tab]'));
-    const bg = seg.querySelector<HTMLElement>('.thumbBg')!;
-    const place = (t: HTMLButtonElement) => { bg.style.width = `${t.offsetWidth}px`; bg.style.transform = `translateX(${t.offsetLeft}px)`; };
-    const select = (t: HTMLButtonElement, focus = false) => {
-      tabs.forEach((x) => {
-        const on = x === t;
-        x.setAttribute('aria-selected', String(on));
-        x.tabIndex = on ? 0 : -1;
-        const panel = document.getElementById(x.getAttribute('aria-controls')!)!;
-        panel.hidden = !on;
-        if (on) { panel.classList.remove('enter'); void panel.offsetWidth; panel.classList.add('enter'); }
-      });
-      place(t);
-      if (focus) t.focus();
+  // Carousel: buttons page by about one screen, a bar shows position, and a mouse can drag it like a phone.
+  const track = document.querySelector<HTMLElement>('[data-track]');
+  if (track) {
+    const bar = document.querySelector<HTMLElement>('[data-bar]');
+    const [prev, next] = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-car]'));
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const p = max > 0 ? track.scrollLeft / max : 1;
+      if (bar) bar.style.transform = `scaleX(${Math.max(0.12, Math.min(1, track.clientWidth / track.scrollWidth + p * (1 - track.clientWidth / track.scrollWidth)))})`;
+      prev.disabled = track.scrollLeft < 8;
+      next.disabled = track.scrollLeft > max - 8;
     };
-    tabs.forEach((t) => {
-      t.tabIndex = t.getAttribute('aria-selected') === 'true' ? 0 : -1;
-      t.addEventListener('click', () => select(t));
-      t.addEventListener('keydown', (e) => {
-        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-        if (!d) return;
-        const live = tabs.filter((x) => !x.disabled);
-        select(live[(live.indexOf(t) + d + live.length) % live.length], true);
-      });
+    const page = (dir: number) => track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    prev.addEventListener('click', () => page(-1));
+    next.addEventListener('click', () => page(1));
+    track.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+    // Mouse drag (touch already scrolls natively). A short drag still counts as a click.
+    let x0 = 0, s0 = 0, moved = false, down = false;
+    track.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; down = true; moved = false; x0 = e.clientX; s0 = track.scrollLeft; });
+    addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - x0;
+      if (Math.abs(dx) > 6) { moved = true; track.classList.add('dragging'); }
+      if (moved) track.scrollLeft = s0 - dx;
     });
-    const initial = tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0];
-    place(initial);
-    addEventListener('resize', () => place(tabs.find((t) => t.getAttribute('aria-selected') === 'true')!));
-    document.fonts?.ready.then(() => place(tabs.find((t) => t.getAttribute('aria-selected') === 'true')!));
+    addEventListener('pointerup', () => { if (!down) return; down = false; setTimeout(() => track.classList.remove('dragging'), 0); });
+    track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+  }
+
+  // Start here: name the role in view and fill the rail as the section scrolls past.
+  const story = document.getElementById('start');
+  if (story) {
+    const name = story.querySelector<HTMLElement>('[data-role-name]');
+    const rail = story.querySelector<HTMLElement>('[data-rail]');
+    const keep = story.querySelector<HTMLElement>('[data-keep]');
+    const blocks = Array.from(story.querySelectorAll<HTMLElement>('[data-role]'));
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      if (name) name.textContent = (e.target as HTMLElement).dataset.role || '';
+      if (keep && e.target === blocks[blocks.length - 1]) keep.classList.add('done');
+    }), { rootMargin: '-45% 0px -45% 0px' });
+    blocks.forEach((b) => io.observe(b));
+    let ticking = false;
+    const fill = () => {
+      ticking = false;
+      const r = story.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (innerHeight * 0.5 - r.top) / (r.height - innerHeight * 0.5)));
+      if (rail) rail.style.transform = `scaleY(${p})`;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(fill); } }, { passive: true });
+    fill();
   }
 </script>

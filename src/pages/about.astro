@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import BeatRule from '../components/BeatRule.astro';
+import Accent from '../components/Accent.astro';
 import Subscribe from '../components/Subscribe.astro';
 import { loadSite } from '../lib/data';
-import { lines, commaList } from '../lib/copy';
+import { lines, commaList, plain } from '../lib/copy';
 import { TOPICS } from '../lib/taxonomy';
 
 const site = await loadSite();
@@ -110,12 +111,12 @@ const standard = lines(copy.standard);
       <div class="grid2" style="margin-top:clamp(36px,5vw,64px)">
         <div class="panel" data-reveal>
           <p class="kicker">Write for the Digest</p>
-          <h2 style="font-size:1.7rem;margin:10px 0 12px">{copy.ctaTitle}</h2>
+          <h2 style="font-size:1.7rem;margin:10px 0 12px"><Accent text={copy.ctaTitle} /></h2>
           <p style="color:var(--ink-2)">{copy.ctaSub}</p>
           <a class="btn" href="/contribute/" data-magnetic>Pitch an idea <span class="arrow" aria-hidden="true">→</span></a>
         </div>
         <div class="panel tipPanel" data-reveal>
-          <p class="kicker">{copy.subTitle}</p>
+          <p class="kicker">{plain(copy.subTitle)}</p>
           <h2 style="font-size:1.7rem;margin:10px 0 16px">One edition a week or so</h2>
           <Subscribe id="sub-about" note={false} />
           <p class="subNote">{copy.subSub}</p>

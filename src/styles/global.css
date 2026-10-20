@@ -4,6 +4,9 @@
    Motion lives in src/scripts/motion.ts; everything here works and reads fine without it. */
 
 @import './fonts.css';
+/* Studio layer (hero shapes, ribbon, marquee, carousel, pinned story, menu). Imported rules sit first in the cascade, so
+   studio.css only styles its own classes, plus .btn .arrow, which is defined there alone. */
+@import './studio.css';
 
 :root {
   --bg: #ffffff;
@@ -19,6 +22,7 @@
   --blue-ink: #136396;        /* links and small blue text (6.5:1) */
   --blue-deep: #0f5a8a;       /* buttons */
   --blue-hover: #1a77b0;      /* button hover fill, still 4.9:1 with white */
+  --dim-word: #858e96;        /* unlit statement words: 3.3:1, AA for large text */
   --blue-wash: #e3f0f9;
   --navy: #071a29;            /* dark bands */
   --navy-2: #0c2638;
@@ -50,7 +54,7 @@
     --bg: #07131d; --bg-2: #0c1c29; --bg-3: #11263a; --card: #0e2030;
     --ink: #eaf2f8; --ink-2: #b8c7d3; --muted: #8ea1b1;
     --line: #18304a; --line-2: #24425e;
-    --blue: #4fb0e6; --blue-ink: #8fd0f5; --blue-deep: #4fb0e6; --blue-hover: #8fd0f5; --blue-wash: #0f2c42;
+    --blue: #4fb0e6; --blue-ink: #8fd0f5; --blue-deep: #4fb0e6; --blue-hover: #8fd0f5; --blue-wash: #0f2c42; --dim-word: #5f7383;
     --navy: #030c14; --navy-2: #08192a;
     --grid: rgba(79, 176, 230, .07); --grid-strong: rgba(79, 176, 230, .13);
     --ok: #6ccf98; --warn: #e8b05a; --crit: #f28b82;
@@ -63,7 +67,7 @@
   --bg: #07131d; --bg-2: #0c1c29; --bg-3: #11263a; --card: #0e2030;
   --ink: #eaf2f8; --ink-2: #b8c7d3; --muted: #8ea1b1;
   --line: #18304a; --line-2: #24425e;
-  --blue: #4fb0e6; --blue-ink: #8fd0f5; --blue-deep: #4fb0e6; --blue-hover: #8fd0f5; --blue-wash: #0f2c42;
+  --blue: #4fb0e6; --blue-ink: #8fd0f5; --blue-deep: #4fb0e6; --blue-hover: #8fd0f5; --blue-wash: #0f2c42; --dim-word: #5f7383;
   --navy: #030c14; --navy-2: #08192a;
   --grid: rgba(79, 176, 230, .07); --grid-strong: rgba(79, 176, 230, .13);
   --ok: #6ccf98; --warn: #e8b05a; --crit: #f28b82;
@@ -188,8 +192,6 @@ a.kicker:hover { color: var(--blue); }
 .btn:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(15, 90, 138, .6); border-color: var(--blue-hover); }
 .btn:hover::before { transform: none; }
 .btn:active { transform: translateY(0) scale(.97); }
-.btn .arrow { display: inline-block; transition: transform .3s var(--ease); }
-.btn:hover .arrow { transform: translateX(4px); }
 .btn.line { background: transparent; color: var(--ink); border-color: var(--ink); }
 .btn.line::before { background: var(--ink); }
 .btn.line:hover { color: var(--bg); border-color: var(--ink); }
@@ -464,14 +466,14 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 @media (max-width: 760px) { .footer .cols { grid-template-columns: 1fr 1fr; } .footer .cols > :first-child { grid-column: 1 / -1; } }
 
 /* ---------- Reveal (motion.ts adds .motion to <html> only when motion is welcome) ---------- */
-.motion .hero h1 .ln { animation: rise 1s var(--ease) both; }
-.motion .hero h1 .ln:nth-child(2) { animation-delay: .1s; }
-.motion .hero h1 .ln:nth-child(3) { animation-delay: .2s; }
+.motion .hero-title .ln { animation: rise 1s var(--ease) both; }
+.motion .hero-title .ln:nth-child(2) { animation-delay: .1s; }
+.motion .hero-title .ln:nth-child(3) { animation-delay: .2s; }
 @keyframes rise { from { transform: translateY(.28em); } }
 .motion [data-hero-fade] { animation: lift .9s var(--ease) both; }
 .motion .heroFoot > [data-hero-fade]:nth-child(2) { animation-delay: .12s; }
 @keyframes lift { from { transform: translateY(14px); } }
-.motion .hero h1 .blue { animation: rise 1s var(--ease) .1s both, tint 1.4s ease .5s both; }
+.motion .hero-title .blue { animation: rise 1s var(--ease) .1s both, tint 1.4s ease .5s both; }
 @keyframes tint { from { color: var(--ink); } }
 .motion [data-reveal] { opacity: 0; transform: translateY(24px); }
 .motion [data-reveal].in { opacity: 1; transform: none; transition: opacity .8s var(--ease), transform .8s var(--ease); transition-delay: var(--d, 0s); }
@@ -620,3 +622,4 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .avatar.xl { width: clamp(110px, 14vw, 168px); height: clamp(110px, 14vw, 168px); font-size: clamp(2.4rem, 4vw, 3.6rem); background: var(--navy); color: var(--blue); box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--blue); }
 .profileHead h1.display { font-size: clamp(2.4rem, 6vw, 4.6rem); }
 @media (max-width: 640px) { .profileHead { grid-template-columns: 1fr; } }
+

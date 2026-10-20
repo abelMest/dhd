@@ -1,34 +1,36 @@
 // Default site text, carried over from v6. Editors override any key in Console → Site content.
 // Keys tied to removed v6 features (heroRotate, latestSub, askTitle, askSub) are kept so imported data stays valid.
+// In titles, *one word* in asterisks becomes the italic serif accent in brand blue (see components/Accent.astro).
 
 export const COPY_DEFAULTS = {
   heroL1: 'Ideas that move',
   heroRotate: 'digital health, interoperability, responsible AI, health financing, primary care, public health data',
   heroL3: 'forward.',
   lede: 'A collaborative publication and resource hub for people shaping health systems across Africa and beyond. Read the editions, find what you need, and bring your own work to the community.',
-  latestTitle: 'Latest editions',
+  latestTitle: 'Latest *editions*',
   latestSub: 'Every edition, in full, with links to the Substack and LinkedIn versions.',
-  topicsTitle: 'Follow a topic',
+  topicsTitle: 'Follow a *topic*',
   topicsSub: 'Six beats the Digest returns to. Pick one to see everything on it.',
   askTitle: 'Search the archive',
   askSub: 'Search every edition, resource and opportunity.',
   libTitle: 'Find what you need',
   libSub: 'Guides, standards, research and learning material, searchable by topic, type, country and audience.',
-  oppTitle: 'Closing soon',
+  oppTitle: 'Closing *soon*',
   builderTitle: 'Start a pitch in 20 seconds',
   builderSub: 'Pick a format and a topic, add a working title, and carry it straight into the full pitch form.',
-  ctaTitle: 'Your field lesson belongs here.',
+  ctaTitle: 'Your field lesson *belongs* here.',
   ctaSub: 'Pitch an article, interview, case study or explainer. Accepted pieces carry your byline and bio, and reach readers on LinkedIn and Substack.',
   footerAbout: 'Ideas, resources and opportunities for people building health systems across Africa and beyond. Edited by Abel Mestie Mekonnen.',
   topics: 'Systems & interoperability, AI & data, Policy & financing, Public health, Health workforce, Supply chain & logistics',
   announce: '',
   announceUrl: '',
-  subTitle: 'Get the Digest in your inbox',
+  subTitle: 'Get the Digest in your *inbox*',
   subSub: 'Free. One edition a week or so. Unsubscribe anytime.',
-  pinsTitle: 'Essential reads',
+  pinsTitle: 'Essential *reads*',
   pinsSub: 'Three editions to start with. They hold up.',
-  startTitle: 'Start here',
-  startSub: 'Pick your role. We picked three editions for each.',
+  startTitle: 'Start *here*',
+  startSub: 'Three editions for each role. Scroll to move through them.',
+  statement: 'The Digest is where the people building health systems across Africa share *what works, what fails and why.* Every claim links to a source. Every guest piece passes an editor. Every opportunity is checked before it goes up.',
   aboutTitle: 'Who edits the Digest',
   aboutName: 'Dr. Abel Mestie Mekonnen',
   aboutBody: 'Abel is a physician and digital health strategist. He has led digital health programs in Ethiopia and across Africa for more than six years, from EMR rollouts in national health facilities to telemedicine operations. He started the Digest so the people doing this work have one place to share what works, what fails and why.',
@@ -54,3 +56,6 @@ export function withDefaults(stored: Partial<Record<string, unknown>>): Copy {
 
 export const lines = (s: string) => s.split('\n').map((x) => x.trim()).filter(Boolean);
 export const commaList = (s: string) => s.split(',').map((x) => x.trim()).filter(Boolean);
+
+/** A title without its accent asterisks, for places that take plain text (page titles, labels). */
+export const plain = (s: string) => s.replace(/\*([^*]+)\*/g, '$1');

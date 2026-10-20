@@ -16,12 +16,31 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   await expect(page).toHaveTitle(/Digital Health Digest/);
   await expect(page.locator('.lead h2')).toHaveCount(1);
   await expect(page.locator('.essentials li')).toHaveCount(3);
-  expect(await page.locator('.grid3 .card').count()).toBeGreaterThanOrEqual(6);
   await expect(page.locator('.vital')).toHaveCount(6);
-  // Start here tabs switch panels.
-  await page.getByRole('tab', { name: 'Developers' }).click();
-  await expect(page.locator('#sp-2')).toBeVisible();
-  await expect(page.locator('#sp-0')).toBeHidden();
+  // Hero glass cards link to real pages, and headline accents render as serif emphasis, not asterisks.
+  expect(await page.locator('.stage .glass').count()).toBeGreaterThanOrEqual(2);
+  await expect(page.locator('h2 .accent').first()).toBeVisible();
+  expect(await page.locator('main').innerText()).not.toMatch(/\*\w/);
+  // Statement words light up as the paragraph scrolls into view (motion on).
+  const words = page.locator('[data-words] .w');
+  expect(await words.count()).toBeGreaterThan(20);
+  await page.locator('[data-words]').scrollIntoViewIfNeeded();
+  await expect.poll(() => page.locator('[data-words] .w.lit').count(), { timeout: 5000 }).toBeGreaterThan(0);
+  // Start here: one block per role; on wide screens the pinned label follows the role in view.
+  const roles = page.locator('#start .roleBlock');
+  await expect(roles).toHaveCount(3);
+  if ((page.viewportSize()?.width ?? 0) > 860) {
+    await roles.nth(2).scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-role-name]')).toHaveText('Developers');
+  }
+  // Carousel: ten recent editions; the next button moves it along.
+  const track = page.locator('[data-track]');
+  await expect(track.locator('.slide')).toHaveCount(10);
+  if ((page.viewportSize()?.width ?? 0) > 700) {
+    await track.scrollIntoViewIfNeeded();
+    await page.locator('[data-car="1"]').click();
+    await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
+  }
   // Library and opportunities only appear once they hold 5+ live items: library is empty, the board has 5+.
   await expect(page.getByRole('heading', { name: 'Find what you need' })).toHaveCount(0);
   await noSideScroll(page);
@@ -173,4 +192,30 @@ test('with motion, revealed content ends fully visible', async ({ page }) => {
   await page.waitForTimeout(1500);
   const hidden = await page.locator('[data-reveal]').evaluateAll((els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   expect(hidden).toBe(0);
+});
+
+test('phones get a full-screen menu that opens, traps focus and closes with Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const pill = page.locator('#menuBtn');
+  await expect(pill).toBeVisible();
+  await pill.click();
+  const sheet = page.locator('#fsMenu');
+  await expect(sheet).toHaveClass(/open/);
+  await expect(pill).toHaveAttribute('aria-expanded', 'true');
+  await expect(sheet.getByRole('link', { name: /Opportunities/ })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(sheet).not.toHaveClass(/open/);
+  await expect(pill).toHaveAttribute('aria-expanded', 'false');
+  await expect(pill).toBeFocused();
+});
+
+test('back-to-top appears after scrolling and returns to the top', async ({ page }) => {
+  await page.goto('/');
+  const btn = page.locator('#toTop');
+  await expect(btn).not.toHaveClass(/show/);
+  await page.evaluate(() => scrollTo(0, innerHeight * 3));
+  await expect(btn).toHaveClass(/show/);
+  await btn.click();
+  await expect.poll(() => page.evaluate(() => scrollY), { timeout: 5000 }).toBeLessThan(10);
 });

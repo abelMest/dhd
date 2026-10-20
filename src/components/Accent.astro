@@ -1,0 +1,9 @@
+---
+// Renders headline text where *one word* becomes an italic serif accent in brand blue.
+// Editors use the same asterisks in Console → Site content. Everything else is escaped.
+interface Props { text: string }
+const { text } = Astro.props;
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const html = esc(text).replace(/\*([^*]+)\*/g, '<em class="accent">$1</em>');
+---
+<Fragment set:html={html} />

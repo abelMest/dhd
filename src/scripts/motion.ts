@@ -11,7 +11,13 @@ const once = (key: string) => {
   try { if (sessionStorage.getItem(key)) return false; sessionStorage.setItem(key, '1'); } catch { /* private mode */ }
   return true;
 };
-const onScreenNow = (el: Element) => el.getBoundingClientRect().top < innerHeight;
+// Read every position we need once, before any writes, so the browser lays the page out a single time.
+// (Reading a position right after changing a style forces a fresh layout each time: on a long page that adds up fast.)
+const startsOnScreen = new Set<Element>();
+document.querySelectorAll('[data-reveal], [data-count], .oppCard').forEach((el) => {
+  if (el.getBoundingClientRect().top < innerHeight) startsOnScreen.add(el);
+});
+const onScreenNow = (el: Element) => startsOnScreen.has(el);
 
 /** Runs cb the first time any part of el scrolls into view. (A negative margin here would strand content at the very bottom of a page.) */
 const enter = (() => {
@@ -76,6 +82,57 @@ document.querySelectorAll<SVGCircleElement>('[data-ring]').forEach((c) => {
   if (onScreenNow(li)) return;
   gsap.set(c, { strokeDashoffset: Number(c.dataset.c) });
   enter(li, () => gsap.to(c, { strokeDashoffset: Number(c.dataset.ring), duration: 1.4, ease }));
+});
+
+// ---------- Hero: the heartbeat shape draws itself, and the stage leans with the pointer. ----------
+document.querySelectorAll<SVGPathElement>('[data-beat]').forEach((p) => {
+  gsap.fromTo(p, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.8, ease: 'power2.inOut', delay: 0.2 });
+});
+document.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+  if (!matchMedia('(hover: hover)').matches) return;
+  const layers = [...stage.querySelectorAll<HTMLElement | SVGElement>('[data-depth]')].map((el) => ({
+    depth: Number(el.dataset.depth) || 10,
+    x: gsap.quickTo(el, 'x', { duration: 0.9, ease }), y: gsap.quickTo(el, 'y', { duration: 0.9, ease }),
+  }));
+  const hero = stage.closest('section') || stage;
+  hero.addEventListener('pointermove', (e) => {
+    const r = hero.getBoundingClientRect();
+    const dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+    layers.forEach((l) => { l.x(dx * l.depth * 2); l.y(dy * l.depth * 2); });
+  });
+  hero.addEventListener('pointerleave', () => layers.forEach((l) => { l.x(0); l.y(0); }));
+});
+
+// ---------- Statement: words light up as the paragraph scrolls through the screen. ----------
+// (Without motion, CSS shows every word at full strength.)
+document.querySelectorAll<HTMLElement>('[data-words]').forEach((para) => {
+  const words = [...para.querySelectorAll<HTMLElement>('.w')];
+  const section = para.closest('section') || para;
+  const ribbon = section.querySelector<SVGPathElement>('.ribbon path');
+  // Browsers without scroll-driven CSS animations get the ribbon drawn from here instead.
+  const ribbonByJs = ribbon && !CSS.supports('animation-timeline: view()');
+  if (ribbonByJs) gsap.set(ribbon, { strokeDasharray: 1, strokeDashoffset: 1 });
+  let lit = -1, ticking = false;
+  const update = () => {
+    ticking = false;
+    const r = para.getBoundingClientRect();
+    // 0 when the paragraph's top reaches 85% of the screen, 1 when its bottom passes 45%.
+    const p = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.4)));
+    const n = Math.round(p * words.length);
+    if (n !== lit) { words.forEach((w, i) => w.classList.toggle('lit', i < n)); lit = n; }
+    if (ribbonByJs) {
+      const s = section.getBoundingClientRect();
+      const q = Math.min(1, Math.max(0, (innerHeight - s.top) / (s.height + innerHeight * 0.3)));
+      ribbon!.style.strokeDashoffset = String(1 - q);
+    }
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) addEventListener('scroll', onScroll, { passive: true });
+    else removeEventListener('scroll', onScroll);
+    update();
+  }).observe(section);
+  update();
 });
 
 // ---------- The hero's graph paper glows under the pointer. ----------
