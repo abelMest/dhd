@@ -39,7 +39,7 @@ You need three free accounts. The steps are in order.
 
 1. Create a project at supabase.com. Pick the Europe (Frankfurt) or South Africa region, whichever is closer to most readers.
 2. In **SQL editor**, paste and run `supabase/migrations/20261019000000_init.sql`.
-3. In **Authentication → URL configuration**, set the Site URL to `https://dhdigest.org` and add `http://localhost:4321/**` to the redirect URLs.
+3. In **Authentication → URL configuration**, set the Site URL to `https://digitalhealthdigest.africa` and add `http://localhost:4321/**` to the redirect URLs.
 4. Copy `.env.example` to `.env`. From **Project settings → API**, fill in the URL, the anon key and the service-role key.
 5. Load the v6 content and the Substack text:
 
@@ -64,14 +64,14 @@ where user_id = (select id from auth.users where email = 'you@example.org');
    - Build command: `npm run build`. Output directory: `dist`.
    - Environment variables: `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`, and `NODE_VERSION` = `22`.
 3. **Settings → Builds → Deploy hooks**: create one called "console" and copy its URL.
-4. **Custom domains**: add `dhdigest.org` once you have registered it (Cloudflare Registrar sells at cost).
+4. **Custom domains**: add `digitalhealthdigest.africa` once you have registered it (registered at Namecheap; nameservers point to Cloudflare).
 
 ### 4. The Publish button and the nightly job
 
 ```bash
 npx supabase login
 npx supabase link --project-ref YOUR-PROJECT-REF
-npx supabase secrets set DEPLOY_HOOK_URL=https://api.cloudflare.com/...  SITE_ORIGIN=https://dhdigest.org
+npx supabase secrets set DEPLOY_HOOK_URL=https://api.cloudflare.com/...  SITE_ORIGIN=https://digitalhealthdigest.africa
 npx supabase functions deploy publish
 ```
 
