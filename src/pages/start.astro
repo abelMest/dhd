@@ -1,0 +1,54 @@
+---
+// Start here: a living guide for anyone who wants to get into digital health. The text is Markdown kept in
+// site text (Console → Settings & site text → Start here guide), with the original in src/content/start-guide.md.
+import Base from '../layouts/Base.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { loadSite } from '../lib/data';
+import { renderMarkdown, outline } from '../lib/markdown';
+
+const { copy } = await loadSite();
+const html = renderMarkdown(copy.startGuide);
+const toc = outline(html);
+const paths = [
+  { id: 'students-and-early-career', t: 'Students and early career', d: 'No experience yet? Where to begin and how to get a first role.' },
+  { id: 'clinicians-and-health-workers', t: 'Clinicians and health workers', d: 'Turn what you know about care into a digital health role.' },
+  { id: 'tech-people-entering-health', t: 'Tech people entering health', d: 'You know the tech. Learn the standards and the system.' },
+  { id: 'policy-and-programme-staff', t: 'Policy and programme staff', d: 'Lead digital work that outlives the grant.' },
+].filter((p) => html.includes(`id="${p.id}"`));
+---
+<Base title="Start here: getting into digital health" searchTitle="How to get into digital health: a free guide"
+  description="A free guide for anyone passionate about digital health: where to start as a student, clinician, technologist or policy professional, with courses, standards and communities.">
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Start here</p>
+      <h1 class="display">Getting into digital health</h1>
+      <p class="lede">A free, practical guide for people who care about health systems and want to work on the digital side of them. Pick your starting point.</p>
+      {paths.length > 0 && (
+        <ul class="pathCards">
+          {paths.map((p, i) => (
+            <li data-reveal><a href={`#${p.id}`}><span class="n num">{String(i + 1).padStart(2, '0')}</span><b>{p.t}</b><span>{p.d}</span><span class="go" aria-hidden="true">↓</span></a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </header>
+  <article class="article" data-pagefind-body>
+    <div class="wrap">
+      <div class="articleBody">
+        <div class="prose" set:html={html} />
+        {toc.length >= 3 && (
+          <nav class="toc" aria-label="In this guide" data-pagefind-ignore>
+            <p>In this guide</p>
+            <ol>{toc.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}</ol>
+          </nav>
+        )}
+      </div>
+      <div class="panel" style="margin-top:40px" data-pagefind-ignore>
+        <p class="kicker">Learn as you go</p>
+        <h2 style="font-size:1.6rem;margin:8px 0 16px">Get each new edition in your inbox</h2>
+        <Subscribe id="sub-start" />
+      </div>
+    </div>
+  </article>
+</Base>

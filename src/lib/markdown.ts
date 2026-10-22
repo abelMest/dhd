@@ -34,11 +34,11 @@ md.use({
       // The edition title is the page's only <h1>; a # heading in the body (common in Substack imports) becomes a section.
       const depth = Math.max(2, raw);
       const inner = this.parser.parseInline(tokens);
-      if (depth !== 2) return `<h${depth}>${inner}</h${depth}>\n`;
+      if (depth > 3) return `<h${depth}>${inner}</h${depth}>\n`;
       let id = headingSlug(inner), n = 2;
       while (headingIds.has(id)) id = `${headingSlug(inner)}-${n++}`;
       headingIds.add(id);
-      return `<h2 id="${id}">${inner}</h2>\n`;
+      return `<h${depth} id="${id}">${inner}</h${depth}>\n`;
     },
   },
 });

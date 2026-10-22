@@ -29,13 +29,15 @@ const COPY_GROUPS: { title: string; keys: CopyKey[] }[] = [
   { title: 'Subscribe and contribute', keys: ['subTitle', 'subSub', 'ctaTitle', 'ctaSub', 'builderTitle', 'builderSub'] },
   { title: 'About and standards', keys: ['aboutTitle', 'aboutName', 'aboutRoles', 'aboutBody', 'standardTitle', 'standard', 'partners'] },
   { title: 'Announcement bar and footer', keys: ['announce', 'announceUrl', 'footerAbout'] },
+  { title: 'Start here guide (/start/)', keys: ['startGuide'] },
 ];
 const LABELS: Partial<Record<CopyKey, string>> = {
   heroL1: 'Headline, first words', heroRotate: 'Headline, emphasised words (first item is used)', heroL3: 'Headline, last word',
   lede: 'Introduction', statement: 'Statement (the paragraph that lights up as you scroll)', aboutRoles: 'Roles (one per line)', standard: 'Editorial standard (one commitment per line)',
+  startGuide: 'Guide text in Markdown (## sections, ### the four paths, [links](https://…)). Clear the box to restore the original guide.',
   partners: 'Partners (one per line; list only organisations that agreed)', announce: 'Announcement (leave empty to hide)', announceUrl: 'Announcement link',
 };
-const LONG = new Set<CopyKey>(['lede', 'statement', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'ctaSub', 'footerAbout', 'heroRotate']);
+const LONG = new Set<CopyKey>(['startGuide', 'lede', 'statement', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'ctaSub', 'footerAbout', 'heroRotate']);
 
 export default function SiteSettings() {
   const sb = supabase()!;

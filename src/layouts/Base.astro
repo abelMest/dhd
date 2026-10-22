@@ -36,6 +36,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image || '/og/default.png', Astro.site).href;
 const path = Astro.url.pathname;
 const nav = [
+  { href: '/start/', label: 'Start here' },
   { href: '/editions/', label: 'Editions' },
   { href: '/library/', label: 'Library' },
   { href: '/opportunities/', label: 'Opportunities' },
@@ -201,6 +202,7 @@ const siteLd = {
           <div>
             <h2 class="footHead">Read</h2>
             <ul>
+              <li><a href="/start/">Start here: getting into digital health</a></li>
               <li><a href="/editions/">All editions</a></li>
               {TOPICS.slice(0, 4).map((t) => <li><a href={`/topics/${topicSlug(t)}/`}>{t}</a></li>)}
             </ul>

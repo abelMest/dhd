@@ -2,7 +2,11 @@
 // Keys tied to removed v6 features (heroRotate, latestSub, askTitle, askSub) are kept so imported data stays valid.
 // In titles, *one word* in asterisks becomes the italic serif accent in brand blue (see components/Accent.astro).
 
+import startGuide from '../content/start-guide.md?raw';
+
 export const COPY_DEFAULTS = {
+  // The "Start here: getting into digital health" guide at /start/ (Markdown). Edited in Console → Site content.
+  startGuide,
   heroL1: 'Ideas that move',
   heroRotate: 'digital health, interoperability, responsible AI, health financing, primary care, public health data',
   heroL3: 'forward.',

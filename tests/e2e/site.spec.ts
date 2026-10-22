@@ -307,3 +307,13 @@ test('Partner with us, Privacy and ads.txt are in place, and paid things are lab
   for (const el of await page.locator('.adSlot').all()) await expect(el.locator('.lbl')).toHaveText('Advertisement');
   await expect(page.locator('footer a[href="/privacy/"]')).toHaveCount(1);
 });
+
+test('the Start here guide offers four paths that jump to their sections', async ({ page }) => {
+  await page.goto('/start/');
+  await expect(page.locator('h1')).toContainText(/getting into digital health/i);
+  await expect(page.locator('.pathCards a')).toHaveCount(4);
+  for (const id of ['students-and-early-career', 'clinicians-and-health-workers', 'tech-people-entering-health', 'policy-and-programme-staff']) {
+    await expect(page.locator(`.prose h3#${id}`)).toHaveCount(1);
+  }
+  await expect(page.locator('header nav a[href="/start/"], .masthead a[href="/start/"]').first()).toBeAttached();
+});

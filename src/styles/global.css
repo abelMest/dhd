@@ -688,3 +688,15 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .policyList { margin: 0; padding-left: 22px; display: grid; gap: 14px; }
 .policyList li { color: var(--ink-2); padding-left: 4px; }
 .policyList b { color: var(--ink); }
+
+/* Start here guide: four path cards that jump to each section. */
+.pathCards { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 980px) { .pathCards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .pathCards { grid-template-columns: 1fr; } }
+.pathCards a { position: relative; height: 100%; display: grid; align-content: start; gap: 6px; padding: 16px 18px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); color: var(--ink); text-decoration: none; transition: transform .3s var(--ease), border-color .25s, box-shadow .3s; }
+.pathCards a:hover, .pathCards a:focus-visible { transform: translateY(-3px); border-color: var(--blue); box-shadow: var(--shadow-lift); color: var(--ink); }
+.pathCards .n { font: 700 .78rem var(--sans); color: var(--muted); }
+.pathCards b { font: 800 1.05rem/1.2 var(--display); }
+.pathCards span:not(.n):not(.go) { font: 400 .92rem/1.4 var(--serif); color: var(--ink-2); padding-right: 16px; }
+.pathCards .go { position: absolute; right: 16px; bottom: 14px; color: var(--blue); font-weight: 700; }
+.prose h3[id] { scroll-margin-top: 96px; }
