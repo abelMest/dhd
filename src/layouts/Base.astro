@@ -33,7 +33,7 @@ const withName = title ? `${title} | ${SITE_NAME}` : '';
 const fullTitle = searchTitle?.trim() || (!title ? `${SITE_NAME}: ideas and evidence in digital health` : withName.length <= 62 ? withName : title);
 const desc = clip(description || copy.lede);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL(image || '/og/default.png', Astro.site).href;
+const ogImage = new URL(image || '/og/default.jpg', Astro.site).href;
 const path = Astro.url.pathname;
 const nav = [
   { href: '/start/', label: 'Start here' },

@@ -11,7 +11,7 @@ const total = Math.max(settings.editionsTotal, articles.length);
 const stops = [...articles].reverse().map((a) => ({ id: a.id, title: a.title, dek: a.dek, topic: a.topic, date: fmtDate(a.publishedAt), mins: a.readMins }));
 const topicsHere = TOPICS.filter((t) => articles.some((a) => a.topic === t));
 ---
-<Base title="All editions" description={`Every edition of the Digital Health Digest: ${articles.length} on this site so far, by topic and year.`}>
+<Base image="/og/page-editions.jpg" title="All editions" description={`Every edition of the Digital Health Digest: ${articles.length} on this site so far, by topic and year.`}>
   <header class="pageHead">
     <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
     <div class="wrap">

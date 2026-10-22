@@ -17,7 +17,7 @@ const jsonLd = {
   sameAs: [author.linkedinUrl, author.substackUrl].filter(Boolean),
 };
 ---
-<Base title={author.name} description={author.bio || `${[author.name, author.role, author.org].filter(Boolean).join(', ')}. ${items.length} edition${items.length === 1 ? '' : 's'} for the Digital Health Digest on building digital health systems across Africa.`} jsonLd={jsonLd} noindex={items.length === 0}>
+<Base image={`/og/author-${author.id}.jpg`} title={author.name} description={author.bio || `${[author.name, author.role, author.org].filter(Boolean).join(', ')}. ${items.length} edition${items.length === 1 ? '' : 's'} for the Digital Health Digest on building digital health systems across Africa.`} jsonLd={jsonLd} noindex={items.length === 0}>
   <header class="pageHead">
     <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
     <div class="wrap profileHead">

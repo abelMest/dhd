@@ -48,7 +48,7 @@ const jsonLd = {
   inLanguage: 'en',
   articleSection: a.topic,
   mainEntityOfPage: canonical,
-  image: [new URL(`/og/${a.id}.png`, Astro.site).href],
+  image: [new URL(`/og/${a.id}.jpg`, Astro.site).href],
   author: authors.map((x) => ({ '@type': 'Person', name: x.name, jobTitle: x.role || undefined, url: new URL(`/authors/${x.id}/`, Astro.site).href })),
   publisher: { '@type': 'Organization', name: 'Digital Health Digest', url: Astro.site?.href },
   sameAs: [a.substackUrl, a.linkedinUrl].filter(Boolean),
@@ -56,7 +56,7 @@ const jsonLd = {
 };
 const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
 ---
-<Base title={a.title} searchTitle={a.seoTitle} description={searchDescription(a)} image={`/og/${a.id}.png`} type="article" jsonLd={jsonLd} progress
+<Base title={a.title} searchTitle={a.seoTitle} description={searchDescription(a)} image={`/og/${a.id}.jpg`} type="article" jsonLd={jsonLd} progress
   breadcrumbs={[{ name: 'Editions', href: '/editions/' }, { name: a.topic, href: `/topics/${topicSlug(a.topic)}/` }, { name: a.title, href: `/editions/${a.id}/` }]}>
   <Fragment slot="head">
     {html.includes('substackcdn.com') && <link rel="preconnect" href="https://substackcdn.com" crossorigin />}

@@ -17,7 +17,7 @@ const pic = lead?.image ? thumb(lead.image, 560) : null;
 const writers = new Set(items.flatMap((a) => a.authorIds)).size;
 const minutes = items.reduce((n, a) => n + a.readMins, 0);
 ---
-<Base title={topic} description={`Digital Health Digest editions and resources on ${topic.toLowerCase()} in health systems across Africa.`}
+<Base image={`/og/topic-${Astro.params.slug}.jpg`} title={topic} description={`Digital Health Digest editions and resources on ${topic.toLowerCase()} in health systems across Africa.`}
   breadcrumbs={[{ name: 'Editions', href: '/editions/' }, { name: topic, href: Astro.url.pathname }]}>
   <header class="pageHead">
     <div class="ecg-paper ecg-fade" aria-hidden="true"></div>

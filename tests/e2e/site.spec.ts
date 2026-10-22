@@ -89,15 +89,17 @@ test('an edition page has the full text, En bref, author and share tags', async 
   expect(firstH2).toBeTruthy();
   if ((page.viewportSize()?.width ?? 0) > 1180) await expect(page.locator(`.toc a[href="#${firstH2}"]`)).toBeVisible();
   await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\/editions\/why-pilots-fail\/$/);
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/og\/why-pilots-fail\.png$/);
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/og\/why-pilots-fail\.jpg$/);
   const lds = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((t) => JSON.parse(t));
   const ld = lds.find((x) => x['@type'] === 'NewsArticle');
   expect(ld).toBeTruthy();
   const crumbs = lds.find((x) => x['@type'] === 'BreadcrumbList');
   expect(crumbs.itemListElement.map((i: { name: string }) => i.name)).toEqual(['Home', 'Editions', ld.articleSection, ld.headline]);
   expect(ld.author[0].name).toBe('Abel Mestie Mekonnen');
-  const og = await page.request.get('/og/why-pilots-fail.png');
-  expect(og.headers()['content-type']).toContain('image/png');
+  // Share image: its own JPEG, small enough for WhatsApp previews (about 300 KB at most).
+  const og = await page.request.get('/og/why-pilots-fail.jpg');
+  expect(og.ok()).toBe(true);
+  expect((await og.body()).length).toBeLessThan(300_000);
   await noSideScroll(page);
 });
 
