@@ -35,6 +35,8 @@ export interface Opportunity {
 }
 export interface Partner {
   id: string; name: string; url: string; logoUrl: string;
+  /** Percentage of the standard logo height, to even out visual weight. */
+  scale: number;
   /** partner: works with the Digest now. past: organisations the team has worked with. */
   kind: 'partner' | 'past';
 }
@@ -171,7 +173,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     must<any[]>(sb.from('opportunities').select('id,title,org,kind,url,deadline,eligibility,countries,verified_at').eq('status', 'published'), 'opportunities'),
     must<any>(sb.from('settings').select('*').eq('id', 1).maybeSingle(), 'settings'),
     must<any[]>(sb.from('site_copy').select('key,value'), 'site_copy'),
-    must<any[]>(sb.from('partners').select('id,name,url,logo_path,kind,position').eq('status', 'published').order('position'), 'partners'),
+    must<any[]>(sb.from('partners').select('id,name,url,logo_path,kind,position,logo_scale').eq('status', 'published').order('position'), 'partners'),
   ]);
   const authorsOf = (id: string) => links.filter((l) => l.article_id === id).map((l) => l.author_id);
   const storage = (path: string) => (path ? `${url}/storage/v1/object/public/${path}` : '');
@@ -187,7 +189,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
   return {
     articles, source: 'supabase',
     partners: parts.filter((p) => p.logo_path).map((p) => ({
-      id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), kind: p.kind === 'past' ? 'past' : 'partner',
+      id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), scale: Number(p.logo_scale) || 100, kind: p.kind === 'past' ? 'past' : 'partner',
     })),
     authors: auths.map((a) => ({
       id: a.id, name: str(a.name), role: str(a.role), org: str(a.org), country: str(a.country), bio: str(a.bio),
