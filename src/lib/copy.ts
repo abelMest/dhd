@@ -33,7 +33,7 @@ export const COPY_DEFAULTS = {
   statement: 'The Digest is where the people building health systems across Africa share *what works, what fails and why.* Every claim links to a source. Every guest piece passes an editor. Every opportunity is checked before it goes up.',
   aboutTitle: 'Who edits the Digest',
   aboutName: 'Dr. Abel Mestie Mekonnen',
-  aboutBody: 'Abel is a physician and digital health strategist. He has led digital health programs in Ethiopia and across Africa for more than six years, from EMR rollouts in national health facilities to telemedicine operations. He started the Digest so the people doing this work have one place to share what works, what fails and why.',
+  aboutBody: 'Abel is a physician and digital health strategist. He has led digital health programs in Ethiopia and across Africa for about 10 years, from EMR rollouts in national health facilities to telemedicine operations, interoperability, governance and AI. He started the Digest so the people doing this work have one place to share what works, what fails and why.',
   aboutRoles: 'Founder and Editor, Digital Health Digest',
   standardTitle: 'Our editorial standard',
   standard: 'Every claim links to a source you can check.\nEvery opportunity shows the date an editor last verified it against the source.\nGuest pieces pass an editor review before they publish.\nAuthors declare funding and affiliations relevant to their piece.\nWe correct errors in the open and date the correction.',
