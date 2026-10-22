@@ -43,15 +43,12 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   await expect(track.locator('.slide')).toHaveCount(10);
   if ((page.viewportSize()?.width ?? 0) > 700) {
     await track.scrollIntoViewIfNeeded();
-    if (await page.locator('.carousel.railPinned').count()) {
-      // Wide screens: the rail is pinned, and scrolling down carries it sideways.
-      const sectionTop = await page.locator('.carousel').evaluate((s) => s.getBoundingClientRect().top + scrollY);
-      await page.evaluate((y) => scrollTo(0, y + 700), sectionTop);
-      await expect.poll(() => track.evaluate((t) => new DOMMatrix(getComputedStyle(t).transform).m41), { timeout: 5000 }).toBeLessThan(-100);
-    } else {
-      await page.locator('[data-car="1"]').click();
-      await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
-    }
+    // Every card says what it is without scrolling: title and date sit inside the visible card.
+    const first = track.locator('.slide').first();
+    await expect(first.locator('h3')).toBeInViewport();
+    await expect(first.locator('.sMeta')).toBeInViewport();
+    await page.locator('[data-car="1"]').click();
+    await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
   }
   // Library and opportunities only appear once they hold 5+ live items: library is empty, the board has 5+.
   await expect(page.getByRole('heading', { name: 'Find what you need' })).toHaveCount(0);

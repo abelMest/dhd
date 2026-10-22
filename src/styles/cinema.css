@@ -146,8 +146,6 @@ html:not(.motion-on) .reelFrame img:first-child { opacity: 1; }
 .giantWord p { text-align: center; color: var(--muted); font-size: 1.1rem; margin: 18px auto 0; max-width: 48ch; }
 
 /* ---------- Pinned horizontal rail (desktop with motion): the carousel scrolls sideways as you scroll down ---------- */
-.railPinned .carouselTrack { overflow: visible; scroll-snap-type: none; cursor: default; }
-.railPinned .carouselNav button { display: none; }
 
 /* ---------- Menu: a centred dark card with a blue glow; the page behind blurs; MENU becomes CLOSE ---------- */
 .fsMenu { inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(3, 12, 20, .35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); clip-path: none; opacity: 0; visibility: hidden; transition: opacity var(--t-ui) var(--ease-io), visibility 0s var(--t-ui); }

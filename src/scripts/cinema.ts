@@ -1,5 +1,5 @@
 // Cinematic layer, loaded by motion.ts (so only when motion is welcome). Smooth wheel scrolling, the cursor,
-// rolling button labels, opening images, word-by-word headings and the pinned chapters on the homepage.
+// rolling button labels, opening images, word-by-word headings and the homepage's scroll effects.
 // Every effect starts from the plain, readable page; the CSS hides nothing unless .motion-on is set.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -170,21 +170,11 @@ document.querySelectorAll<HTMLElement>('[data-giant]').forEach((h) => {
     { yPercent: 0, rotation: 0, opacity: 1, filter: 'blur(0px)', ease: 'none', stagger: 0.04, scrollTrigger: { trigger: h, start: 'top 95%', end: 'center 55%', scrub: 0.8 } });
 });
 
-// ---------- Carousel becomes a pinned horizontal rail on wide screens: scroll down, travel sideways. ----------
+// ---------- Carousel cards slide in once when the row first comes into view (no pinning: the page keeps scrolling). ----------
 document.querySelectorAll<HTMLElement>('[data-track]').forEach((track) => {
-  if (!wide() || !fine) return;
   const section = track.closest<HTMLElement>('.carousel');
-  if (!section) return;
-  section.classList.add('railPinned');
-  const distance = () => Math.max(0, track.scrollWidth - innerWidth);
-  if (distance() < 50) return;
-  gsap.from(track.querySelectorAll('.slide'), { xPercent: 30, opacity: 0, duration: 1, ease: EASE_OUT, stagger: 0.12, scrollTrigger: { trigger: section, start: 'top 70%', once: true } });
-  gsap.to(track, {
-    x: () => -distance(), ease: 'none',
-    scrollTrigger: { trigger: section, start: 'top top', end: () => `+=${distance()}`, pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1 },
-  });
-  const bar = section.querySelector<HTMLElement>('[data-bar]');
-  if (bar) ScrollTrigger.create({ trigger: section, start: 'top top', end: () => `+=${distance()}`, onUpdate: (st) => { bar.style.transform = `scaleX(${0.12 + st.progress * 0.88})`; } });
+  if (!section || !below(section)) return;
+  gsap.from(track.querySelectorAll('.slide'), { y: 30, opacity: 0, duration: 0.8, ease: EASE_OUT, stagger: 0.08, scrollTrigger: { trigger: section, start: 'top 80%', once: true } });
 });
 
 // ---------- Timeline board: phase bars fill and a playhead sweeps across as the section scrolls. ----------

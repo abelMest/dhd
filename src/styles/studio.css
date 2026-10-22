@@ -118,22 +118,23 @@ html.menu-open { overflow: hidden; }
 
 /* ---------- Carousel: large image cards in a swipeable row ---------- */
 .carouselHead { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
-.carouselTrack { display: grid; grid-auto-flow: column; grid-auto-columns: min(80vw, 420px); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))); padding: 4px max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) 18px; scrollbar-width: none; overscroll-behavior-x: contain; cursor: grab; }
+.carouselTrack { display: grid; grid-auto-flow: column; grid-auto-columns: min(78vw, 320px); gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))); padding: 4px max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) 18px; scrollbar-width: none; overscroll-behavior-x: contain; cursor: grab; }
 .carouselTrack::-webkit-scrollbar { display: none; }
 .carouselTrack.dragging { cursor: grabbing; scroll-snap-type: none; }
 .carouselTrack.dragging .slide { pointer-events: none; }
-.slide { position: relative; scroll-snap-align: start; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; background: var(--navy); color: #fff; text-decoration: none; isolation: isolate; box-shadow: var(--shadow); }
-.slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform .9s var(--ease); }
-.slide::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(7, 26, 41, 0) 28%, rgba(7, 26, 41, .6) 58%, rgba(7, 26, 41, .96)); }
-.slide:hover, .slide:focus-visible { color: #fff; }
-.slide:hover img { transform: scale(1.06); }
-.slide .sBody { position: absolute; left: 22px; right: 22px; bottom: 22px; display: grid; gap: 12px; }
-.slide .sBody h3 { color: #fff; font-size: clamp(1.3rem, 2vw, 1.55rem); line-height: 1.14; margin: 0; }
-.slide .tagsRow { display: flex; flex-wrap: wrap; gap: 6px; }
-.slide .tagsRow span { padding: 6px 12px; border-radius: 999px; background: rgba(7, 26, 41, .55); border: 1px solid rgba(255, 255, 255, .18); font: 600 .78rem var(--sans); color: #fff; }
-.slide .go { position: absolute; top: 18px; right: 18px; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: rgba(7, 26, 41, .55); border: 1px solid rgba(255, 255, 255, .2); transition: transform .4s var(--ease), background-color .25s; }
+/* Compact edition card: picture, then topic, title, one-line summary and date, so a glance tells you what it is. */
+.slide { scroll-snap-align: start; display: grid; grid-template-rows: auto 1fr; border-radius: 18px; overflow: hidden; background: var(--card); border: 1px solid var(--line); color: var(--ink); text-decoration: none; transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s; }
+.slide:hover, .slide:focus-visible { color: var(--ink); transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--line-2); }
+.slide .sPic { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: linear-gradient(150deg, var(--blue-deep), var(--navy)); }
+.slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.slide:hover img { transform: scale(1.05); }
+.slide .go { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: rgba(7, 26, 41, .55); border: 1px solid rgba(255, 255, 255, .25); transition: transform .4s var(--ease), background-color .25s; }
 .slide:hover .go { transform: rotate(-45deg); background: var(--blue); }
-.slide.blank { background: linear-gradient(150deg, var(--blue-deep), var(--navy)); }
+.slide .sBody { display: grid; align-content: start; gap: 8px; padding: 16px 18px 18px; }
+.slide .sTopic { font: 700 .7rem var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--blue-ink); }
+.slide h3 { font-size: 1.12rem; line-height: 1.25; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.slide .sDek { font: 400 .95rem/1.45 var(--serif); color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.slide .sMeta { font: 500 .8rem var(--sans); color: var(--muted); margin-top: 2px; }
 .carouselNav { display: flex; gap: 8px; align-items: center; }
 .carouselNav button { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--card); color: var(--ink); cursor: pointer; display: grid; place-items: center; transition: background-color .2s, color .2s, transform .2s var(--ease-spring); }
 .carouselNav button:hover:not([disabled]) { background: var(--ink); color: var(--bg); transform: scale(1.06); }
