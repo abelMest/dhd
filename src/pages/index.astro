@@ -65,7 +65,6 @@ const stats = [
 // Image reel: pictures from recent editions.
 const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.image, 1100));
 // Topic rows show a picture from each topic's latest edition while hovered.
-const topicPic = (t: string) => { const a = articles.find((x) => x.topic === t && x.image); return a ? thumb(a.image, 280).src : ''; };
 ---
 <Base>
   <!-- Hero: headline and subscribe on the left; the heartbeat as one bold shape among frosted cards on the right. -->
@@ -249,24 +248,20 @@ const topicPic = (t: string) => { const a = articles.find((x) => x.topic === t &
         <div><p class="kicker line">Vital signs</p><h2 class="display"><Accent text={copy.topicsTitle} /></h2><p>{copy.topicsSub}</p></div>
         <a class="more" href="/editions/">The full archive <span class="arrow" aria-hidden="true">→</span></a>
       </div>
-      <ul class="topicRows">
+      <!-- One card per topic: name, how many editions, how active it has been, and the latest edition, all at a glance. -->
+      <ul class="topicGrid">
         {vitals.map(({ t, n, last, line }, i) => (
-          <li class="topicRow" data-img={topicPic(t) || undefined} data-reveal>
-            <a href={`/topics/${topicSlug(t)}/`} data-cursor="Open">
-              <span class="tn num">{String(i + 1).padStart(2, '0')}</span>
-              <span class="tt"><span>{t}</span></span>
-              <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d={line} /></svg>
-              <span class="tc num">{n}</span>
+          <li class="topicCard" data-reveal>
+            <a href={`/topics/${topicSlug(t)}/`}>
+              <span class="tcTop"><span class="tn num">{String(i + 1).padStart(2, '0')}</span><span class="tc">{n} {n === 1 ? 'edition' : 'editions'}</span></span>
+              <span class="tt">{t}</span>
+              <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label={`Editions per quarter on ${t}`}><path d={line} /></svg>
+              {last && <span class="tLatest"><span class="lbl">Latest</span><span class="ttl">{last.title}</span><span class="when">{fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })}</span></span>}
+              <span class="go" aria-hidden="true">→</span>
             </a>
-            <div class="band" aria-hidden="true">
-              <div class="run">
-                {[0, 1, 2, 3].map(() => <><b>{t}</b><i>{n} {n === 1 ? 'edition' : 'editions'}</i>{last && <i>Latest {fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })}</i>}<b>→</b></>)}
-              </div>
-            </div>
           </li>
         ))}
       </ul>
-      <div class="floatPreview" aria-hidden="true"><img alt="" /></div>
     </div>
   </section>
 

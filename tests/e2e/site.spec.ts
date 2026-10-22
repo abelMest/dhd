@@ -21,7 +21,7 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   await expect(page).toHaveTitle(/Digital Health Digest/);
   await expect(page.locator('.lead h2')).toHaveCount(1);
   await expect(page.locator('.stack .stackCard')).toHaveCount(3);
-  await expect(page.locator('.topicRow')).toHaveCount(6);
+  await expect(page.locator('.topicCard')).toHaveCount(6);
   // Hero glass cards link to real pages, and headline accents render as serif emphasis, not asterisks.
   expect(await page.locator('.stage .glass').count()).toBeGreaterThanOrEqual(2);
   await expect(page.locator('h2 .accent').first()).toBeVisible();

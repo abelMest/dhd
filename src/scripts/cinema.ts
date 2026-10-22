@@ -130,22 +130,6 @@ document.querySelectorAll<HTMLElement>('[data-stack]').forEach((stack) => {
   });
 });
 
-// ---------- Topic rows: a picture of the latest edition floats after the cursor with a little lag and tilt. ----------
-if (fine) {
-  const fp = document.querySelector<HTMLElement>('.floatPreview');
-  const img = fp?.querySelector('img');
-  if (fp && img) {
-    const x = gsap.quickTo(fp, 'x', { duration: 0.6, ease: 'power3.out' }), y = gsap.quickTo(fp, 'y', { duration: 0.6, ease: 'power3.out' });
-    const r = gsap.quickTo(fp, 'rotation', { duration: 0.8, ease: 'power3.out' });
-    let lastX = 0;
-    document.querySelectorAll<HTMLElement>('.topicRow[data-img]').forEach((row) => {
-      row.addEventListener('pointerenter', () => { img.src = row.dataset.img!; fp.classList.add('on'); });
-      row.addEventListener('pointerleave', () => fp.classList.remove('on'));
-      row.addEventListener('pointermove', (e) => { x(e.clientX + 24); y(e.clientY - 120); r(gsap.utils.clamp(-10, 10, (e.clientX - lastX) * 0.6)); lastX = e.clientX; });
-    });
-  }
-}
-
 // ---------- Marquee: speed and direction follow how fast, and which way, you scroll. ----------
 document.querySelectorAll<HTMLElement>('.marquee .track').forEach((track) => {
   track.style.animation = 'none';
