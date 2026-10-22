@@ -636,6 +636,15 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .person b { display: block; font: 700 1.05rem var(--display); }
 .person small { display: block; font: 500 .86rem var(--sans); color: var(--muted); margin-top: 2px; }
 .person small.n { color: var(--blue-ink); }
+/* Partner logos: one colour for every logo (ink on light, white in dark mode). */
+.partnerBlock { display: grid; gap: clamp(32px, 5vw, 56px); }
+.partnerLogos ul { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 5vw, 64px); }
+.partnerLogos li { display: flex; align-items: center; }
+.partnerLogos img { display: block; height: clamp(30px, 4vw, 44px); width: auto; max-width: 210px; object-fit: contain;
+  filter: brightness(0); opacity: .62; transition: opacity var(--t-ui, .45s) var(--ease-ui, ease); }
+.partnerLogos a:hover img, .partnerLogos a:focus-visible img { opacity: 1; }
+:root[data-theme="dark"] .partnerLogos img { filter: brightness(0) invert(1); opacity: .72; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .partnerLogos img { filter: brightness(0) invert(1); opacity: .72; } }
 .partnerRow { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
 .partnerRow li { padding: 14px 22px; border: 1px solid var(--line); border-radius: 12px; font: 700 1rem var(--display); color: var(--ink-2); }
 

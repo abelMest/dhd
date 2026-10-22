@@ -3,11 +3,11 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import type { Session } from '@supabase/supabase-js';
 import { supabase, friendlyError } from '../lib/supabase';
-import { photoUrl, uploadSquare } from '../lib/upload';
+import { photoUrl, uploadLogo, uploadSquare } from '../lib/upload';
 
 export type Values = Record<string, unknown>;
 export type FieldDef = {
-  name: string; label: string; type?: 'text' | 'email' | 'url' | 'date' | 'number' | 'textarea' | 'select' | 'multi' | 'checkbox' | 'markdown' | 'photo';
+  name: string; label: string; type?: 'text' | 'email' | 'url' | 'date' | 'number' | 'textarea' | 'select' | 'multi' | 'checkbox' | 'markdown' | 'photo' | 'logo';
   options?: readonly string[]; required?: boolean; hint?: string; rows?: number; placeholder?: string;
 };
 
@@ -24,7 +24,7 @@ export function Field({ f, value, onChange }: { f: FieldDef; value: unknown; onC
       </label>
     );
   }
-  if (f.type === 'photo') return <PhotoField f={f} value={String(value ?? '')} onChange={onChange} />;
+  if (f.type === 'photo' || f.type === 'logo') return <PhotoField f={f} value={String(value ?? '')} onChange={onChange} />;
   if (f.type === 'multi') {
     const vals = Array.isArray(value) ? (value as string[]) : [];
     return (
@@ -69,15 +69,17 @@ function PhotoField({ f, value, onChange }: { f: FieldDef; value: string; onChan
   const pick = async (file?: File) => {
     if (!file) return;
     setBusy(true); setErr('');
-    try { onChange(await uploadSquare(file, 'author')); } catch (e) { setErr(friendlyError(e)); } finally { setBusy(false); }
+    try { onChange(f.type === 'logo' ? await uploadLogo(file, 'partner') : await uploadSquare(file, 'author')); } catch (e) { setErr(friendlyError(e)); } finally { setBusy(false); }
   };
   const src = photoUrl(value);
   return (
     <div class="field">
       <span>{f.label}</span>
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <span class="avatar" style="width:88px;height:88px">{src ? <img src={src} alt="" /> : 'No photo'}</span>
-        <label class="btn line">{busy ? 'Uploading…' : src ? 'Replace photo' : 'Choose a photo'}
+        {f.type === 'logo'
+          ? <span style="display:grid;place-items:center;min-width:160px;height:72px;padding:8px 14px;border-radius:12px;background:#0b1c2a">{src ? <img src={src} alt="" style="max-height:56px;max-width:220px" /> : <span class="meta" style="color:#cfd8df">No logo</span>}</span>
+          : <span class="avatar" style="width:88px;height:88px">{src ? <img src={src} alt="" /> : 'No photo'}</span>}
+        <label class="btn line">{busy ? 'Uploading…' : src ? `Replace ${f.type === 'logo' ? 'logo' : 'photo'}` : `Choose a ${f.type === 'logo' ? 'logo' : 'photo'}`}
           <input type="file" accept="image/*" class="sr" disabled={busy} onChange={(e) => pick((e.target as HTMLInputElement).files?.[0])} />
         </label>
         {src && !busy && <button type="button" class="btn line" onClick={() => onChange('')}>Remove</button>}

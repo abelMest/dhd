@@ -18,6 +18,7 @@ const VIEWS: { id: View; label: string }[] = [
   { id: 'authors', label: 'Authors' },
   { id: 'resources', label: 'Library' },
   { id: 'opportunities', label: 'Opportunities' },
+  { id: 'partners', label: 'Partners' },
   { id: 'settings', label: 'Settings & site text' },
 ];
 

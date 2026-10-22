@@ -1,0 +1,23 @@
+---
+// A row of partner logos, drawn in one colour so logos of every style sit together
+// (ink on light pages, white in dark mode). Managed in the console under Partners.
+import type { Partner } from '../lib/data';
+interface Props { partners: Partner[]; kicker: string; title?: string; note?: string }
+const { partners, kicker, title, note } = Astro.props;
+---
+{partners.length > 0 && (
+  <div class="partnerLogos">
+    <p class="kicker line">{kicker}</p>
+    {title && <h2 class="display" style="font-size:clamp(1.6rem,3vw,2.2rem);margin:10px 0 0">{title}</h2>}
+    <ul>
+      {partners.map((p) => (
+        <li>
+          {p.url
+            ? <a href={p.url} rel="noopener" target="_blank" title={p.name}><img src={p.logoUrl} alt={p.name} loading="lazy" decoding="async" /></a>
+            : <img src={p.logoUrl} alt={p.name} title={p.name} loading="lazy" decoding="async" />}
+        </li>
+      ))}
+    </ul>
+    {note && <p class="meta">{note}</p>}
+  </div>
+)}

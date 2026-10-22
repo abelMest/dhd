@@ -33,6 +33,11 @@ export interface Opportunity {
   id: string; title: string; org: string; kind: string; url: string; deadline: string; eligibility: string;
   countries: string[]; verifiedAt: string;
 }
+export interface Partner {
+  id: string; name: string; url: string; logoUrl: string;
+  /** partner: works with the Digest now. past: organisations the team has worked with. */
+  kind: 'partner' | 'past';
+}
 export interface Settings {
   subscribers: number; subscribersLabel: string; editionsTotal: number; substackUrl: string; linkedinUrl: string;
   /** Where the edition total comes from: on this site, only on Substack (counted at build), only on LinkedIn (editor's figure). */
@@ -40,6 +45,7 @@ export interface Settings {
 }
 export interface SiteData {
   articles: Article[]; authors: Author[]; resources: Resource[]; opportunities: Opportunity[];
+  partners: Partner[];
   settings: Settings; copy: Copy; source: 'supabase' | 'seed';
 }
 
@@ -92,7 +98,7 @@ function fromSeed(): SiteData {
   const site = s.settings.find((x) => x.id === 'site') || {};
   const copy = s.settings.find((x) => x.id === 'copy') || {};
   return {
-    articles, authors, resources, opportunities, source: 'seed',
+    articles, authors, resources, opportunities, partners: [], source: 'seed',
     settings: {
       subscribers: Number(site.subscribers) || 0, subscribersLabel: str(site.subscribersLabel),
       editionsTotal: Number(site.editions) || articles.length,
@@ -157,7 +163,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     if (error) throw new Error(`Supabase: could not read ${what}: ${error.message}`);
     return data as T;
   };
-  const [arts, links, auths, res, opps, settings, copyRows] = await Promise.all([
+  const [arts, links, auths, res, opps, settings, copyRows, parts] = await Promise.all([
     must<any[]>(sb.from('articles').select('*').eq('status', 'published'), 'articles'),
     must<any[]>(sb.from('article_authors').select('*').order('position'), 'article_authors'),
     must<any[]>(sb.from('authors').select('*'), 'authors'),
@@ -165,6 +171,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     must<any[]>(sb.from('opportunities').select('id,title,org,kind,url,deadline,eligibility,countries,verified_at').eq('status', 'published'), 'opportunities'),
     must<any>(sb.from('settings').select('*').eq('id', 1).maybeSingle(), 'settings'),
     must<any[]>(sb.from('site_copy').select('key,value'), 'site_copy'),
+    must<any[]>(sb.from('partners').select('id,name,url,logo_path,kind,position').eq('status', 'published').order('position'), 'partners'),
   ]);
   const authorsOf = (id: string) => links.filter((l) => l.article_id === id).map((l) => l.author_id);
   const storage = (path: string) => (path ? `${url}/storage/v1/object/public/${path}` : '');
@@ -179,6 +186,9 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
   })).sort(byDateDesc);
   return {
     articles, source: 'supabase',
+    partners: parts.filter((p) => p.logo_path).map((p) => ({
+      id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), kind: p.kind === 'past' ? 'past' : 'partner',
+    })),
     authors: auths.map((a) => ({
       id: a.id, name: str(a.name), role: str(a.role), org: str(a.org), country: str(a.country), bio: str(a.bio),
       linkedinUrl: str(a.linkedin_url), substackUrl: str(a.substack_url), photoUrl: storage(str(a.photo_path)), isEditor: !!a.is_editor,

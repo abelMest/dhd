@@ -4,6 +4,7 @@ import Subscribe from '../components/Subscribe.astro';
 import OppCard from '../components/OppCard.astro';
 import BeatRule from '../components/BeatRule.astro';
 import Accent from '../components/Accent.astro';
+import PartnerLogos from '../components/PartnerLogos.astro';
 import { loadSite, authorsFor, fmtDate, openOpportunities } from '../lib/data';
 import { TOPICS, START_ROLES, HOME_THRESHOLD, topicSlug } from '../lib/taxonomy';
 import { thumb } from '../lib/images';
@@ -327,6 +328,14 @@ const topicPic = (t: string) => { const a = articles.find((x) => x.topic === t &
       <p>The Digest is written by the people building health systems, for each other.</p>
     </div>
   </section>
+
+  {site.partners.some((p) => p.kind === 'partner') && (
+    <section class="section tight" aria-label="Partners">
+      <div class="wrap">
+        <PartnerLogos partners={site.partners.filter((p) => p.kind === 'partner')} kicker="With our partners" />
+      </div>
+    </section>
+  )}
 
   <section class="section">
     <div class="wrap">

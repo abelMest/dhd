@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import BeatRule from '../components/BeatRule.astro';
 import Accent from '../components/Accent.astro';
 import Subscribe from '../components/Subscribe.astro';
+import PartnerLogos from '../components/PartnerLogos.astro';
 import { loadSite } from '../lib/data';
 import { lines, commaList, plain } from '../lib/copy';
 import { TOPICS } from '../lib/taxonomy';
@@ -15,7 +16,10 @@ const contributors = authors
   .filter((x) => x.n > 0)
   .sort((p, q) => q.n - p.n)
   .slice(0, 12);
-const partners = commaList(copy.partners.replace(/\n/g, ','));
+// Partner logos from the console; the older text list (Settings, Partners) only when no logos exist.
+const current = site.partners.filter((p) => p.kind === 'partner');
+const past = site.partners.filter((p) => p.kind === 'past');
+const partners = site.partners.length ? [] : commaList(copy.partners.replace(/\n/g, ','));
 const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('');
 const numbers = [
   { n: settings.editionsTotal, label: 'Editions published' },
@@ -92,6 +96,15 @@ const standard = lines(copy.standard);
             </a>
           ))}
         </div>
+      </div>
+    </section>
+  )}
+
+  {site.partners.length > 0 && (
+    <section class="section tight">
+      <div class="wrap partnerBlock">
+        <PartnerLogos partners={current} kicker="Partners" title="Working with the Digest" />
+        <PartnerLogos partners={past} kicker="Our team has also worked with" />
       </div>
     </section>
   )}
