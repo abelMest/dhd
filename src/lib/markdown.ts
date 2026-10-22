@@ -55,6 +55,22 @@ export function renderMarkdown(src: string): string {
       stripTags(inner).length >= 200 ? `<p class="opening">${inner}</p>` : whole);
 }
 
+/**
+ * Where an in-article ad may go: at the start of a section (an <h2>) near the middle of a long piece,
+ * never inside a quote, list or table. Returns [before, after], or null when the piece is short.
+ */
+export function splitForAd(html: string): [string, string] | null {
+  if (stripTags(html).split(/\s+/).length < 700) return null;
+  const balanced = (upto: string) => ['blockquote', 'ul', 'ol', 'table', 'figure']
+    .every((t) => (upto.match(new RegExp(`<${t}[\\s>]`, 'g')) || []).length === (upto.match(new RegExp(`</${t}>`, 'g')) || []).length);
+  const cuts = [...html.matchAll(/\n<h2[\s>]/g)].map((m) => m.index! + 1).filter((i) => balanced(html.slice(0, i)));
+  if (!cuts.length) return null;
+  const mid = html.length / 2;
+  const at = cuts.reduce((best, i) => (Math.abs(i - mid) < Math.abs(best - mid) ? i : best));
+  if (at < html.length * 0.25 || at > html.length * 0.8) return null;
+  return [html.slice(0, at), html.slice(at)];
+}
+
 /** The section headings of rendered HTML, for the table of contents. */
 export function outline(html: string): { id: string; text: string }[] {
   return [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map((m) => ({ id: m[1], text: stripTags(m[2]).trim() }));

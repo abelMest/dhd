@@ -1,0 +1,85 @@
+---
+// Partner with us: who reads the Digest (live figures), the ways to support it, and the sponsorship policy.
+// Every figure comes from the site's own data; options appear only once they are set up in the console.
+import Base from '../layouts/Base.astro';
+import PartnerLogos from '../components/PartnerLogos.astro';
+import { loadSite } from '../lib/data';
+import { TOPICS } from '../lib/taxonomy';
+
+const site = await loadSite();
+const { settings, articles, authors } = site;
+const rev = settings.revenue;
+const contributors = authors.filter((a) => articles.some((x) => x.authorIds.includes(a.id))).length;
+const fmt = (n: number) => n.toLocaleString('en-GB');
+const figures = [
+  { n: fmt(settings.editionsTotal), label: 'Editions published' },
+  ...(settings.subscribers > 0 ? [{ n: fmt(settings.subscribers), label: `Subscribers${settings.subscribersLabel ? `, ${settings.subscribersLabel}` : ''}` }] : []),
+  { n: String(TOPICS.length), label: 'Topics we follow' },
+  { n: String(contributors), label: 'Contributing authors' },
+];
+const contact = rev.contactEmail
+  ? { href: `mailto:${rev.contactEmail}?subject=${encodeURIComponent('Partnering with the Digital Health Digest')}`, label: `Write to ${rev.contactEmail}` }
+  : settings.linkedinUrl ? { href: settings.linkedinUrl, label: 'Message us on LinkedIn' } : { href: '/contribute/', label: 'Get in touch' };
+const options = [
+  { t: 'Sponsor the Digest', d: 'One sponsor at a time, for a month or for a single edition. Your name and logo appear as “Supported by” on the edition pages and in the email edition, clearly labelled.' },
+  { t: 'Feature an opportunity', d: `Pin a job, fellowship, grant or call to the top of the Opportunities board, labelled Featured, for a set period.${rev.featuredPrice ? ` ${rev.featuredPrice}.` : ''} Standard listings stay free.`, href: '/opportunities/#feature', cta: 'How featuring works' },
+  { t: 'Become an institutional partner', d: 'Foundations and development partners who support the Digest’s work over a year. Partners appear on the About page and receive a yearly report on readership and contributors.' },
+  { t: 'Events and reports', d: 'Roundtables and webinars built around an edition, or commissioned landscape reviews written to the same editorial standard.' },
+];
+---
+<Base title="Partner with us" description="Reach the people building digital health systems across Africa: sponsor the Digital Health Digest, feature an opportunity or become a partner, under a clear sponsorship policy.">
+  <header class="pageHead">
+    <div class="ecg-paper ecg-fade" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker line">Partner with us</p>
+      <h1 class="display">Reach the people building digital health in Africa</h1>
+      <p class="lede">The Digest is free to read and written by practitioners, for practitioners. Support from partners keeps it that way, under rules that protect its independence.</p>
+      <dl class="statStrip">
+        {figures.map((f) => <div><dt>{f.label}</dt><dd class="num">{f.n}</dd></div>)}
+      </dl>
+      <div class="actions" style="margin-top:24px">
+        <a class="btn" href={contact.href} rel="noopener">{contact.label}</a>
+        {rev.supportUrl && <a class="btn line" href={rev.supportUrl} rel="noopener">Support the Digest as a reader</a>}
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="secHead"><div><p class="kicker line">Ways to work together</p><h2 class="display">Four ways to partner</h2></div></div>
+      <ul class="partnerOptions">
+        {options.map((o) => (
+          <li data-reveal>
+            <h3>{o.t}</h3>
+            <p>{o.d}</p>
+            {o.href && <a class="more" href={o.href}>{o.cta} <span class="arrow" aria-hidden="true">→</span></a>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {site.partners.some((p) => p.kind === 'partner') && (
+    <section class="section tight">
+      <div class="wrap"><PartnerLogos partners={site.partners.filter((p) => p.kind === 'partner')} kicker="Already working with the Digest" /></div>
+    </section>
+  )}
+
+  <section class="section tint" id="policy">
+    <div class="wrap grid2" style="align-items:start">
+      <div>
+        <p class="kicker line">Sponsorship policy</p>
+        <h2 class="display">Support, never influence</h2>
+        <p style="color:var(--ink-2);max-width:42ch">These rules apply to every sponsor, partner and featured listing. They sit alongside our <a href="/about/#standard">editorial standard</a>.</p>
+      </div>
+      <ol class="policyList">
+        <li><b>Editors decide everything we publish.</b> Sponsors and partners do not choose, see before publication, review or edit any edition.</li>
+        <li><b>Everything paid is labelled.</b> Sponsors appear as “Supported by”, paid listings as “Featured”, and ads as “Advertisement”.</li>
+        <li><b>Authors declare their interests.</b> Funding and affiliations relevant to a piece are declared with it, whoever the sponsor is.</li>
+        <li><b>No sponsor on a piece about them.</b> We do not run a sponsor on an edition that covers their organisation or products.</li>
+        <li><b>We can say no.</b> We decline support that conflicts with public health or with the Digest’s independence, and can end a sponsorship that breaks these rules.</li>
+        <li><b>Reading stays free.</b> Support pays for the Digest; it never puts editions behind a paywall.</li>
+      </ol>
+    </div>
+  </section>
+</Base>

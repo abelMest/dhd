@@ -2,8 +2,10 @@
 import Base from '../../layouts/Base.astro';
 import EditionCard from '../../components/EditionCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
-import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, searchDescription, type Article } from '../../lib/data';
-import { renderMarkdown, outline } from '../../lib/markdown';
+import SponsorBox from '../../components/SponsorBox.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, searchDescription, sponsorFor, type Article } from '../../lib/data';
+import { renderMarkdown, outline, splitForAd } from '../../lib/markdown';
 import { topicSlug } from '../../lib/taxonomy';
 
 export async function getStaticPaths() {
@@ -21,6 +23,9 @@ const at = parts.findIndex((x) => x.id === a.id);
 const partNo = (x: Article, i: number) => x.seriesPart ?? i + 1;
 const html = a.body ? renderMarkdown(a.body) : '';
 const toc = outline(html);
+const sponsor = sponsorFor(site, a);
+// One labelled ad at a section break near the middle of long pieces (only once AdSense is set up).
+const halves = site.settings.revenue.adsense.client && site.settings.revenue.adsense.slotArticle ? splitForAd(html) : null;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const apa = apaCitation(a, authors, canonical);
 const bib = bibtex(a, authors, canonical);
@@ -91,11 +96,14 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
           </span>
         </div>
         {a.fr && <p class="enbref" lang="fr"><b>En bref</b>{a.fr}</p>}
+        <SponsorBox sponsor={sponsor} />
       </header>
 
       {html ? (
         <div class="articleBody">
-          <div class="prose" set:html={html} />
+          {halves
+            ? <div class="prose"><Fragment set:html={halves[0]} /><AdSlot slot="article" /><Fragment set:html={halves[1]} /></div>
+            : <div class="prose" set:html={html} />}
           {toc.length >= 3 && (
             <nav class="toc" aria-label="In this edition" data-pagefind-ignore>
               <p>In this edition</p>

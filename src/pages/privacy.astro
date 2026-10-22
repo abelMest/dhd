@@ -1,0 +1,53 @@
+---
+// Privacy policy. Describes what the site actually does; the advertising section switches to
+// "we show ads" once an AdSense publisher ID is set in the console. Review it with someone who
+// knows the rules that apply to you before relying on it.
+import Base from '../layouts/Base.astro';
+import { loadSite, fmtDate } from '../lib/data';
+
+const { settings } = await loadSite();
+const rev = settings.revenue;
+const ads = !!rev.adsense.client;
+const contact = rev.contactEmail;
+const updated = '2026-10-23';
+---
+<Base title="Privacy" description="What the Digital Health Digest collects, why, and the choices you have, including about advertising cookies.">
+  <header class="pageHead">
+    <div class="wrap">
+      <p class="kicker line">Privacy</p>
+      <h1 class="display">Your privacy</h1>
+      <p class="lede">What this site collects, why, and the choices you have. Last updated {fmtDate(updated)}.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="wrap">
+      <div class="prose" style="max-width:68ch">
+        <h2>Reading the Digest</h2>
+        <p>You can read every edition without an account. We do not run our own tracking or analytics scripts. Our host, Cloudflare, keeps short-lived technical logs (such as IP addresses) to deliver the site and protect it from abuse.</p>
+        <p>The site remembers a few choices in your browser only, such as light or dark theme and how you view the archive. These never leave your device and you can clear them in your browser settings.</p>
+
+        <h2>Newsletter</h2>
+        <p>Subscribing takes you to Substack, which sends the newsletter and holds the subscriber list. Substack’s <a href="https://substack.com/privacy" rel="noopener">privacy policy</a> applies there. You can unsubscribe from any email.</p>
+
+        <h2>Signing in and contributing</h2>
+        <p>Contributors and editors sign in with an emailed link; we store your email address to let you in. If you send a pitch, draft, resource or opportunity, we keep what you send and your contact details so an editor can reply and, if it is published, credit you. Our database runs on Supabase.</p>
+
+        <h2>Advertising</h2>
+        {ads ? (
+          <>
+            <p>Some pages show ads from Google AdSense, labelled “Advertisement”. Google and its partners use cookies and similar technology to show ads and measure them, and may use information about your visits to this and other sites to personalise ads.</p>
+            <p>Where the law requires it, for example in the European Economic Area, the United Kingdom and Switzerland, you are asked for consent first. You can change your choice, or turn off personalised ads, in <a href="https://adssettings.google.com" rel="noopener">Google’s ad settings</a>. Read <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">how Google uses information from sites that use its services</a>.</p>
+          </>
+        ) : (
+          <p>The site does not show ads at the moment. If that changes, this section will explain what is used and how to opt out, before any ad appears.</p>
+        )}
+
+        <h2>Sponsors and partners</h2>
+        <p>Sponsors and partners do not receive any personal information about readers. Links to their sites are marked as sponsored; their own policies apply once you are there.</p>
+
+        <h2>Your choices</h2>
+        <p>You can ask to see, correct or delete what we hold about you{contact ? <>: write to <a href={`mailto:${contact}`}>{contact}</a></> : ' through the contact details on the About page'}.</p>
+      </div>
+    </div>
+  </section>
+</Base>

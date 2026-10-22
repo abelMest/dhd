@@ -79,6 +79,7 @@ const siteLd = {
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
+    {settings.revenue.adsense.client && <meta name="google-adsense-account" content={settings.revenue.adsense.client} />}
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title || SITE_NAME} />
@@ -211,6 +212,7 @@ const siteLd = {
               <li><a href="/opportunities/">Opportunities</a></li>
               <li><a href="/contribute/">Write for the Digest</a></li>
               <li><a href="/about/">About and standards</a></li>
+              <li><a href="/partner/">Partner with us</a></li>
             </ul>
           </div>
           <div>
@@ -219,12 +221,13 @@ const siteLd = {
               <li><a href={settings.substackUrl} rel="noopener">Substack</a></li>
               {settings.linkedinUrl && <li><a href={settings.linkedinUrl} rel="noopener">LinkedIn newsletter</a></li>}
               <li><a href="/rss.xml">RSS feed</a></li>
+              {settings.revenue.supportUrl && <li><a href={settings.revenue.supportUrl} rel="noopener"><b>Support the Digest</b></a></li>}
             </ul>
           </div>
         </div>
         <div class="base">
           <span>© {year} Digital Health Digest</span>
-          <a href="/console/">Editor sign-in</a>
+          <span><a href="/privacy/">Privacy</a> · <a href="/console/">Editor sign-in</a></span>
         </div>
         <a class="giantLogo" href="/" aria-label="Digital Health Digest, home"><Logo height={260} /></a>
       </div>

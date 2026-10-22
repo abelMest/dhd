@@ -2,7 +2,7 @@
 import { TOPICS, RESOURCE_TYPES, AUDIENCES, OPP_KINDS, COUNTRIES, START_ROLES } from '../../lib/taxonomy';
 import type { FieldDef, Values } from '../ui';
 
-export type TableName = 'articles' | 'authors' | 'resources' | 'opportunities' | 'partners';
+export type TableName = 'articles' | 'authors' | 'resources' | 'opportunities' | 'partners' | 'sponsorships';
 
 export interface Collection {
   table: TableName;
@@ -29,6 +29,35 @@ export const slugify = (s: string) =>
 const KINDS = ['partner', 'past'];
 
 export const COLLECTIONS: Record<TableName, Collection> = {
+  sponsorships: {
+    table: 'sponsorships', label: 'Sponsors', singular: 'sponsorship',
+    order: { column: 'starts_on', ascending: false },
+    fields: [
+      { name: 'name', label: 'Sponsor', required: true },
+      { name: 'id', label: 'Short id', required: true, hint: 'Lowercase words and hyphens, e.g. acme-nov-2026.' },
+      { name: 'scope', label: 'Shown on', type: 'select', options: ['site', 'edition'], required: true, hint: 'site: every edition while it runs. edition: one edition only (it replaces the site sponsor there).' },
+      { name: 'article_id', label: 'Edition (for an edition sponsor)', hint: 'The edition’s web address, e.g. why-pilots-fail. Never an edition about the sponsor (see the sponsorship policy).' },
+      { name: 'logo_path', label: 'Logo', type: 'logo' },
+      { name: 'url', label: 'Website', type: 'url' },
+      { name: 'note', label: 'One line about them (optional)', hint: 'Shown under the logo, e.g. what they do. Keep it factual; no claims about products.' },
+      { name: 'starts_on', label: 'Starts', type: 'date', required: true },
+      { name: 'ends_on', label: 'Ends (inclusive)', type: 'date', hint: 'It leaves the site by itself the day after.' },
+      { name: 'status', label: 'Status', type: 'select', options: ['pending', 'published'], required: true, hint: 'Publish once the agreement is signed.' },
+    ],
+    summary: (r) => [r.scope === 'edition' ? `Edition: ${r.article_id || '?'}` : 'Whole site', [r.starts_on, r.ends_on].filter(Boolean).join(' to ')].join(' · '),
+    state: (r) => {
+      if (r.status !== 'published') return { label: 'Draft', tone: 'warn' };
+      if (r.ends_on && String(r.ends_on) < today()) return { label: 'Ended', tone: 'crit' };
+      if (String(r.starts_on) > today()) return { label: 'Scheduled', tone: 'warn' };
+      return { label: 'Running', tone: 'ok' };
+    },
+    defaults: () => ({ scope: 'site', status: 'pending', starts_on: today() }),
+    validate: (r) => [
+      ...(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(String(r.id || '')) ? ['The short id may only use lowercase letters, numbers and single hyphens.'] : []),
+      ...(r.scope === 'edition' && !String(r.article_id || '').trim() ? ['Give the edition’s web address for an edition sponsor.'] : []),
+      ...(r.ends_on && r.starts_on && String(r.ends_on) < String(r.starts_on) ? ['The end date is before the start date.'] : []),
+    ],
+  },
   partners: {
     table: 'partners', label: 'Partners', singular: 'partner',
     order: { column: 'position', ascending: true },
@@ -133,6 +162,7 @@ export const COLLECTIONS: Record<TableName, Collection> = {
       { name: 'eligibility', label: 'Who can apply', type: 'textarea', rows: 2 },
       { name: 'countries', label: 'Countries', type: 'multi', options: COUNTRY_OPTIONS },
       { name: 'verified_at', label: 'Last checked against the source', type: 'date' },
+      { name: 'featured_until', label: 'Featured until (paid listing)', type: 'date', hint: 'Pinned to the top and labelled Featured up to and including this date. Leave empty for a normal listing.' },
       { name: 'notes', label: 'Editor notes (never shown publicly)', type: 'textarea', rows: 2 },
       { name: 'status', label: 'Status', type: 'select', options: ['pending', 'published'], required: true },
     ],

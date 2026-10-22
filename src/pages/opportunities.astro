@@ -1,19 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
 import OppCard from '../components/OppCard.astro';
-import { loadSite, openOpportunities, fmtDate, today, daysBetween } from '../lib/data';
+import AdSlot from '../components/AdSlot.astro';
+import { loadSite, openOpportunities, fmtDate, today, daysBetween, isFeatured } from '../lib/data';
 import { OPP_KINDS } from '../lib/taxonomy';
 
 const site = await loadSite();
 const t = today();
 const opps = openOpportunities(site, t);
-const soon = opps.filter((o) => o.deadline && daysBetween(t, o.deadline) <= 14);
-const dated = opps.filter((o) => o.deadline && daysBetween(t, o.deadline) > 14);
-const rolling = opps.filter((o) => !o.deadline);
+// Paid featured listings are pinned in their own group at the top (and only there).
+const featured = opps.filter((o) => isFeatured(o, t));
+const rest = opps.filter((o) => !isFeatured(o, t));
+const soon = rest.filter((o) => o.deadline && daysBetween(t, o.deadline) <= 14);
+const dated = rest.filter((o) => o.deadline && daysBetween(t, o.deadline) > 14);
+const rolling = rest.filter((o) => !o.deadline);
+const rev = site.settings.revenue;
 const kinds = OPP_KINDS.filter((k) => opps.some((o) => o.kind === k));
 const countries = [...new Set(opps.flatMap((o) => o.countries))].sort();
 const lastVerified = opps.map((o) => o.verifiedAt).filter(Boolean).sort().at(-1);
 const groups = [
+  { id: 'featured', title: 'Featured', note: 'Paid placements from the organisations offering them, checked like every other listing.', items: featured },
   { id: 'soon', title: 'Closing soon', note: 'Deadlines in the next two weeks.', items: soon },
   { id: 'open', title: 'Open', note: 'Dated calls, soonest deadline first.', items: dated },
   { id: 'rolling', title: 'Rolling', note: 'No fixed deadline. Check the source for the current round.', items: rolling },
@@ -75,16 +81,17 @@ const jsonLd = {
       </div>
 
       {groups.map((g) => (
-        <section class:list={['section', 'tight', 'oppGroup', { tint: g.id === 'soon' }]} data-group={g.id} aria-labelledby={`g-${g.id}`}>
+        <section class:list={['section', 'tight', 'oppGroup', { tint: g.id === 'soon', featuredGroup: g.id === 'featured' }]} data-group={g.id} aria-labelledby={`g-${g.id}`}>
           <div class="wrap">
             <div class="groupHead">
               <h2 id={`g-${g.id}`}>{g.id === 'soon' && <span class="pulse-dot" aria-hidden="true"></span>}{g.title} <span class="n num">{g.items.length}</span></h2>
               <p>{g.note}</p>
             </div>
-            <div class="oppGrid">{g.items.map((o) => <OppCard o={o} level="h3" />)}</div>
+            <div class="oppGrid">{g.items.map((o) => <OppCard o={o} level="h3" featured={g.id === 'featured'} />)}</div>
           </div>
         </section>
       ))}
+      <div class="wrap"><AdSlot slot="list" /></div>
       <div class="wrap"><p class="empty" id="oppNone" hidden>Nothing matches those filters. <button type="button" class="linkBtn" id="oppReset">Clear filters</button></p></div>
     </>
   )}
@@ -102,6 +109,24 @@ const jsonLd = {
         <h2 style="font-size:1.7rem;margin:10px 0 14px">Send us an opportunity</h2>
         <p style="color:var(--ink-2)">A fellowship, grant, job, call for papers or training for people in digital health. Share the link and we will check it before it goes up.</p>
         <a class="btn" href="/contribute/#tip" data-magnetic>Send a tip <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" id="feature">
+    <div class="wrap">
+      <div class="panel featurePanel" data-reveal>
+        <div>
+          <p class="kicker">For organisations</p>
+          <h2 style="font-size:1.7rem;margin:10px 0 12px">Feature your opportunity</h2>
+          <p style="color:var(--ink-2);max-width:60ch">Listing an opportunity is free: send it as a tip and an editor checks it. To reach more of our readers, a featured listing is pinned at the top of this board, labelled Featured, for a set period.{rev.featuredPrice && <> <b>{rev.featuredPrice}.</b></>} It is still checked against its source like every other listing.</p>
+        </div>
+        <div class="actions">
+          <a class="btn line" href="/contribute/#tip">List it for free</a>
+          {rev.featuredPaymentUrl
+            ? <a class="btn" href={rev.featuredPaymentUrl} rel="noopener">Pay for a featured listing</a>
+            : <a class="btn" href="/partner/">Ask about featuring</a>}
+        </div>
       </div>
     </div>
   </section>

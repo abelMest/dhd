@@ -34,7 +34,7 @@ export const COPY_DEFAULTS = {
   aboutTitle: 'Who edits the Digest',
   aboutName: 'Dr. Abel Mestie Mekonnen',
   aboutBody: 'Abel is a physician and digital health strategist. He has led digital health programs in Ethiopia and across Africa for more than six years, from EMR rollouts in national health facilities to telemedicine operations. He started the Digest so the people doing this work have one place to share what works, what fails and why.',
-  aboutRoles: 'Public Health Informatics Fellow, Africa CDC\nDigital Health Advisor, Federal Ministry of Health, Ethiopia\nFounder and Editor, Digital Health Digest',
+  aboutRoles: 'Founder and Editor, Digital Health Digest',
   standardTitle: 'Our editorial standard',
   standard: 'Every claim links to a source you can check.\nEvery opportunity shows the date an editor last verified it against the source.\nGuest pieces pass an editor review before they publish.\nAuthors declare funding and affiliations relevant to their piece.\nWe correct errors in the open and date the correction.',
   partners: '',

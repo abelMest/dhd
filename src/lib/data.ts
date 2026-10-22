@@ -32,6 +32,17 @@ export interface Resource {
 export interface Opportunity {
   id: string; title: string; org: string; kind: string; url: string; deadline: string; eligibility: string;
   countries: string[]; verifiedAt: string;
+  /** Paid featured listing: pinned and labelled until this date (inclusive). '' when not featured. */
+  featuredUntil: string;
+}
+export interface Sponsorship {
+  id: string; name: string; url: string; logoUrl: string; note: string;
+  scope: 'site' | 'edition'; articleId: string; startsOn: string; endsOn: string;
+}
+/** Money features. Each stays hidden on the site until its value is set in the console. */
+export interface Revenue {
+  contactEmail: string; supportUrl: string; featuredPaymentUrl: string; featuredPrice: string;
+  adsense: { client: string; slotArticle: string; slotList: string };
 }
 export interface Partner {
   id: string; name: string; url: string; logoUrl: string;
@@ -42,12 +53,14 @@ export interface Partner {
 }
 export interface Settings {
   subscribers: number; subscribersLabel: string; editionsTotal: number; substackUrl: string; linkedinUrl: string;
+  revenue: Revenue;
   /** Where the edition total comes from: on this site, only on Substack (counted at build), only on LinkedIn (editor's figure). */
   editionsBreakdown: { site: number; substackOnly: number | null; linkedinOnly: number };
 }
 export interface SiteData {
   articles: Article[]; authors: Author[]; resources: Resource[]; opportunities: Opportunity[];
   partners: Partner[];
+  sponsorships: Sponsorship[];
   settings: Settings; copy: Copy; source: 'supabase' | 'seed';
 }
 
@@ -95,19 +108,28 @@ function fromSeed(): SiteData {
   }));
   const opportunities = (s.opportunities || []).filter((o) => o.status === 'published').map((o) => ({
     id: o.id, title: str(o.title), org: str(o.org), kind: str(o.kind), url: str(o.url), deadline: str(o.deadline),
-    eligibility: str(o.eligibility), countries: arr(o.countries), verifiedAt: str(o.verifiedAt),
+    eligibility: str(o.eligibility), countries: arr(o.countries), verifiedAt: str(o.verifiedAt), featuredUntil: '',
   }));
   const site = s.settings.find((x) => x.id === 'site') || {};
   const copy = s.settings.find((x) => x.id === 'copy') || {};
   return {
-    articles, authors, resources, opportunities, partners: [], source: 'seed',
+    articles, authors, resources, opportunities, partners: [], sponsorships: [], source: 'seed',
     settings: {
       subscribers: Number(site.subscribers) || 0, subscribersLabel: str(site.subscribersLabel),
       editionsTotal: Number(site.editions) || articles.length,
       editionsBreakdown: { site: articles.length, substackOnly: null, linkedinOnly: 0 },
       substackUrl: str(site.substackUrl) || 'https://dhdigest.substack.com/', linkedinUrl: str(site.linkedinUrl),
+      revenue: revenueFrom(null),
     },
     copy: withDefaults(cleanCopy(copy)),
+  };
+}
+
+function revenueFrom(s: Record<string, unknown> | null): Revenue {
+  return {
+    contactEmail: str(s?.contact_email), supportUrl: str(s?.support_url),
+    featuredPaymentUrl: str(s?.featured_payment_url), featuredPrice: str(s?.featured_price),
+    adsense: { client: str(s?.adsense_client), slotArticle: str(s?.adsense_slot_article), slotList: str(s?.adsense_slot_list) },
   };
 }
 
@@ -165,15 +187,16 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     if (error) throw new Error(`Supabase: could not read ${what}: ${error.message}`);
     return data as T;
   };
-  const [arts, links, auths, res, opps, settings, copyRows, parts] = await Promise.all([
+  const [arts, links, auths, res, opps, settings, copyRows, parts, spons] = await Promise.all([
     must<any[]>(sb.from('articles').select('*').eq('status', 'published'), 'articles'),
     must<any[]>(sb.from('article_authors').select('*').order('position'), 'article_authors'),
     must<any[]>(sb.from('authors').select('*'), 'authors'),
     must<any[]>(sb.from('resources').select('*').eq('status', 'published'), 'resources'),
-    must<any[]>(sb.from('opportunities').select('id,title,org,kind,url,deadline,eligibility,countries,verified_at').eq('status', 'published'), 'opportunities'),
+    must<any[]>(sb.from('opportunities').select('id,title,org,kind,url,deadline,eligibility,countries,verified_at,featured_until').eq('status', 'published'), 'opportunities'),
     must<any>(sb.from('settings').select('*').eq('id', 1).maybeSingle(), 'settings'),
     must<any[]>(sb.from('site_copy').select('key,value'), 'site_copy'),
     must<any[]>(sb.from('partners').select('id,name,url,logo_path,kind,position,logo_scale').eq('status', 'published').order('position'), 'partners'),
+    must<any[]>(sb.from('sponsorships').select('id,name,url,logo_path,note,scope,article_id,starts_on,ends_on').eq('status', 'published'), 'sponsorships'),
   ]);
   const authorsOf = (id: string) => links.filter((l) => l.article_id === id).map((l) => l.author_id);
   const storage = (path: string) => (path ? `${url}/storage/v1/object/public/${path}` : '');
@@ -188,6 +211,10 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
   })).sort(byDateDesc);
   return {
     articles, source: 'supabase',
+    sponsorships: spons.map((x) => ({
+      id: x.id, name: str(x.name), url: str(x.url), logoUrl: storage(str(x.logo_path)), note: str(x.note),
+      scope: x.scope === 'edition' ? 'edition' : 'site', articleId: str(x.article_id), startsOn: str(x.starts_on), endsOn: str(x.ends_on),
+    })),
     partners: parts.filter((p) => p.logo_path).map((p) => ({
       id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), scale: Number(p.logo_scale) || 100, kind: p.kind === 'past' ? 'past' : 'partner',
     })),
@@ -201,13 +228,14 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
     })),
     opportunities: opps.map((o) => ({
       id: o.id, title: str(o.title), org: str(o.org), kind: str(o.kind), url: str(o.url), deadline: str(o.deadline),
-      eligibility: str(o.eligibility), countries: arr(o.countries), verifiedAt: str(o.verified_at),
+      eligibility: str(o.eligibility), countries: arr(o.countries), verifiedAt: str(o.verified_at), featuredUntil: str(o.featured_until),
     })),
     settings: {
       ...subscriberFigures(settings),
       ...editionFigures(articles, Number(settings?.linkedin_only_editions) || 0, Number(settings?.editions_total) || 0,
         await substackSlugs(str(settings?.substack_url) || 'https://dhdigest.substack.com/')),
       substackUrl: str(settings?.substack_url) || 'https://dhdigest.substack.com/', linkedinUrl: str(settings?.linkedin_url),
+      revenue: revenueFrom(settings),
     },
     copy: withDefaults(cleanCopy(copy)),
   };
@@ -240,6 +268,15 @@ export function openOpportunities(site: SiteData, on = today()) {
   return site.opportunities
     .filter((o) => !o.deadline || o.deadline >= on)
     .sort((a, b) => (a.deadline || '9999').localeCompare(b.deadline || '9999'));
+}
+
+/** A paid featured listing that is still running (and the call itself still open). */
+export const isFeatured = (o: Opportunity, on = today()) => !!o.featuredUntil && o.featuredUntil >= on;
+
+/** The sponsor to show on an edition today: its own sponsorship first, otherwise the site-wide one. */
+export function sponsorFor(site: SiteData, a: Article | null, on = today()) {
+  const live = site.sponsorships.filter((x) => x.startsOn <= on && (!x.endsOn || x.endsOn >= on));
+  return (a && live.find((x) => x.scope === 'edition' && x.articleId === a.id)) || live.find((x) => x.scope === 'site') || null;
 }
 
 export function oppState(o: Opportunity, on = today()) {

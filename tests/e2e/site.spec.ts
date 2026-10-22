@@ -289,3 +289,21 @@ test('the Contribute timeline and FAQ work', async ({ page }) => {
   await expect(first).toHaveAttribute('open', '');
   await expect(first.locator('.ans p')).toBeVisible();
 });
+
+test('Partner with us, Privacy and ads.txt are in place, and paid things are labelled', async ({ page }) => {
+  await page.goto('/partner/');
+  await expect(page.locator('h1')).toContainText(/digital health/i);
+  await expect(page.locator('#policy li')).toHaveCount(6);
+  await expect(page.locator('.statStrip dd').first()).not.toBeEmpty();
+  await page.goto('/privacy/');
+  await expect(page.locator('h1')).toHaveText(/privacy/i);
+  await expect(page.locator('.prose h2', { hasText: 'Advertising' })).toBeVisible();
+  const ads = await page.request.get('/ads.txt');
+  expect(ads.ok()).toBe(true);
+  expect(await ads.text()).toMatch(/^(#|google\.com, pub-\d+, DIRECT, f08c47fec0942fa0)/);
+  await page.goto('/opportunities/');
+  await expect(page.locator('#feature')).toContainText('Feature your opportunity');
+  // Any ad or sponsor that is shown carries its label.
+  for (const el of await page.locator('.adSlot').all()) await expect(el.locator('.lbl')).toHaveText('Advertisement');
+  await expect(page.locator('footer a[href="/privacy/"]')).toHaveCount(1);
+});

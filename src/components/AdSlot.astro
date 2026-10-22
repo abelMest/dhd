@@ -1,0 +1,42 @@
+---
+// A Google AdSense unit, clearly labelled. Renders nothing until the AdSense publisher ID and this
+// unit's slot ID are set in the console (Settings). Google's script loads only when an ad is about to
+// scroll into view, so pages stay fast and readers who never reach an ad never load it.
+import { loadSite } from '../lib/data';
+interface Props { slot: 'article' | 'list' }
+const { slot } = Astro.props;
+const { settings } = await loadSite();
+const { client, slotArticle, slotList } = settings.revenue.adsense;
+const id = slot === 'article' ? slotArticle : slotList;
+---
+{client && id && (
+  <aside class="adSlot" aria-label="Advertisement" data-pagefind-ignore>
+    <span class="lbl">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block" data-ad-client={client} data-ad-slot={id}
+      data-ad-format={slot === 'article' ? 'fluid' : 'auto'} data-ad-layout={slot === 'article' ? 'in-article' : undefined}
+      data-full-width-responsive="true"></ins>
+  </aside>
+)}
+
+<script>
+  // One loader for every ad on the page: fetch AdSense when the first ad nears the viewport,
+  // then fill each unit as it arrives.
+  const slots = [...document.querySelectorAll<HTMLElement>('.adSlot ins.adsbygoogle:not([data-dhd])')];
+  if (slots.length) {
+    const client = slots[0].dataset.adClient!;
+    let loaded = false;
+    const load = () => {
+      if (loaded) return; loaded = true;
+      const s = document.createElement('script');
+      s.async = true; s.crossOrigin = 'anonymous';
+      s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(client)}`;
+      document.head.appendChild(s);
+    };
+    const fill = (el: HTMLElement) => {
+      if (el.dataset.dhd) return; el.dataset.dhd = '1'; load();
+      try { ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({}); } catch { /* blocked: the label stays, the box stays empty */ }
+    };
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); fill(e.target as HTMLElement); } }), { rootMargin: '600px 0px' });
+    slots.forEach((el) => io.observe(el));
+  }
+</script>

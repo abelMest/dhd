@@ -4,7 +4,7 @@
 import type { Opportunity } from '../lib/data';
 import { daysBetween, fmtDate, oppState, today, verifyState } from '../lib/data';
 
-interface Props { o: Opportunity; level?: 'h2' | 'h3'; compact?: boolean }
+interface Props { o: Opportunity; level?: 'h2' | 'h3'; compact?: boolean; featured?: boolean }
 const { o, level = 'h3', compact = false } = Astro.props;
 const H = level;
 const t = today();
@@ -30,6 +30,7 @@ const search = [o.title, o.org, o.kind, o.eligibility, o.countries.join(' ')].jo
 >
   <div class="oppTop">
     <div class="tags">
+      {Astro.props.featured && <span class="pill featured">Featured</span>}
       <span class="pill brand">{o.kind}</span>
       <span class={`pill ${state.tone}`}>{state.label}</span>
     </div>

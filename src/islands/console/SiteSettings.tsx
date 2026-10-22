@@ -4,6 +4,17 @@ import { supabase, friendlyError } from '../../lib/supabase';
 import { COPY_DEFAULTS, type CopyKey } from '../../lib/copy';
 import { Fields, Notice, type FieldDef, type Values } from '../ui';
 
+// Money features: each stays hidden on the site until it is filled in.
+const MONEY_FIELDS: FieldDef[] = [
+  { name: 'contact_email', label: 'Partnership contact email', type: 'email', hint: 'Shown on Partner with us and the Privacy page. Use an address for the Digest, not an employer’s.' },
+  { name: 'support_url', label: '“Support the Digest” link', type: 'url', hint: 'Your Substack paid-tier page, e.g. https://dhdigest.substack.com/subscribe. Adds a Support button to the footer and Partner page.' },
+  { name: 'featured_price', label: 'Featured listing price', placeholder: 'US$150 for 30 days', hint: 'Shown on the Opportunities and Partner pages. Leave empty to show no price.' },
+  { name: 'featured_payment_url', label: 'Featured listing payment link', type: 'url', hint: 'A Stripe, Paystack or similar payment link you create. After payment, set “Featured until” on the listing.' },
+  { name: 'adsense_client', label: 'Google AdSense publisher ID', placeholder: 'ca-pub-1234567890123456', hint: 'From AdSense, Account, Account information. Adds the AdSense site tag and ads.txt.' },
+  { name: 'adsense_slot_article', label: 'AdSense in-article unit ID', placeholder: '1234567890', hint: 'An “In-article” ad unit. Shown once, at a section break, in long editions.' },
+  { name: 'adsense_slot_list', label: 'AdSense display unit ID', placeholder: '1234567890', hint: 'A “Display” ad unit. Shown once on the Opportunities board.' },
+];
+
 const SETTINGS_FIELDS: FieldDef[] = [
   { name: 'subscribers_linkedin', label: 'LinkedIn newsletter subscribers', type: 'number', hint: 'From your LinkedIn newsletter page. LinkedIn does not share this number, so it is entered here.' },
   { name: 'subscribers_substack', label: 'Substack subscribers', type: 'number', hint: 'From your Substack dashboard, Subscribers. Substack does not publish the exact number either.' },
@@ -53,6 +64,10 @@ export default function SiteSettings() {
       const { id: _id, updated_at: _u, last_publish_at: _p, last_publish_by: _b, subscribers_updated_at: _d, ...row } = settings;
       for (const k of ['subscribers_linkedin', 'subscribers_substack']) if (!Number(row[k])) row[k] = null;   // empty = not known
       row.linkedin_only_editions = Math.max(0, Math.round(Number(row.linkedin_only_editions) || 0));
+      // AdSense shows the ID as pub-…; the ad tag needs ca-pub-…
+      const ad = String(row.adsense_client || '').trim();
+      row.adsense_client = /^pub-/.test(ad) ? `ca-${ad}` : ad;
+      for (const k of ['adsense_slot_article', 'adsense_slot_list']) row[k] = String(row[k] || '').replace(/\D/g, '');
       const s = await sb.from('settings').update(row).eq('id', 1);
       if (s.error) throw s.error;
       // Store only what differs from the built-in text; clearing a box restores the default.
@@ -99,6 +114,12 @@ export default function SiteSettings() {
             return `The site will show ${(li + sub).toLocaleString('en-GB')} subscribers, ${[li && 'LinkedIn', sub && 'Substack'].filter(Boolean).join(' + ')}, ${when}.`;
           })()}
         </p>
+      </section>
+
+      <section class="panel" style="margin-top:20px">
+        <h2 style="font-size:1.4rem">Sponsors, support and ads</h2>
+        <p class="meta" style="margin:-4px 0 16px">Each of these stays hidden on the site until you fill it in. Sponsors themselves are under Sponsors.</p>
+        <Fields defs={MONEY_FIELDS} values={settings} set={(k, v) => setSettings((s) => ({ ...s, [k]: v }))} />
       </section>
 
       <section class="panel" style="margin-top:20px">

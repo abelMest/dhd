@@ -19,6 +19,7 @@ const VIEWS: { id: View; label: string }[] = [
   { id: 'resources', label: 'Library' },
   { id: 'opportunities', label: 'Opportunities' },
   { id: 'partners', label: 'Partners' },
+  { id: 'sponsorships', label: 'Sponsors' },
   { id: 'settings', label: 'Settings & site text' },
 ];
 
@@ -229,16 +230,26 @@ async function copyRich(html: string, plain: string) {
 function SendToSubstack({ id, title, dek, body }: { id: string; title: string; dek: string; body: string }) {
   const [substack, setSubstack] = useState('https://dhdigest.substack.com/');
   const [done, setDone] = useState('');
+  const [sponsor, setSponsor] = useState<{ name: string; url: string } | null>(null);
   useEffect(() => {
     supabase()!.from('settings').select('substack_url').eq('id', 1).maybeSingle()
       .then(({ data }) => { if (data?.substack_url) setSubstack(String(data.substack_url).replace(/\/*$/, '/')); });
+    // The sponsor the site shows on this edition today goes into the email too, labelled the same way.
+    const day = new Date().toISOString().slice(0, 10);
+    supabase()!.from('sponsorships').select('name,url,scope,article_id,starts_on,ends_on').eq('status', 'published').lte('starts_on', day)
+      .then(({ data }) => {
+        const live = ((data || []) as Values[]).filter((x) => !x.ends_on || String(x.ends_on) >= day);
+        const s = live.find((x) => x.scope === 'edition' && x.article_id === id) || live.find((x) => x.scope === 'site');
+        setSponsor(s ? { name: String(s.name), url: String(s.url || '') } : null);
+      });
   }, []);
   const url = `${location.origin}/editions/${id}/`;
   const copy = async (what: string, run: () => Promise<void>) => { await run(); setDone(what); setTimeout(() => setDone(''), 1800); };
   const bodyHtml = () => {
     // Links and images that point inside the site must be absolute once they leave it.
     const html = renderMarkdown(body).replace(/(href|src)="\/(?!\/)/g, `$1="${location.origin}/`);
-    return `${html}<hr><p><em>This edition first appeared on <a href="${url}">Digital Health Digest</a>.</em></p>`;
+    const sp = sponsor ? `<p><em>Supported by ${sponsor.url ? `<a href="${sponsor.url}">${sponsor.name}</a>` : sponsor.name}. Sponsors never see or shape our editorial content.</em></p>` : '';
+    return `${sp}${html}<hr><p><em>This edition first appeared on <a href="${url}">Digital Health Digest</a>.</em></p>`;
   };
   return (
     <details class="panel" style="margin:0 0 20px">
