@@ -143,3 +143,37 @@ test('only editors change roles', async () => {
   assert.equal((await as('alice', `update public.profiles set display_name = 'x' where user_id = $1`, [BOB])).affectedRows, 0);
   assert.equal((await rows('alice', 'select * from public.profiles')).length, 1);
 });
+
+test('public changes ask for a rebuild; drafts and rebuild bookkeeping do not', async () => {
+  const requested = async () => (await rows('admin', 'select requested_at from public.site_build where id = 1'))[0].requested_at;
+  const clear = () => db.query('update public.site_build set requested_at = null where id = 1');
+
+  await clear();
+  await db.query(`update public.articles set title = 'Draft, renamed' where id = 'secret-draft'`);
+  await db.query(`insert into public.article_authors (article_id, author_id) values ('secret-draft', 'abel')`);
+  assert.equal(await requested(), null, 'editing a draft must not rebuild the site');
+
+  await db.query(`update public.settings set last_publish_at = now(), last_publish_by = 'x' where id = 1`);
+  assert.equal(await requested(), null, 'recording a rebuild must not ask for another');
+
+  await db.query(`update public.articles set status = 'published' where id = 'secret-draft'`);
+  assert.ok(await requested(), 'publishing an edition asks for a rebuild');
+
+  await clear();
+  await db.query(`update public.articles set status = 'draft' where id = 'secret-draft'`);
+  assert.ok(await requested(), 'unpublishing an edition asks for a rebuild too');
+
+  await clear();
+  await db.query(`insert into public.site_copy (key, value) values ('announce', 'Hello') on conflict (key) do update set value = excluded.value`);
+  assert.ok(await requested(), 'site text changes ask for a rebuild');
+});
+
+test('subscriber numbers carry their own date', async () => {
+  await db.query(`update public.settings set subscribers_updated_at = null where id = 1`);
+  const s0 = (await rows('admin', 'select subscribers_updated_at d, linkedin_only_editions l from public.settings where id = 1'))[0];
+  assert.equal(s0.d, null, 'the date cannot be set by hand');
+  assert.equal(s0.l, 42);
+  await db.query(`update public.settings set subscribers_linkedin = 7000, subscribers_substack = 500 where id = 1`);
+  const s1 = (await rows('admin', 'select subscribers_updated_at d from public.settings where id = 1'))[0];
+  assert.ok(s1.d, 'changing a count stamps today');
+});

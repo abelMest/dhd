@@ -10,15 +10,17 @@ const plusDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString(
 
 export default function Overview({ go }: { go: Go }) {
   const sb = supabase()!;
-  const [s, setS] = useState<{ subs: Values[]; drafts: Values[]; stale: Values[]; closing: Values[]; noTopic: Values[] } | null>(null);
+  const [s, setS] = useState<{ subs: Values[]; drafts: Values[]; stale: Values[]; closing: Values[]; noTopic: Values[]; figuresAge: number | null } | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [subs, drafts, opps] = await Promise.all([
+      const [subs, drafts, opps, settings] = await Promise.all([
         sb.from('submissions').select('id,kind,status,payload,created_at,draft_at').order('created_at', { ascending: false }).limit(50),
         sb.from('articles').select('id,title,topic,published_at').eq('status', 'draft').order('published_at', { ascending: false }),
         sb.from('opportunities').select('id,title,deadline,verified_at,status').eq('status', 'published'),
+        sb.from('settings').select('subscribers_updated_at').eq('id', 1).single(),
       ]);
+      const stamped = (settings.data as Values | null)?.subscribers_updated_at;
       const o = (opps.data as Values[]) || [];
       const open = o.filter((x) => !x.deadline || String(x.deadline) >= today());
       setS({
@@ -27,6 +29,7 @@ export default function Overview({ go }: { go: Go }) {
         noTopic: ((drafts.data as Values[]) || []).filter((x) => !x.topic),
         stale: open.filter((x) => !x.verified_at || String(x.verified_at) < plusDays(-30)),
         closing: open.filter((x) => x.deadline && String(x.deadline) <= plusDays(14)),
+        figuresAge: stamped ? Math.floor((Date.parse(today()) - Date.parse(String(stamped))) / 86400000) : null,
       });
     })();
   }, []);
@@ -45,6 +48,12 @@ export default function Overview({ go }: { go: Go }) {
           <button type="button" class="tile" onClick={t.go}><b class="num">{t.n}</b><span>{t.label}</span></button>
         ))}
       </div>
+      {(s.figuresAge === null || s.figuresAge > 30) && (
+        <p class="notice" style="margin-top:20px">
+          {s.figuresAge === null ? 'Subscriber numbers have not been entered per platform yet.' : `Subscriber numbers were last updated ${s.figuresAge} days ago.`}{' '}
+          Check LinkedIn and Substack and update them under <button type="button" class="linkBtn" onClick={() => go('settings')}>Settings & site text</button>.
+        </p>
+      )}
       {s.noTopic.length > 0 && (
         <p class="notice" style="margin-top:20px">{s.noTopic.length} new {s.noTopic.length === 1 ? 'edition was' : 'editions were'} imported from Substack. Add a topic, author and En bref, then set them to published.</p>
       )}

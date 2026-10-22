@@ -35,6 +35,8 @@ export interface Opportunity {
 }
 export interface Settings {
   subscribers: number; subscribersLabel: string; editionsTotal: number; substackUrl: string; linkedinUrl: string;
+  /** Where the edition total comes from: on this site, only on Substack (counted at build), only on LinkedIn (editor's figure). */
+  editionsBreakdown: { site: number; substackOnly: number | null; linkedinOnly: number };
 }
 export interface SiteData {
   articles: Article[]; authors: Author[]; resources: Resource[]; opportunities: Opportunity[];
@@ -94,10 +96,58 @@ function fromSeed(): SiteData {
     settings: {
       subscribers: Number(site.subscribers) || 0, subscribersLabel: str(site.subscribersLabel),
       editionsTotal: Number(site.editions) || articles.length,
+      editionsBreakdown: { site: articles.length, substackOnly: null, linkedinOnly: 0 },
       substackUrl: str(site.substackUrl) || 'https://dhdigest.substack.com/', linkedinUrl: str(site.linkedinUrl),
     },
     copy: withDefaults(cleanCopy(copy)),
   };
+}
+
+// ---- Live figures ---------------------------------------------------------------------------
+
+/** Every post slug in the Substack archive (public, no login). null when Substack cannot be reached. */
+async function substackSlugs(base: string): Promise<string[] | null> {
+  const slugs: string[] = [];
+  try {
+    for (let offset = 0; offset < 2000; offset += 50) {
+      const r = await fetch(`${base.replace(/\/+$/, '')}/api/v1/archive?sort=new&offset=${offset}&limit=50`, {
+        headers: { 'User-Agent': 'DigitalHealthDigest-site-build' }, signal: AbortSignal.timeout(8000),
+      });
+      if (!r.ok) return null;
+      const page = (await r.json()) as { slug?: string }[];
+      slugs.push(...page.map((p) => str(p.slug)).filter(Boolean));
+      if (page.length < 50) return slugs;
+    }
+    return slugs;
+  } catch {
+    return null;
+  }
+}
+
+const substackSlug = (u: string) => (u.match(/\/p\/([^/?#]+)/) || [])[1] || '';
+
+/** Editions in total = on this site + on Substack but not yet here + only on LinkedIn (the editor keeps that one figure). */
+export function editionFigures(articles: Article[], linkedinOnly: number, fallbackTotal: number, slugs: string[] | null) {
+  const site = articles.length;
+  if (!slugs) {
+    // Substack unreachable during this build: never show fewer than we know about.
+    return { editionsTotal: Math.max(fallbackTotal, site + linkedinOnly), editionsBreakdown: { site, substackOnly: null, linkedinOnly } };
+  }
+  const here = new Set(articles.map((a) => substackSlug(a.substackUrl)).filter(Boolean));
+  const substackOnly = slugs.filter((s) => !here.has(s)).length;
+  return { editionsTotal: site + substackOnly + linkedinOnly, editionsBreakdown: { site, substackOnly, linkedinOnly } };
+}
+
+/** Subscribers = LinkedIn + Substack as last entered, labelled with the platforms and the month they were updated. */
+export function subscriberFigures(s: Record<string, unknown> | null) {
+  const li = Number(s?.subscribers_linkedin) || 0;
+  const sub = Number(s?.subscribers_substack) || 0;
+  if (!li && !sub) return { subscribers: Number(s?.subscribers) || 0, subscribersLabel: str(s?.subscribers_label) };  // older single figure
+  const sources = [li && 'LinkedIn', sub && 'Substack'].filter(Boolean).join(' + ');
+  const when = s?.subscribers_updated_at
+    ? new Date(`${str(s.subscribers_updated_at)}T00:00:00Z`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+    : '';
+  return { subscribers: li + sub, subscribersLabel: [sources, when].filter(Boolean).join(', ') };
 }
 
 async function fromSupabase(url: string, key: string): Promise<SiteData> {
@@ -142,8 +192,9 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
       eligibility: str(o.eligibility), countries: arr(o.countries), verifiedAt: str(o.verified_at),
     })),
     settings: {
-      subscribers: Number(settings?.subscribers) || 0, subscribersLabel: str(settings?.subscribers_label),
-      editionsTotal: Number(settings?.editions_total) || articles.length,
+      ...subscriberFigures(settings),
+      ...editionFigures(articles, Number(settings?.linkedin_only_editions) || 0, Number(settings?.editions_total) || 0,
+        await substackSlugs(str(settings?.substack_url) || 'https://dhdigest.substack.com/')),
       substackUrl: str(settings?.substack_url) || 'https://dhdigest.substack.com/', linkedinUrl: str(settings?.linkedin_url),
     },
     copy: withDefaults(cleanCopy(copy)),

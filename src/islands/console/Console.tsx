@@ -98,8 +98,9 @@ function PublishButton({ onOpen }: { onOpen: (id: string) => void }) {
     <div class="publish">
       <button class="btn brand" type="button" onClick={publish} disabled={state === 'busy'}>{state === 'busy' ? 'Starting…' : 'Publish site'}</button>
       <span class="meta">
-        {state === 'done' ? 'Rebuilding. Changes are live in about two minutes.' : last.at ? `Last published ${new Date(last.at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}${last.by ? ` by ${last.by}` : ''}` : 'Not published from the console yet'}
+        {state === 'done' ? 'Rebuilding now. Changes are live in about two minutes.' : last.at ? `Last published ${new Date(last.at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}${last.by ? ` by ${last.by}` : ''}` : 'Not published from the console yet'}
       </span>
+      <span class="meta">Saved changes go live by themselves about three minutes later. Use this to update now.</span>
       {drafts.length > 0 && (
         <p class="meta draftsWaiting" role="status">
           {drafts.length === 1 ? '1 edition is a draft' : `${drafts.length} editions are drafts`} and will not appear on the site:{' '}
@@ -380,7 +381,7 @@ ${text.slice(at)}`);
       } else if (table === 'articles' && w.status !== 'published') {
         setMsg({ kind: 'info', text: 'Saved as a draft. It stays off the site until you choose Save and publish.' });
       } else {
-        setMsg({ kind: 'info', text: 'Saved. Press Publish site when you are ready for it to go live.' });
+        setMsg({ kind: 'info', text: 'Saved. The site updates by itself in about three minutes.' });
       }
       if (isNew && !publish) setTimeout(onClose, 600);
     } catch (e) {

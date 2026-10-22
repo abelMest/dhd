@@ -5,9 +5,9 @@ import { COPY_DEFAULTS, type CopyKey } from '../../lib/copy';
 import { Fields, Notice, type FieldDef, type Values } from '../ui';
 
 const SETTINGS_FIELDS: FieldDef[] = [
-  { name: 'subscribers', label: 'Subscribers', type: 'number', hint: 'One verified number. Update it monthly.' },
-  { name: 'subscribers_label', label: 'Source and date of that number', placeholder: 'LinkedIn + Substack, Oct 2026' },
-  { name: 'editions_total', label: 'Editions published in total', type: 'number', hint: 'Including ones not yet on this site. The archive says "Showing N of this".' },
+  { name: 'subscribers_linkedin', label: 'LinkedIn newsletter subscribers', type: 'number', hint: 'From your LinkedIn newsletter page. LinkedIn does not share this number, so it is entered here.' },
+  { name: 'subscribers_substack', label: 'Substack subscribers', type: 'number', hint: 'From your Substack dashboard, Subscribers. Substack does not publish the exact number either.' },
+  { name: 'linkedin_only_editions', label: 'Editions only on LinkedIn', type: 'number', hint: 'Published on LinkedIn but not on this site or Substack. The site counts its own editions and Substack posts by itself, and adds this.' },
   { name: 'substack_url', label: 'Substack address', type: 'url' },
   { name: 'linkedin_url', label: 'LinkedIn newsletter address', type: 'url' },
 ];
@@ -49,7 +49,10 @@ export default function SiteSettings() {
     e.preventDefault();
     setBusy(true); setMsg(null);
     try {
-      const { id: _id, updated_at: _u, last_publish_at: _p, last_publish_by: _b, ...row } = settings;
+      // The date beside the subscriber numbers is stamped by the database when a number changes.
+      const { id: _id, updated_at: _u, last_publish_at: _p, last_publish_by: _b, subscribers_updated_at: _d, ...row } = settings;
+      for (const k of ['subscribers_linkedin', 'subscribers_substack']) if (!Number(row[k])) row[k] = null;   // empty = not known
+      row.linkedin_only_editions = Math.max(0, Math.round(Number(row.linkedin_only_editions) || 0));
       const s = await sb.from('settings').update(row).eq('id', 1);
       if (s.error) throw s.error;
       // Store only what differs from the built-in text; clearing a box restores the default.
@@ -58,7 +61,9 @@ export default function SiteSettings() {
       const drop = keys.filter((k) => k !== 'aboutPhoto' && !String(copy[k] ?? '').trim());
       if (keep.length) { const r = await sb.from('site_copy').upsert(keep); if (r.error) throw r.error; }
       if (drop.length) { const r = await sb.from('site_copy').delete().in('key', drop); if (r.error) throw r.error; }
-      setMsg({ kind: 'info', text: 'Saved. Press Publish site to put it live.' });
+      const fresh = await sb.from('settings').select('*').eq('id', 1).single();
+      if (fresh.data) setSettings(fresh.data);
+      setMsg({ kind: 'info', text: 'Saved. The site updates by itself in about three minutes.' });
     } catch (e) { setMsg({ kind: 'err', text: friendlyError(e) }); } finally { setBusy(false); }
   }
 
@@ -77,7 +82,7 @@ export default function SiteSettings() {
       const r = await sb.from('site_copy').upsert({ key: 'aboutPhoto', value: `photos/${name}` });
       if (r.error) throw r.error;
       setPhoto(publicUrl(`photos/${name}`));
-      setMsg({ kind: 'info', text: 'Photo saved. Press Publish site to put it live.' });
+      setMsg({ kind: 'info', text: 'Photo saved. The site updates by itself in about three minutes.' });
     } catch (e) { setMsg({ kind: 'err', text: friendlyError(e) }); }
   }
 
@@ -86,6 +91,14 @@ export default function SiteSettings() {
       <section class="panel">
         <h2 style="font-size:1.4rem">Site figures and links</h2>
         <Fields defs={SETTINGS_FIELDS} values={settings} set={(k, v) => setSettings((s) => ({ ...s, [k]: v }))} />
+        <p class="meta" style="margin:-4px 0 16px">
+          {(() => {
+            const li = Number(settings.subscribers_linkedin) || 0, sub = Number(settings.subscribers_substack) || 0;
+            if (!li && !sub) return 'Enter at least one subscriber number. Until then the site shows the older single figure.';
+            const when = settings.subscribers_updated_at ? new Date(`${settings.subscribers_updated_at}T00:00:00Z`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : 'this month';
+            return `The site will show ${(li + sub).toLocaleString('en-GB')} subscribers, ${[li && 'LinkedIn', sub && 'Substack'].filter(Boolean).join(' + ')}, ${when}.`;
+          })()}
+        </p>
       </section>
 
       <section class="panel" style="margin-top:20px">

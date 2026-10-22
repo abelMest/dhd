@@ -41,5 +41,7 @@ Deno.serve(async (req) => {
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const when = new Date().toISOString();
   await admin.from('settings').update({ last_publish_at: when, last_publish_by: user.user.email ?? '' }).eq('id', 1);
+  // This build covers anything waiting, so the automatic rebuild (rebuild-tick) does not start a second one.
+  await admin.from('site_build').update({ built_at: when }).eq('id', 1);
   return json({ ok: true, at: when });
 });
