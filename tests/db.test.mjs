@@ -177,3 +177,19 @@ test('subscriber numbers carry their own date', async () => {
   const s1 = (await rows('admin', 'select subscribers_updated_at d from public.settings where id = 1'))[0];
   assert.ok(s1.d, 'changing a count stamps today');
 });
+
+test('a linked contributor changes their own author photo, and nothing else', async () => {
+  await db.query(`insert into public.author_logins (author_id, email) values ('albert-attom', 'alice@example.org') on conflict (author_id) do update set email = excluded.email`);
+  const r = await rows('alice', `update public.authors set photo_path = 'photos/self-${ALICE}-1.jpg' where id = 'albert-attom' returning photo_path`);
+  assert.equal(r.length, 1, 'Alice can set her own photo');
+  await fails('alice', `update public.authors set bio = 'changed' where id = 'albert-attom'`, /photo only/);
+  const other = await rows('alice', `update public.authors set photo_path = 'x' where id = 'abel' returning id`);
+  assert.equal(other.length, 0, 'but not anyone else’s');
+  const bob = await rows('bob', `update public.authors set photo_path = 'x' where id = 'albert-attom' returning id`);
+  assert.equal(bob.length, 0, 'an unlinked contributor cannot change it');
+  assert.equal((await rows('bob', 'select * from public.author_logins')).length, 0, 'sign-in emails are private');
+  assert.equal((await rows('alice', 'select * from public.author_logins')).length, 1, 'Alice sees only her own link');
+  await fails('anon', 'select * from public.author_logins', /permission|denied/i).catch(async () => {
+    assert.equal((await rows('anon', 'select * from public.author_logins')).length, 0);
+  });
+});

@@ -154,6 +154,10 @@ function CollectionView({ table, openId }: { table: TableName; openId: string | 
       const { data } = await sb.from('opportunity_notes').select('notes').eq('opportunity_id', r.id).maybeSingle();
       values.notes = data?.notes || '';
     }
+    if (table === 'authors') {
+      const { data } = await sb.from('author_logins').select('email').eq('author_id', r.id).maybeSingle();
+      values.login_email = data?.email || '';
+    }
     setEditing({ original: String(r.id), values });
   }
 
@@ -382,6 +386,13 @@ ${text.slice(at)}`);
       if (table === 'opportunities') {
         const n = await sb.from('opportunity_notes').upsert({ opportunity_id: id, notes: String(w.notes || '') });
         if (n.error) throw n.error;
+      }
+      if (table === 'authors') {
+        const email = String(w.login_email || '').trim().toLowerCase();
+        const l = email
+          ? await sb.from('author_logins').upsert({ author_id: id, email })
+          : await sb.from('author_logins').delete().eq('author_id', id);
+        if (l.error) throw l.error;
       }
       window.dispatchEvent(new Event('console:saved'));
       if (publish) {

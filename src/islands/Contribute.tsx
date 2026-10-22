@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { supabase, friendlyError } from '../lib/supabase';
 import { TOPICS, PITCH_FORMATS, RESOURCE_TYPES, AUDIENCES, OPP_KINDS, COUNTRIES, STAGES, type Stage } from '../lib/taxonomy';
 import { Fields, Notice, SignIn, useSession, missingRequired, fmtDay, type FieldDef, type Values } from './ui';
+import { photoUrl, uploadSquare } from '../lib/upload';
 
 type Kind = 'pitch' | 'resource' | 'opportunity';
 const FORMATS = PITCH_FORMATS.map((p) => p.format);
@@ -151,7 +152,52 @@ export default function Contribute() {
           <ul class="list">{mine.map((s) => <SubmissionRow s={s} onChange={load} />)}</ul>
         </section>
       )}
+      {session && <MyAuthorPhoto userId={session.user.id} />}
     </div>
+  );
+}
+
+/** For published authors: change the photo shown on their author page and bylines. An editor links the
+ *  author to this sign-in email first (console, Authors); the database allows the photo and nothing else. */
+function MyAuthorPhoto({ userId }: { userId: string }) {
+  const sb = supabase()!;
+  const [author, setAuthor] = useState<{ id: string; name: string; photo: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ kind: 'info' | 'err'; text: string } | null>(null);
+  useEffect(() => {
+    (async () => {
+      const link = await sb.from('author_logins').select('author_id').maybeSingle();
+      if (!link.data) return;
+      const a = await sb.from('authors').select('id,name,photo_path').eq('id', link.data.author_id).single();
+      if (a.data) setAuthor({ id: a.data.id, name: a.data.name, photo: a.data.photo_path || '' });
+    })();
+  }, [userId]);
+  if (!author) return null;
+  const pick = async (file?: File) => {
+    if (!file) return;
+    setBusy(true); setMsg(null);
+    try {
+      const path = await uploadSquare(file, `self-${userId}`);
+      const r = await sb.from('authors').update({ photo_path: path }).eq('id', author.id).select('id');
+      if (r.error) throw r.error;
+      if (!r.data?.length) throw new Error('Your account is not linked to this author yet. Ask an editor.');
+      setAuthor({ ...author, photo: path });
+      setMsg({ kind: 'info', text: 'Saved. Your new photo appears on the site in about three minutes.' });
+    } catch (e) { setMsg({ kind: 'err', text: friendlyError(e) }); } finally { setBusy(false); }
+  };
+  const src = photoUrl(author.photo);
+  return (
+    <section class="panel" style="margin-top:56px">
+      <h2 style="font-size:1.4rem">Your author photo</h2>
+      <p class="meta" style="margin:-4px 0 16px">Shown on <a href={`/authors/${author.id}/`}>your author page</a> and beside your byline as {author.name}. A clear head-and-shoulders photo works best; it is cropped to a square from the centre.</p>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span class="avatar" style="width:88px;height:88px">{src ? <img src={src} alt="" /> : 'No photo'}</span>
+        <label class="btn line">{busy ? 'Uploading…' : src ? 'Change photo' : 'Upload a photo'}
+          <input type="file" accept="image/*" class="sr" disabled={busy} onChange={(e) => pick((e.target as HTMLInputElement).files?.[0])} />
+        </label>
+      </div>
+      {msg && <Notice kind={msg.kind}>{msg.text}</Notice>}
+    </section>
   );
 }
 

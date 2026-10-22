@@ -126,6 +126,7 @@ export const COLLECTIONS: Record<TableName, Collection> = {
       { name: 'linkedin_url', label: 'LinkedIn profile', type: 'url' },
       { name: 'substack_url', label: 'Substack profile', type: 'url' },
       { name: 'is_editor', label: 'Editor of the Digest', type: 'checkbox' },
+      { name: 'login_email', label: 'Their sign-in email (optional)', type: 'email', hint: 'Lets this author change their own photo: they sign in on the Contribute page with this email. Never shown publicly.' },
     ],
     summary: (r) => [r.role, r.org].filter(Boolean).join(' · ') || 'No role yet',
     state: (r) => (!r.bio ? { label: 'No bio', tone: 'warn' } : null),
@@ -180,4 +181,4 @@ export const COLLECTIONS: Record<TableName, Collection> = {
 };
 
 /** Columns that live in other tables and must not be sent with the row. */
-export const VIRTUAL: Partial<Record<TableName, string[]>> = { articles: ['authors'], opportunities: ['notes'] };
+export const VIRTUAL: Partial<Record<TableName, string[]>> = { articles: ['authors'], opportunities: ['notes'], authors: ['login_email'] };
