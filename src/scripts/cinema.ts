@@ -36,7 +36,8 @@ document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
   t.replaceWith(lbl, ' ');
 });
 
-// ---------- Cursor: a blue dot with a little lag; over editions it becomes a "Read" bubble. ----------
+// ---------- Cursor: a blue dot with a little lag. Over a picture link it shows a small "Read" tag beside the pointer;
+// over cards full of text it stays a dot (they lift on hover), so it never sits on the words being read. ----------
 if (fine) {
   const c = document.querySelector<HTMLElement>('.cursor');
   if (c) {
@@ -46,7 +47,7 @@ if (fine) {
     document.addEventListener('pointerleave', () => c.classList.remove('on'));
     addEventListener('pointerdown', () => c.classList.add('press'));
     addEventListener('pointerup', () => c.classList.remove('press'));
-    const TARGETS = '.slide, .card, .stackCard, .nextChapter, .leadThumb, [data-cursor]';
+    const TARGETS = '.slide .sPic, .card .thumb, .stackCard .pic, .nextChapter, .leadThumb, [data-cursor]';
     document.addEventListener('pointerover', (e) => {
       const t = (e.target as Element).closest<HTMLElement>(TARGETS);
       c.classList.toggle('view', !!t);

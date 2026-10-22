@@ -57,7 +57,8 @@ html.menu-open .masthead.hide { transform: none; }
 .cursor { position: fixed; left: 0; top: 0; z-index: 150; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--blue); pointer-events: none; display: grid; place-items: center; opacity: 0; transition: width var(--t-ui) var(--ease-ui), height var(--t-ui) var(--ease-ui), margin var(--t-ui) var(--ease-ui), opacity .2s, background-color .2s; will-change: transform; }
 .cursor.on { opacity: 1; }
 .cursor span { font: 700 .82rem var(--sans); color: #fff; letter-spacing: .02em; opacity: 0; transition: opacity .2s; white-space: nowrap; }
-.cursor.view { width: 104px; height: 104px; margin: -52px 0 0 -52px; background: color-mix(in srgb, var(--blue) 92%, transparent); }
+/* Over a link: a small tag just below-right of the pointer, so it never covers the words being read. */
+.cursor.view { width: auto; height: 28px; padding: 0 12px; margin: 18px 0 0 16px; border-radius: 999px; background: var(--blue-deep); box-shadow: 0 6px 18px rgba(7, 26, 41, .22); }
 .cursor.view span { opacity: 1; }
 .cursor.press { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
 
