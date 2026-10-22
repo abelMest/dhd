@@ -8,6 +8,11 @@ test.beforeEach(({ page }) => {
 });
 test.afterEach(() => expect(errors, 'JavaScript errors on the page').toEqual([]));
 
+// How many editions are live, read from the feed, so the tests keep passing as editions are added.
+const editionCount = async (page: Page) =>
+  ((await (await page.request.get('/rss.xml')).text()).match(/<item>/g) || []).length;
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
 const noSideScroll = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 
@@ -62,13 +67,14 @@ test('subscribe opens Substack with the email filled in', async ({ page }) => {
 
 test('archive is honest about the count and filters by topic', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('dhd-archive-view', 'list'));
+  const total = await editionCount(page);
   await page.goto('/editions/');
-  await expect(page.locator('.pageHead .lede')).toContainText('Showing 20 of 63 editions');
-  await expect(page.locator('.row[data-topic]:visible')).toHaveCount(20);
+  await expect(page.locator('.pageHead .lede')).toContainText(`Showing ${total} of `);
+  await expect(page.locator('.row[data-topic]:visible')).toHaveCount(total);
   await page.locator('#topicChips .chip', { hasText: 'AI & data' }).click();
   const n = await page.locator('.row[data-topic]:visible').count();
   expect(n).toBeGreaterThan(0);
-  expect(n).toBeLessThan(20);
+  expect(n).toBeLessThan(total);
   await expect(page).toHaveURL(/topic=AI/);
 });
 
@@ -130,12 +136,13 @@ test('opportunities show deadlines and last-checked dates, and filter by type', 
 
 test('the archive search narrows editions by words', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('dhd-archive-view', 'list'));
+  const total = await editionCount(page);
   await page.goto('/editions/');
   await page.locator('#eq').fill('fhir');
   const shown = await page.locator('.row[data-topic]:visible').count();
   expect(shown).toBeGreaterThan(0);
-  expect(shown).toBeLessThan(20);
-  await expect(page.locator('#count')).toContainText(`${shown} of 20`);
+  expect(shown).toBeLessThan(total);
+  await expect(page.locator('#count')).toContainText(`${shown} of ${total}`);
 });
 
 test('library explains itself while empty, and links to suggest a resource', async ({ page }) => {
@@ -179,7 +186,7 @@ test('contribute and console offer sign-in (or explain they need the database)',
 test('feeds, sitemap and robots are in place', async ({ request }) => {
   const rss = await (await request.get('/rss.xml')).text();
   expect(rss).toContain('<item>');
-  expect((rss.match(/<item>/g) || []).length).toBe(20);
+  expect((rss.match(/<item>/g) || []).length).toBeGreaterThanOrEqual(20);
   const sm = await (await request.get('/sitemap-0.xml')).text();
   expect(sm).toContain('/editions/why-pilots-fail/');
   expect(sm).not.toContain('/console/');
@@ -244,15 +251,16 @@ test('back-to-top appears after scrolling and returns to the top', async ({ page
 
 test('wide screens fly through the archive in 3D; the list is one click away', async ({ page }) => {
   test.skip((page.viewportSize()?.width ?? 0) < 1024, 'The tunnel opens by default on wide screens only');
+  const total = await editionCount(page);
   await page.goto('/editions/');
   const tunnel = page.locator('[data-tunnel]');
   await expect(tunnel).toBeVisible();
   await expect(tunnel.locator('canvas')).toHaveCount(1);
   await expect(tunnel.locator('.tCard h2')).not.toBeEmpty();
-  await expect(tunnel.locator('.tCard .cnt')).toContainText('/ 20');
+  await expect(tunnel.locator('.tCard .cnt')).toContainText(`/ ${pad2(total)}`);
   // Filtering by topic rebuilds the road with only that topic's editions.
   await tunnel.locator('select').selectOption('AI & data');
-  await expect(tunnel.locator('.tCard .cnt')).toContainText('/ 06');
+  await expect(tunnel.locator('.tCard .cnt')).not.toContainText(`/ ${pad2(total)}`);
   // List view brings the plain archive back and removes the 3D scene.
   await page.locator('[data-viewtoggle] [data-view="list"]').click();
   await expect(tunnel).toBeHidden();

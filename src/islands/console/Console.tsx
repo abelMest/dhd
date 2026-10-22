@@ -57,7 +57,7 @@ export default function Console() {
         <nav class="tabs" aria-label="Console sections">
           {VIEWS.map((v) => <button type="button" aria-selected={view === v.id} onClick={() => go(v.id)}>{v.label}</button>)}
         </nav>
-        <PublishButton />
+        <PublishButton onOpen={(id) => go('articles', id)} />
       </div>
       {view === 'overview' && <Overview go={go} />}
       {view === 'submissions' && <Submissions openEdition={(id) => go('articles', id)} openNew={(table, prefill) => { go(table); setTimeout(() => window.dispatchEvent(new CustomEvent('console:new', { detail: prefill })), 0); }} />}
@@ -70,14 +70,24 @@ export default function Console() {
   );
 }
 
-function PublishButton() {
+function PublishButton({ onOpen }: { onOpen: (id: string) => void }) {
   const sb = supabase()!;
   const [last, setLast] = useState<{ at: string | null; by: string }>({ at: null, by: '' });
   const [state, setState] = useState<'idle' | 'busy' | 'done'>('idle');
   const [err, setErr] = useState('');
-  const load = () => sb.from('settings').select('last_publish_at,last_publish_by').eq('id', 1).single()
-    .then(({ data }) => data && setLast({ at: data.last_publish_at, by: data.last_publish_by }));
-  useEffect(() => { load(); }, []);
+  const [drafts, setDrafts] = useState<{ id: string; title: string }[]>([]);
+  const load = () => {
+    sb.from('settings').select('last_publish_at,last_publish_by').eq('id', 1).single()
+      .then(({ data }) => data && setLast({ at: data.last_publish_at, by: data.last_publish_by }));
+    // Drafts never go live through Publish site; say so before anyone wonders where an edition went.
+    sb.from('articles').select('id,title').eq('status', 'draft').order('updated_at', { ascending: false })
+      .then(({ data }) => setDrafts((data || []) as { id: string; title: string }[]));
+  };
+  useEffect(() => {
+    load();
+    window.addEventListener('console:saved', load);
+    return () => window.removeEventListener('console:saved', load);
+  }, []);
   const publish = async () => {
     setErr(''); setState('busy');
     const { error } = await sb.functions.invoke('publish', { method: 'POST' });
@@ -90,6 +100,13 @@ function PublishButton() {
       <span class="meta">
         {state === 'done' ? 'Rebuilding. Changes are live in about two minutes.' : last.at ? `Last published ${new Date(last.at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}${last.by ? ` by ${last.by}` : ''}` : 'Not published from the console yet'}
       </span>
+      {drafts.length > 0 && (
+        <p class="meta draftsWaiting" role="status">
+          {drafts.length === 1 ? '1 edition is a draft' : `${drafts.length} editions are drafts`} and will not appear on the site:{' '}
+          {drafts.slice(0, 3).map((d, i) => <>{i > 0 && ', '}<button type="button" class="linkBtn" onClick={() => onOpen(d.id)}>{d.title.length > 48 ? `${d.title.slice(0, 46)}…` : d.title}</button></>)}
+          {drafts.length > 3 && ` and ${drafts.length - 3} more`}. Open one and choose <b>Save and publish</b>.
+        </p>
+      )}
       {err && <Notice kind="err">{err}</Notice>}
     </div>
   );
@@ -318,19 +335,21 @@ ${text.slice(at)}`);
     } catch (err) { setMsg({ kind: 'err', text: friendlyError(err) }); } finally { setImgBusy(false); }
   }
 
-  async function save(e: Event) {
-    e.preventDefault();
-    const problems = [...missingRequired(c.fields, v).map((l) => `${l} is required.`), ...(c.validate?.(v) || [])];
+  // publish = true (editions): save as published, then rebuild the site in the same click.
+  async function save(e?: Event, publish = false) {
+    e?.preventDefault();
+    const w: Values = publish ? { ...v, status: 'published' } : v;
+    const problems = [...missingRequired(c.fields, w).map((l) => `${l} is required.`), ...(c.validate?.(w) || [])];
     if (problems.length) return setMsg({ kind: 'err', text: problems.join(' ') });
     setBusy(true); setMsg(null);
     try {
       const row: Values = {};
-      for (const f of c.fields) if (!(VIRTUAL[table] || []).includes(f.name)) row[f.name] = v[f.name] === '' && (f.type === 'date') ? null : v[f.name];
+      for (const f of c.fields) if (!(VIRTUAL[table] || []).includes(f.name)) row[f.name] = w[f.name] === '' && (f.type === 'date') ? null : w[f.name];
       if (table === 'articles') {
-        row.read_mins = v.body_md ? readingMinutes(String(v.body_md)) : (v.read_mins ?? null);
-        row.series = String(v.series || '').trim();
-        row.series_part = row.series && Number(v.series_part) > 0 ? Math.round(Number(v.series_part)) : null;
-        row.related = ((v.related as string[]) || []).slice(0, 3);
+        row.read_mins = w.body_md ? readingMinutes(String(w.body_md)) : (w.read_mins ?? null);
+        row.series = String(w.series || '').trim();
+        row.series_part = row.series && Number(w.series_part) > 0 ? Math.round(Number(w.series_part)) : null;
+        row.related = ((w.related as string[]) || []).slice(0, 3);
       }
       if (!hasId && !isNew) row.id = initial.original;
       const res = isNew
@@ -339,7 +358,7 @@ ${text.slice(at)}`);
       if (res.error) throw res.error;
       const id = String(res.data.id);
       if (table === 'articles') {
-        const ids = (v.authors as string[]) || [];
+        const ids = (w.authors as string[]) || [];
         const del = await sb.from('article_authors').delete().eq('article_id', id);
         if (del.error) throw del.error;
         if (ids.length) {
@@ -348,11 +367,22 @@ ${text.slice(at)}`);
         }
       }
       if (table === 'opportunities') {
-        const n = await sb.from('opportunity_notes').upsert({ opportunity_id: id, notes: String(v.notes || '') });
+        const n = await sb.from('opportunity_notes').upsert({ opportunity_id: id, notes: String(w.notes || '') });
         if (n.error) throw n.error;
       }
-      setMsg({ kind: 'info', text: 'Saved. Press Publish site when you are ready for it to go live.' });
-      if (isNew) setTimeout(onClose, 600);
+      window.dispatchEvent(new Event('console:saved'));
+      if (publish) {
+        setV(w);
+        const pub = await sb.functions.invoke('publish', { method: 'POST' });
+        if (pub.error) throw pub.error;
+        window.dispatchEvent(new Event('console:saved'));
+        setMsg({ kind: 'info', text: 'Published. The site is rebuilding and this edition is live in about two minutes.' });
+      } else if (table === 'articles' && w.status !== 'published') {
+        setMsg({ kind: 'info', text: 'Saved as a draft. It stays off the site until you choose Save and publish.' });
+      } else {
+        setMsg({ kind: 'info', text: 'Saved. Press Publish site when you are ready for it to go live.' });
+      }
+      if (isNew && !publish) setTimeout(onClose, 600);
     } catch (e) {
       setMsg({ kind: 'err', text: friendlyError(e) });
     } finally { setBusy(false); }
@@ -443,7 +473,14 @@ ${text.slice(at)}`);
       })}
       {msg && <Notice kind={msg.kind}>{msg.text}</Notice>}
       <div class="actions" style="justify-content:space-between;margin-top:8px">
-        <button class="btn" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
+        <span style="display:flex;gap:10px;flex-wrap:wrap">
+          {table === 'articles' && (
+            <button class="btn brand" type="button" disabled={busy} onClick={() => save(undefined, true)}>
+              {busy ? 'Working…' : v.status === 'published' ? 'Save and update the site' : 'Save and publish'}
+            </button>
+          )}
+          <button class={table === 'articles' ? 'btn line' : 'btn'} type="submit" disabled={busy}>{busy ? 'Saving…' : table === 'articles' && v.status !== 'published' ? 'Save draft' : 'Save'}</button>
+        </span>
         {!isNew && <button class="btn line" type="button" onClick={remove} style="color:var(--crit);border-color:var(--crit)">Delete</button>}
       </div>
       {!isNew && <p class="meta" style="margin-top:12px">Last changed {fmtDay(String(v.updated_at || ''))}</p>}

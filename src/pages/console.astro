@@ -15,6 +15,9 @@ import Console from '../islands/console/Console';
 <style is:global>
   .consoleBar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; padding-bottom: 20px; margin-bottom: 28px; border-bottom: 1px solid var(--line); }
   .publish { display: grid; gap: 6px; justify-items: end; text-align: right; max-width: 320px; }
+  /* Drafts waiting: a gentle nudge under Publish site, with each draft one click away. */
+  .draftsWaiting { margin: 0; padding: 8px 12px; border-radius: 10px; background: var(--warn-wash, #fff4e0); color: var(--ink); }
+  .linkBtn { background: none; border: 0; padding: 0; font: inherit; color: var(--blue-ink); text-decoration: underline; cursor: pointer; }
   .crow { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
   .crow > button:first-child { flex: 1; display: grid; gap: 2px; text-align: left; background: none; border: 0; padding: 14px 0; cursor: pointer; color: var(--ink); font: inherit; }
   .crow > button:first-child:hover b { text-decoration: underline; }
