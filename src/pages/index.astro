@@ -329,10 +329,11 @@ const topicPic = (t: string) => { const a = articles.find((x) => x.topic === t &
     </div>
   </section>
 
-  {site.partners.some((p) => p.kind === 'partner') && (
+  {site.partners.length > 0 && (
     <section class="section tight" aria-label="Partners">
       <div class="wrap">
-        <PartnerLogos partners={site.partners.filter((p) => p.kind === 'partner')} kicker="With our partners" />
+        <PartnerLogos partners={site.partners} variant="rail"
+          kicker={site.partners.some((p) => p.kind === 'past') ? 'Partners and organisations we have worked with' : 'With our partners'} />
       </div>
     </section>
   )}

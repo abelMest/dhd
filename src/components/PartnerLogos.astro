@@ -1,23 +1,33 @@
 ---
-// A row of partner logos, drawn in one colour so logos of every style sit together
-// (ink on light pages, white in dark mode). Managed in the console under Partners.
+// Partner logos, drawn in one colour so logos of every style sit together (ink on light pages,
+// white in dark mode). Managed in the console under Partners.
+//   variant="grid": a row that rises in, staggered, as it scrolls into view (About).
+//   variant="rail": an endless, slow carousel that pauses on hover (home). With reduced motion
+//                   it is a still, wrapped row.
 import type { Partner } from '../lib/data';
-interface Props { partners: Partner[]; kicker: string; title?: string; note?: string }
-const { partners, kicker, title, note } = Astro.props;
+interface Props { partners: Partner[]; kicker: string; title?: string; variant?: 'grid' | 'rail' }
+const { partners, kicker, title, variant = 'grid' } = Astro.props;
+// Three copies, so the loop never shows a gap even on very wide screens.
+const copies = variant === 'rail' ? [0, 1, 2] : [0];
 ---
 {partners.length > 0 && (
-  <div class="partnerLogos">
+  <div class:list={['partnerLogos', variant]}>
     <p class="kicker line">{kicker}</p>
     {title && <h2 class="display" style="font-size:clamp(1.6rem,3vw,2.2rem);margin:10px 0 0">{title}</h2>}
-    <ul>
-      {partners.map((p) => (
-        <li>
-          {p.url
-            ? <a href={p.url} rel="noopener" target="_blank" title={p.name}><img src={p.logoUrl} alt={p.name} loading="lazy" decoding="async" /></a>
-            : <img src={p.logoUrl} alt={p.name} title={p.name} loading="lazy" decoding="async" />}
-        </li>
-      ))}
-    </ul>
-    {note && <p class="meta">{note}</p>}
+    <div class="logoRail" style={`--n:${partners.length}`}>
+      <div class="logoTrack">
+        {copies.map((c) => (
+          <ul aria-hidden={c > 0 ? 'true' : undefined}>
+            {partners.map((p) => (
+              <li data-reveal={variant === 'grid' ? '' : undefined}>
+                {p.url
+                  ? <a href={p.url} rel="noopener" target="_blank" title={p.name} tabindex={c > 0 ? -1 : undefined}><img src={p.logoUrl} alt={c > 0 ? '' : p.name} loading="lazy" decoding="async" /></a>
+                  : <img src={p.logoUrl} alt={c > 0 ? '' : p.name} title={p.name} loading="lazy" decoding="async" />}
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
   </div>
 )}

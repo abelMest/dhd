@@ -638,13 +638,24 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .person small.n { color: var(--blue-ink); }
 /* Partner logos: one colour for every logo (ink on light, white in dark mode). */
 .partnerBlock { display: grid; gap: clamp(32px, 5vw, 56px); }
-.partnerLogos ul { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 5vw, 64px); }
+.partnerLogos .logoRail { margin-top: 26px; }
+.partnerLogos ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 5vw, 64px); }
 .partnerLogos li { display: flex; align-items: center; }
 .partnerLogos img { display: block; height: clamp(30px, 4vw, 44px); width: auto; max-width: 210px; object-fit: contain;
-  filter: brightness(0); opacity: .62; transition: opacity var(--t-ui, .45s) var(--ease-ui, ease); }
-.partnerLogos a:hover img, .partnerLogos a:focus-visible img { opacity: 1; }
-:root[data-theme="dark"] .partnerLogos img { filter: brightness(0) invert(1); opacity: .72; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .partnerLogos img { filter: brightness(0) invert(1); opacity: .72; } }
+  filter: brightness(0); opacity: .58;
+  transition: opacity var(--t-ui, .45s) var(--ease-ui, ease), transform var(--t-ui, .45s) var(--ease-out, ease); }
+.partnerLogos li:hover img, .partnerLogos a:focus-visible img { opacity: 1; transform: translateY(-3px) scale(1.05); }
+:root[data-theme="dark"] .partnerLogos img { filter: brightness(0) invert(1); opacity: .7; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .partnerLogos img { filter: brightness(0) invert(1); opacity: .7; } }
+
+/* Rail (home): an endless slow carousel with soft edges; hover pauses it. Without motion, one still row. */
+.partnerLogos.rail .logoRail { overflow: hidden; padding: 10px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.partnerLogos.rail ul:not(:first-child) { display: none; }
+.motion .partnerLogos.rail .logoTrack { display: flex; width: max-content; animation: logoScroll calc(var(--n, 6) * 6s) linear infinite; }
+.motion .partnerLogos.rail ul { display: flex; flex: none; flex-wrap: nowrap; padding-right: clamp(28px, 5vw, 64px); }
+.motion .partnerLogos.rail .logoRail:hover .logoTrack, .motion .partnerLogos.rail .logoRail:focus-within .logoTrack { animation-play-state: paused; }
+@keyframes logoScroll { to { transform: translateX(-33.3333%); } }
 .partnerRow { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
 .partnerRow li { padding: 14px 22px; border: 1px solid var(--line); border-radius: 12px; font: 700 1rem var(--display); color: var(--ink-2); }
 
