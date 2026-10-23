@@ -20,6 +20,7 @@ const SETTINGS_FIELDS: FieldDef[] = [
   { name: 'subscribers_substack', label: 'Substack subscribers', type: 'number', hint: 'From your Substack dashboard, Subscribers. Substack does not publish the exact number either.' },
   { name: 'linkedin_only_editions', label: 'Editions only on LinkedIn', type: 'number', hint: 'Published on LinkedIn but not on this site or Substack. The site counts its own editions and Substack posts by itself, and adds this.' },
   { name: 'substack_url', label: 'Substack address', type: 'url' },
+  { name: 'show_french', label: 'Show the French “En bref” lines on the site', type: 'checkbox', hint: 'Off for now. Every edition keeps its French line in the console; switch this on to show them all again.' },
   { name: 'linkedin_url', label: 'LinkedIn newsletter address', type: 'url' },
 ];
 

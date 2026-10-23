@@ -95,7 +95,7 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
             ))}
           </span>
         </div>
-        {a.fr && <p class="enbref" lang="fr"><b>En bref</b>{a.fr}</p>}
+        {site.settings.showFrench && a.fr && <p class="enbref" lang="fr"><b>En bref</b>{a.fr}</p>}
         <SponsorBox sponsor={sponsor} />
       </header>
 

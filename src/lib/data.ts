@@ -54,6 +54,8 @@ export interface Partner {
 export interface Settings {
   subscribers: number; subscribersLabel: string; editionsTotal: number; substackUrl: string; linkedinUrl: string;
   revenue: Revenue;
+  /** Show the French "En bref" lines (kept in the database either way). */
+  showFrench: boolean;
   /** Where the edition total comes from: on this site, only on Substack (counted at build), only on LinkedIn (editor's figure). */
   editionsBreakdown: { site: number; substackOnly: number | null; linkedinOnly: number };
 }
@@ -119,7 +121,7 @@ function fromSeed(): SiteData {
       editionsTotal: Number(site.editions) || articles.length,
       editionsBreakdown: { site: articles.length, substackOnly: null, linkedinOnly: 0 },
       substackUrl: str(site.substackUrl) || 'https://dhdigest.substack.com/', linkedinUrl: str(site.linkedinUrl),
-      revenue: revenueFrom(null),
+      revenue: revenueFrom(null), showFrench: false,
     },
     copy: withDefaults(cleanCopy(copy)),
   };
@@ -235,7 +237,7 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
       ...editionFigures(articles, Number(settings?.linkedin_only_editions) || 0, Number(settings?.editions_total) || 0,
         await substackSlugs(str(settings?.substack_url) || 'https://dhdigest.substack.com/')),
       substackUrl: str(settings?.substack_url) || 'https://dhdigest.substack.com/', linkedinUrl: str(settings?.linkedin_url),
-      revenue: revenueFrom(settings),
+      revenue: revenueFrom(settings), showFrench: !!settings?.show_french,
     },
     copy: withDefaults(cleanCopy(copy)),
   };

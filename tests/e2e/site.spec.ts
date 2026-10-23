@@ -75,12 +75,13 @@ test('archive is honest about the count and filters by topic', async ({ page }) 
   await expect(page).toHaveURL(/topic=AI/);
 });
 
-test('an edition page has the full text, En bref, author and share tags', async ({ page }) => {
+test('an edition page has the full text, author and share tags', async ({ page }) => {
   await page.goto('/editions/why-pilots-fail/');
   await expect(page.locator('h1')).toHaveText(/Why Digital Health Pilots Fail/);
   await expect(page.locator('.prose h2').first()).toBeVisible();
   expect(await page.locator('.prose').innerText()).toMatch(/pilot graveyard/);
-  await expect(page.locator('.enbref')).toContainText('En bref');
+  // The French "En bref" line follows the Settings switch (off for now); when shown it is labelled.
+  if (await page.locator('.enbref[lang="fr"]').count()) await expect(page.locator('.enbref[lang="fr"]')).toContainText('En bref');
   await expect(page.locator('.byline .who a')).toHaveText('Abel Mestie Mekonnen');
   await expect(page.locator('.byline .share a')).toHaveCount(3);
   await expect(page.locator('.readNext a').first()).toBeVisible();

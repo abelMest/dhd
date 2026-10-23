@@ -159,7 +159,7 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
               <time datetime={lead.publishedAt}>{fmtDate(lead.publishedAt)}</time>
               <span>{lead.readMins} min read</span>
             </div>
-            {lead.fr && <p class="enbref" lang="fr" style="margin:0 0 24px"><b>En bref</b>{lead.fr}</p>}
+            {site.settings.showFrench && lead.fr && <p class="enbref" lang="fr" style="margin:0 0 24px"><b>En bref</b>{lead.fr}</p>}
             <a class="btn" href={`/editions/${lead.id}/`} data-magnetic>Read the edition <span class="arrow" aria-hidden="true">→</span></a>
           </div>
         </div>

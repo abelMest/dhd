@@ -22,7 +22,7 @@ const vt = transition ? `view-transition-name: ed-${a.id}` : undefined;
   <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}>{a.topic}</a>
   <H><a href={`/editions/${a.id}/`} style={vt}>{a.title}</a></H>
   {a.dek && <p class="dek">{a.dek}</p>}
-  {showFr && a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
+  {showFr && site.settings.showFrench && a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
   <div class="meta">
     {names && <span>{names}</span>}
     <time datetime={a.publishedAt}>{fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
