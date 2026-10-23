@@ -18,7 +18,7 @@
 .menuPill .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); transition: transform .3s var(--ease); }
 .menuPill:hover .dots i:first-child { transform: translateX(-2px); }
 .menuPill:hover .dots i:last-child { transform: translateX(2px); }
-@media (max-width: 960px) { .menuPill { display: inline-flex; } .menuBtn { display: none !important; } .nav { display: none !important; } }
+@media (max-width: 1140px) { .menuPill { display: inline-flex; } .menuBtn { display: none !important; } .nav { display: none !important; } }
 .fsMenu { position: fixed; inset: 0; z-index: 90; background: var(--navy); color: #fff; display: flex; flex-direction: column; padding: 14px var(--gutter) 32px; clip-path: circle(0% at calc(100% - 56px) 36px); visibility: hidden; transition: clip-path .6s var(--ease), visibility 0s .6s; overflow-y: auto; }
 .fsMenu.open { clip-path: circle(150% at calc(100% - 56px) 36px); visibility: visible; transition: clip-path .7s var(--ease); }
 .fsMenu .fsTop { display: flex; justify-content: space-between; align-items: center; height: 48px; }

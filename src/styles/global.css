@@ -715,3 +715,8 @@ html:not(.fr) .frNote { display: none; }
 .langBtn:hover, .langBtn:focus-visible { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .langBtn.wide { letter-spacing: .02em; font-size: .9rem; height: 42px; padding: 0 18px; }
 @media (max-width: 700px) { .headActions .langBtn { display: none; } }
+/* French menu labels are longer: keep each on one line and tighten the spacing a little. */
+.nav a { white-space: nowrap; }
+html.fr .nav { gap: 0; }
+html.fr .nav a { padding: 10px 10px; font-size: .93rem; }
+@media (max-width: 1300px) { html.fr .nav a { padding: 8px 7px; font-size: .86rem; } }
