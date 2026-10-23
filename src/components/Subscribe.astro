@@ -1,6 +1,7 @@
 ---
 // Substack blocks embedding its form, so this opens Substack's subscribe page with the email filled in (as in v6).
 import { loadSite } from '../lib/data';
+import T from './T.astro';
 const { id = 'sub', note = true } = Astro.props as { id?: string; note?: boolean };
 const { settings, copy } = await loadSite();
 const action = settings.substackUrl.replace(/\/+$/, '') + '/subscribe';
@@ -9,6 +10,6 @@ const action = settings.substackUrl.replace(/\/+$/, '') + '/subscribe';
   <label class="sr" for={id}>Email address</label>
   <input id={id} name="email" type="email" required autocomplete="email" placeholder="you@example.org" />
   <input type="hidden" name="utm_source" value="dhd_hub" />
-  <button class="btn" type="submit">Subscribe free</button>
+  <button class="btn" type="submit"><T en="Subscribe free" fr="S’abonner gratuitement" /></button>
 </form>
-{note && <p class="subNote">{copy.subSub} Opens Substack to confirm.</p>}
+{note && <p class="subNote"><T en={`${copy.subSub} Opens Substack to confirm.`} fr="Gratuit. Chaque nouvelle édition par e-mail ; désabonnement à tout moment. La confirmation se fait sur Substack." /></p>}

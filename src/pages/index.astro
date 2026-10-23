@@ -4,6 +4,8 @@ import Subscribe from '../components/Subscribe.astro';
 import OppCard from '../components/OppCard.astro';
 import BeatRule from '../components/BeatRule.astro';
 import Accent from '../components/Accent.astro';
+import T from '../components/T.astro';
+import { topicFr, fmtDateFr } from '../lib/i18n';
 import PartnerLogos from '../components/PartnerLogos.astro';
 import { loadSite, authorsFor, fmtDate, openOpportunities } from '../lib/data';
 import { TOPICS, START_ROLES, HOME_THRESHOLD, topicSlug } from '../lib/taxonomy';
@@ -159,7 +161,7 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
               <time datetime={lead.publishedAt}>{fmtDate(lead.publishedAt)}</time>
               <span>{lead.readMins} min read</span>
             </div>
-            {site.settings.showFrench && lead.fr && <p class="enbref" lang="fr" style="margin:0 0 24px"><b>En bref</b>{lead.fr}</p>}
+            {lead.fr && <p class:list={['enbref', 'frLine', { always: site.settings.showFrench }]} lang="fr" style="margin:0 0 24px"><b>En bref</b>{lead.fr}</p>}
             <a class="btn" href={`/editions/${lead.id}/`} data-magnetic>Read the edition <span class="arrow" aria-hidden="true">→</span></a>
           </div>
         </div>
@@ -254,10 +256,10 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
         {vitals.map(({ t, n, last, line }, i) => (
           <li class="topicCard" data-reveal>
             <a href={`/topics/${topicSlug(t)}/`}>
-              <span class="tcTop"><span class="tn num">{String(i + 1).padStart(2, '0')}</span><span class="tc">{n} {n === 1 ? 'edition' : 'editions'}</span></span>
-              <span class="tt">{t}</span>
+              <span class="tcTop"><span class="tn num">{String(i + 1).padStart(2, '0')}</span><span class="tc"><T en={`${n} ${n === 1 ? 'edition' : 'editions'}`} fr={`${n} ${n === 1 ? 'édition' : 'éditions'}`} /></span></span>
+              <span class="tt"><T en={t} fr={topicFr(t)} /></span>
               <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label={`Editions per quarter on ${t}`}><path d={line} /></svg>
-              {last && <span class="tLatest"><span class="lbl">Latest</span><span class="ttl">{last.title}</span><span class="when">{fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })}</span></span>}
+              {last && <span class="tLatest"><span class="lbl"><T en="Latest" fr="Dernière" /></span><span class="ttl">{last.title}</span><span class="when"><T en={fmtDate(last.publishedAt, { month: 'short', year: 'numeric' })} fr={fmtDateFr(last.publishedAt, { month: 'short', year: 'numeric' })} /></span></span>}
               <span class="go" aria-hidden="true">→</span>
             </a>
           </li>
@@ -289,10 +291,10 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
                 <span class="go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
               </span>
               <span class="sBody">
-                <span class="sTopic">{a.topic}</span>
+                <span class="sTopic"><T en={a.topic} fr={topicFr(a.topic)} /></span>
                 <h3 style={`view-transition-name: ed-${a.id}`}>{a.title}</h3>
                 {a.dek && <span class="sDek">{a.dek}</span>}
-                <span class="sMeta">{fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })} · {a.readMins} min read</span>
+                <span class="sMeta"><T en={`${fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })} · ${a.readMins} min read`} fr={`${fmtDateFr(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })} · ${a.readMins} min de lecture`} /></span>
               </span>
             </a>
           );

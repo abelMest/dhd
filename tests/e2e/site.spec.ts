@@ -320,3 +320,22 @@ test('the Start here guide offers four paths that jump to their sections', async
   }
   await expect(page.locator('header nav a[href="/start/"], .masthead a[href="/start/"]').first()).toBeAttached();
 });
+
+test('readers can switch to French: interface and En bref lines, remembered across pages', async ({ page }) => {
+  await page.goto('/editions/fhir-universal-language/');
+  await expect(page.locator('.frLine:visible')).toHaveCount(0);
+  // Wide screens: the FR button in the masthead. Phones: "Lire en français" in the menu.
+  const toggle = async () => {
+    if (!(await page.locator('[data-lang-toggle]:visible').count())) await page.locator('#menuBtn').click();
+    await page.locator('[data-lang-toggle]:visible').first().click();
+  };
+  await toggle();
+  await expect(page.locator('html')).toHaveClass(/\bfr\b/);
+  if (await page.locator('#fsMenu:visible').count()) await page.keyboard.press('Escape');
+  await expect(page.locator('.enbref.frLine')).toBeVisible();
+  await expect(page.locator('.frNote')).toBeVisible();
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveClass(/\bfr\b/);
+  await toggle();
+  await expect(page.locator('html')).not.toHaveClass(/\bfr\b/);
+});

@@ -25,15 +25,22 @@ const vh = innerHeight;
 const below = (el: Element) => el.getBoundingClientRect().top > vh * 0.9;
 
 // ---------- Buttons: wrap each label so it can roll up while a copy rolls in. ----------
-document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
-  const t = [...b.childNodes].find((n) => n.nodeType === 3 && n.textContent!.trim());
-  if (!t) return;
+// Bilingual labels (<T>: .l-en / .l-fr) roll inside each language's own span.
+const rollLabel = (t: ChildNode) => {
   const text = t.textContent!.trim();
   const lbl = Object.assign(document.createElement('span'), { className: 'lbl' });
   const inner = document.createElement('span');
   inner.dataset.t = text; inner.textContent = text;
   lbl.append(inner);
   t.replaceWith(lbl, ' ');
+};
+document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
+  const t = [...b.childNodes].find((n) => n.nodeType === 3 && n.textContent!.trim());
+  if (t) return rollLabel(t);
+  b.querySelectorAll(':scope > .l-en, :scope > .l-fr').forEach((span) => {
+    const tt = [...span.childNodes].find((n) => n.nodeType === 3 && n.textContent!.trim());
+    if (tt) rollLabel(tt);
+  });
 });
 
 // ---------- Cursor: a blue dot with a little lag. Over a picture link it shows a small "Read" tag beside the pointer;

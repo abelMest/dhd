@@ -1,0 +1,7 @@
+---
+// One piece of interface text in English and French. Only one shows: French when the reader has chosen it
+// (html.fr, set by the language button and remembered). The French copy is left out of the search index.
+interface Props { en: string; fr: string }
+const { en, fr } = Astro.props;
+---
+<span class="l-en">{en}</span><span class="l-fr" lang="fr" data-pagefind-ignore>{fr}</span>

@@ -700,3 +700,18 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .pathCards span:not(.n):not(.go) { font: 400 .92rem/1.4 var(--serif); color: var(--ink-2); padding-right: 16px; }
 .pathCards .go { position: absolute; right: 16px; bottom: 14px; color: var(--blue); font-weight: 700; }
 .prose h3[id] { scroll-margin-top: 96px; }
+
+/* ---------- English / French (button in the masthead; html.fr when French is chosen) ---------- */
+.l-fr { display: none; }
+html.fr .l-en { display: none; }
+html.fr .l-fr { display: inline; }
+/* French "En bref" summaries: shown in French mode (or for everyone when Settings, Show French, is on). */
+.frLine { display: none; }
+html.fr .frLine, .frLine.always { display: block; }
+.frNote { margin: 22px 0 0; font: 500 .9rem var(--sans); color: var(--muted); }
+html:not(.fr) .frNote { display: none; }
+.langBtn { height: 38px; min-width: 42px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card); color: var(--ink);
+  font: 800 .78rem var(--sans); letter-spacing: .08em; cursor: pointer; transition: background-color .2s, color .2s, border-color .2s; }
+.langBtn:hover, .langBtn:focus-visible { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.langBtn.wide { letter-spacing: .02em; font-size: .9rem; height: 42px; padding: 0 18px; }
+@media (max-width: 700px) { .headActions .langBtn { display: none; } }

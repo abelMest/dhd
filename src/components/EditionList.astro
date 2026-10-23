@@ -4,6 +4,8 @@ import type { Article, SiteData } from '../lib/data';
 import { authorsFor, fmtDate } from '../lib/data';
 import { thumb } from '../lib/images';
 import { topicSlug } from '../lib/taxonomy';
+import T from './T.astro';
+import { topicFr, fmtDateFr } from '../lib/i18n';
 
 interface Props { site: SiteData; items: Article[]; showTopic?: boolean }
 const { site, items, showTopic = true } = Astro.props;
@@ -17,16 +19,16 @@ const years = [...new Set(items.map((a) => a.publishedAt.slice(0, 4)))];
         const pic = a.image ? thumb(a.image, 180) : null;
         const names = authorsFor(site, a).map((x) => x.name).join(', ');
         return (
-          <li class:list={['row', { noimg: !pic }]} data-topic={a.topic} data-reveal data-text={`${a.title} ${a.dek} ${site.settings.showFrench ? a.fr : ''} ${names} ${a.topic}`.toLowerCase()}>
-            <div class="when"><time datetime={a.publishedAt}>{fmtDate(a.publishedAt, { day: 'numeric', month: 'short' })}</time></div>
+          <li class:list={['row', { noimg: !pic }]} data-topic={a.topic} data-reveal data-text={`${a.title} ${a.dek} ${a.fr} ${names} ${a.topic} ${topicFr(a.topic)}`.toLowerCase()}>
+            <div class="when"><time datetime={a.publishedAt}><T en={fmtDate(a.publishedAt, { day: 'numeric', month: 'short' })} fr={fmtDateFr(a.publishedAt, { day: 'numeric', month: 'short' })} /></time></div>
             <div class="card">
-              {showTopic && <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}>{a.topic}</a>}
+              {showTopic && <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}><T en={a.topic} fr={topicFr(a.topic)} /></a>}
               <h3><a href={`/editions/${a.id}/`} style={`view-transition-name: ed-${a.id}`}>{a.title}</a></h3>
               {a.dek && <p class="dek">{a.dek}</p>}
-              {site.settings.showFrench && a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
+              {a.fr && <p class:list={['fr', 'frLine', { always: site.settings.showFrench }]} lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
               <div class="meta">
                 {names && <span>{names}</span>}
-                <span>{a.readMins} min read</span>
+                <span><T en={`${a.readMins} min read`} fr={`${a.readMins} min de lecture`} /></span>
               </div>
             </div>
             {pic && <div class="rthumb"><img src={pic.src} srcset={pic.srcset} sizes="180px" alt="" loading="lazy" decoding="async" /></div>}

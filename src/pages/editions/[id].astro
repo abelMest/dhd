@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import EditionCard from '../../components/EditionCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
 import SponsorBox from '../../components/SponsorBox.astro';
+import T from '../../components/T.astro';
+import { topicFr, fmtDateFr } from '../../lib/i18n';
 import AdSlot from '../../components/AdSlot.astro';
 import { loadSite, authorsFor, fmtDate, relatedTo, seriesOf, apaCitation, bibtex, searchDescription, sponsorFor, type Article } from '../../lib/data';
 import { renderMarkdown, outline, splitForAd } from '../../lib/markdown';
@@ -71,19 +73,19 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
   <article class="article" data-pagefind-body>
     <div class="wrap">
       <header>
-        <a class="kicker line" href={`/topics/${topicSlug(a.topic)}/`} data-pagefind-filter="topic">{a.topic}</a>
+        <a class="kicker line" href={`/topics/${topicSlug(a.topic)}/`} data-pagefind-filter="topic"><T en={a.topic} fr={topicFr(a.topic)} /></a>
         <h1 data-pagefind-meta="title" style={`view-transition-name: ed-${a.id}`}>{a.title}</h1>
         {a.dek && <p class="dek">{a.dek}</p>}
-        {parts.length > 1 && <p class="seriesTag"><a href="#series">Part {partNo(a, at)} of the series <b>{a.series}</b></a></p>}
+        {parts.length > 1 && <p class="seriesTag"><a href="#series"><T en={`Part ${partNo(a, at)} of the series`} fr={`Partie ${partNo(a, at)} de la série`} /> <b>{a.series}</b></a></p>}
         <div class="byline">
           {authors.length > 0 && (
             <span class="who">
               <span class="avatar sm" aria-hidden="true">{authors[0].photoUrl ? <img src={authors[0].photoUrl} alt="" /> : initials(authors[0].name)}</span>
-              <span>By {authors.map((x, i) => <>{i > 0 && ', '}<a href={`/authors/${x.id}/`}>{x.name}</a></>)}</span>
+              <span><T en="By" fr="Par" /> {authors.map((x, i) => <>{i > 0 && ', '}<a href={`/authors/${x.id}/`}>{x.name}</a></>)}</span>
             </span>
           )}
-          <time datetime={a.publishedAt} data-pagefind-meta="date">{fmtDate(a.publishedAt)}</time>
-          <span>{a.readMins} min read</span>
+          <time datetime={a.publishedAt} data-pagefind-meta="date"><T en={fmtDate(a.publishedAt)} fr={fmtDateFr(a.publishedAt)} /></time>
+          <span><T en={`${a.readMins} min read`} fr={`${a.readMins} min de lecture`} /></span>
           <span class="share" data-pagefind-ignore>
             <button class="iconBtn" type="button" data-copy={canonical} aria-label="Copy link to this edition">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>
@@ -95,7 +97,8 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
             ))}
           </span>
         </div>
-        {site.settings.showFrench && a.fr && <p class="enbref" lang="fr"><b>En bref</b>{a.fr}</p>}
+        <p class="frNote" lang="fr" data-pagefind-ignore>{a.fr ? 'Cette édition est publiée en anglais. En voici le résumé en français :' : 'Cette édition est publiée en anglais ; son résumé en français arrive bientôt.'}</p>
+        {a.fr && <p class:list={['enbref', 'frLine', { always: site.settings.showFrench }]} lang="fr"><b>En bref</b>{a.fr}</p>}
         <SponsorBox sponsor={sponsor} />
       </header>
 
@@ -106,18 +109,18 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
             : <div class="prose" set:html={html} />}
           {toc.length >= 3 && (
             <nav class="toc" aria-label="In this edition" data-pagefind-ignore>
-              <p>In this edition</p>
+              <p><T en="In this edition" fr="Dans cette édition" /></p>
               <ol>{toc.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}</ol>
             </nav>
           )}
         </div>
       ) : (
         <div class="readOn" data-pagefind-ignore>
-          <h2 style="font-size:1.3rem">The full edition is on {a.substackUrl ? 'Substack' : 'LinkedIn'}</h2>
-          <p>We are bringing every edition onto this site. Until this one arrives, read it in full at the original.</p>
+          <h2 style="font-size:1.3rem"><T en={`The full edition is on ${a.substackUrl ? 'Substack' : 'LinkedIn'}`} fr={`L’édition complète est sur ${a.substackUrl ? 'Substack' : 'LinkedIn'}`} /></h2>
+          <p><T en="We are bringing every edition onto this site. Until this one arrives, read it in full at the original." fr="Nous rassemblons toutes les éditions sur ce site. En attendant, lisez celle-ci en entier à la source." /></p>
           <div class="actions">
-            {a.substackUrl && <a class="btn" href={a.substackUrl} rel="noopener">Read on Substack ↗</a>}
-            {a.linkedinUrl && <a class="btn line" href={a.linkedinUrl} rel="noopener">Read on LinkedIn ↗</a>}
+            {a.substackUrl && <a class="btn" href={a.substackUrl} rel="noopener"><T en="Read on Substack ↗" fr="Lire sur Substack ↗" /></a>}
+            {a.linkedinUrl && <a class="btn line" href={a.linkedinUrl} rel="noopener"><T en="Read on LinkedIn ↗" fr="Lire sur LinkedIn ↗" /></a>}
           </div>
         </div>
       )}
@@ -125,24 +128,24 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
       <div class="endmatter" data-pagefind-ignore>
         {html && (a.substackUrl || a.linkedinUrl) && (
           <p class="meta" style="margin-bottom:24px">
-            Also published on {a.substackUrl && <a href={a.substackUrl} rel="noopener">Substack</a>}{a.substackUrl && a.linkedinUrl && ' and '}{a.linkedinUrl && <a href={a.linkedinUrl} rel="noopener">LinkedIn</a>}. Join the discussion there.
+            <T en="Also published on" fr="Également publié sur" /> {a.substackUrl && <a href={a.substackUrl} rel="noopener">Substack</a>}{a.substackUrl && a.linkedinUrl && <> <T en="and" fr="et" /> </>}{a.linkedinUrl && <a href={a.linkedinUrl} rel="noopener">LinkedIn</a>}. <T en="Join the discussion there." fr="Rejoignez la discussion là-bas." />
           </p>
         )}
         {parts.length > 1 && (
           <nav class="seriesBox" id="series" aria-labelledby="series-h">
-            <p class="kicker">A series in {parts.length} parts so far</p>
+            <p class="kicker"><T en={`A series in ${parts.length} parts so far`} fr={`Une série en ${parts.length} parties à ce jour`} /></p>
             <h2 id="series-h">{a.series}</h2>
             <ol>
               {parts.map((x, i) => (
                 <li>
                   <span class="no">{partNo(x, i)}</span>
                   {x.id === a.id
-                    ? <span aria-current="page"><b>{x.title}</b> <span class="meta">You are reading this</span></span>
+                    ? <span aria-current="page"><b>{x.title}</b> <span class="meta"><T en="You are reading this" fr="Vous lisez cette partie" /></span></span>
                     : <a href={`/editions/${x.id}/`}>{x.title}</a>}
                 </li>
               ))}
             </ol>
-            {at < parts.length - 1 && <a class="btn sm" href={`/editions/${parts[at + 1].id}/`}>Next in the series: part {partNo(parts[at + 1], at + 1)} <span class="arrow" aria-hidden="true">→</span></a>}
+            {at < parts.length - 1 && <a class="btn sm" href={`/editions/${parts[at + 1].id}/`}><T en={`Next in the series: part ${partNo(parts[at + 1], at + 1)}`} fr={`Suite de la série : partie ${partNo(parts[at + 1], at + 1)}`} /> <span class="arrow" aria-hidden="true">→</span></a>}
           </nav>
         )}
         {authors.map((x) => (
@@ -156,25 +159,25 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
           </div>
         ))}
         <details class="cite">
-          <summary>Cite this edition</summary>
+          <summary><T en="Cite this edition" fr="Citer cette édition" /></summary>
           <div class="citeBody">
             <p class="label">APA</p>
             <p class="citeText">{apa}</p>
-            <button class="btn line sm" type="button" data-copy-text={apa}>Copy citation</button><span class="copyMsg" role="status"></span>
+            <button class="btn line sm" type="button" data-copy-text={apa}><T en="Copy citation" fr="Copier la citation" /></button><span class="copyMsg" role="status"></span>
             <p class="label">BibTeX</p>
             <pre>{bib}</pre>
-            <button class="btn line sm" type="button" data-copy-text={bib}>Copy BibTeX</button><span class="copyMsg" role="status"></span>
+            <button class="btn line sm" type="button" data-copy-text={bib}><T en="Copy BibTeX" fr="Copier le BibTeX" /></button><span class="copyMsg" role="status"></span>
           </div>
         </details>
         <div class="panel" style="margin-top:28px">
-          <p class="kicker">Free, about once a week</p>
-          <h2 style="font-size:1.6rem;margin:8px 0 16px">Get the next edition in your inbox</h2>
+          <p class="kicker"><T en="Free" fr="Gratuit" /></p>
+          <h2 style="font-size:1.6rem;margin:8px 0 16px"><T en="Get the next edition in your inbox" fr="Recevez la prochaine édition par e-mail" /></h2>
           <Subscribe id="sub-article" />
         </div>
         {(older || newer) && (
           <nav class="readNext" aria-label="More editions">
-            {older ? <a href={`/editions/${older.id}/`}><span class="kicker">← Previous</span><b>{older.title}</b></a> : <span></span>}
-            {newer ? <a href={`/editions/${newer.id}/`} class="nx"><span class="kicker">Next →</span><b>{newer.title}</b></a> : <span></span>}
+            {older ? <a href={`/editions/${older.id}/`}><span class="kicker">← <T en="Previous" fr="Précédente" /></span><b>{older.title}</b></a> : <span></span>}
+            {newer ? <a href={`/editions/${newer.id}/`} class="nx"><span class="kicker"><T en="Next" fr="Suivante" /> →</span><b>{newer.title}</b></a> : <span></span>}
           </nav>
         )}
       </div>
@@ -184,7 +187,7 @@ const initials = (n: string) => n.replace(/^Dr\.?\s+/i, '').split(/\s+/).map((w)
   {related.length > 0 && (
     <section class="section" data-pagefind-ignore>
       <div class="wrap">
-        <div class="secHead"><div><p class="kicker line">Keep reading</p><h2>{rel.picked ? 'Related reading' : `More on ${a.topic}`}</h2></div><a class="more" href={`/topics/${topicSlug(a.topic)}/`}>All {a.topic} <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="secHead"><div><p class="kicker line"><T en="Keep reading" fr="À lire aussi" /></p><h2>{rel.picked ? <T en="Related reading" fr="Lectures liées" /> : <T en={`More on ${a.topic}`} fr={`Plus sur : ${topicFr(a.topic)}`} />}</h2></div><a class="more" href={`/topics/${topicSlug(a.topic)}/`}><T en={`All ${a.topic}`} fr={`Tout sur : ${topicFr(a.topic)}`} /> <span class="arrow" aria-hidden="true">→</span></a></div>
         <div class="grid3">{related.map((x) => <EditionCard site={site} a={x} showFr={false} transition={false} />)}</div>
       </div>
     </section>

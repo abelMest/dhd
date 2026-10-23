@@ -2,16 +2,17 @@
 // "Supported by": the sponsor of this edition, or of the Digest this month. Always labelled, and always
 // with the reminder that sponsors do not see or shape editorial content (see /partner/#policy).
 import type { Sponsorship } from '../lib/data';
+import T from './T.astro';
 interface Props { sponsor: Sponsorship | null }
 const { sponsor } = Astro.props;
 ---
 {sponsor && (
   <aside class="sponsorBox" aria-label="Sponsor" data-pagefind-ignore>
-    <span class="lbl">Supported by</span>
+    <span class="lbl"><T en="Supported by" fr="Avec le soutien de" /></span>
     {sponsor.url
       ? <a class="who" href={sponsor.url} rel="sponsored noopener" target="_blank">{sponsor.logoUrl ? <img src={sponsor.logoUrl} alt={sponsor.name} loading="lazy" /> : sponsor.name}</a>
       : <span class="who">{sponsor.logoUrl ? <img src={sponsor.logoUrl} alt={sponsor.name} loading="lazy" /> : sponsor.name}</span>}
     {sponsor.note && <span class="note">{sponsor.note}</span>}
-    <a class="policy" href="/partner/#policy">Sponsors never see or shape our editorial content.</a>
+    <a class="policy" href="/partner/#policy"><T en="Sponsors never see or shape our editorial content." fr="Les partenaires ne voient ni n’influencent jamais notre contenu éditorial." /></a>
   </aside>
 )}

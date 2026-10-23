@@ -4,6 +4,8 @@ import { authorsFor, fmtDate } from '../lib/data';
 import { thumb } from '../lib/images';
 import { topicSlug } from '../lib/taxonomy';
 import Logo from './Logo.astro';
+import T from './T.astro';
+import { topicFr, fmtDateFr } from '../lib/i18n';
 
 interface Props { site: SiteData; a: Article; showFr?: boolean; heading?: 'h2' | 'h3'; image?: boolean; width?: number; transition?: boolean }
 const { site, a, showFr = true, heading = 'h3', image = true, width = 400, transition = true } = Astro.props;
@@ -19,13 +21,13 @@ const vt = transition ? `view-transition-name: ed-${a.id}` : undefined;
       {pic ? <img src={pic.src} srcset={pic.srcset} sizes={`(max-width: 640px) 100vw, ${width}px`} alt="" loading="lazy" decoding="async" width="16" height="9" /> : <Logo variant="mark" height={60} />}
     </div>
   )}
-  <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}>{a.topic}</a>
+  <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}><T en={a.topic} fr={topicFr(a.topic)} /></a>
   <H><a href={`/editions/${a.id}/`} style={vt}>{a.title}</a></H>
   {a.dek && <p class="dek">{a.dek}</p>}
-  {showFr && site.settings.showFrench && a.fr && <p class="fr" lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
+  {showFr && a.fr && <p class:list={['fr', 'frLine', { always: site.settings.showFrench }]} lang="fr"><span class="tag">En bref</span>{a.fr}</p>}
   <div class="meta">
     {names && <span>{names}</span>}
-    <time datetime={a.publishedAt}>{fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
-    <span>{a.readMins} min read</span>
+    <time datetime={a.publishedAt}><T en={fmtDate(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })} fr={fmtDateFr(a.publishedAt, { day: 'numeric', month: 'short', year: 'numeric' })} /></time>
+    <span><T en={`${a.readMins} min read`} fr={`${a.readMins} min de lecture`} /></span>
   </div>
 </article>
