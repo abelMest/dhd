@@ -22,6 +22,9 @@ export interface Collection {
 const today = () => new Date().toISOString().slice(0, 10);
 const daysFrom = (iso: string) => Math.round((Date.parse(iso) - Date.parse(today())) / 86400000);
 const COUNTRY_OPTIONS = COUNTRIES as readonly string[];
+/** Every author bio keeps to this many words, so author cards are even across the site. */
+export const BIO_WORDS = 60;
+const words = (t: unknown) => String(t || '').trim().split(/\s+/).filter(Boolean).length;
 
 export const slugify = (s: string) =>
   s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
@@ -122,15 +125,16 @@ export const COLLECTIONS: Record<TableName, Collection> = {
       { name: 'org', label: 'Organisation' },
       { name: 'country', label: 'Country', type: 'select', options: COUNTRY_OPTIONS },
       { name: 'photo_path', label: 'Photo', type: 'photo', hint: 'Cropped to a square from the centre. Shown on their author page, bylines and About.' },
-      { name: 'bio', label: 'Bio', type: 'textarea', rows: 3 },
+      { name: 'bio', label: 'Bio (up to 60 words)', type: 'textarea', rows: 4, hint: 'Every author’s bio keeps to 60 words, so author cards stay even. Lead with who they are, then their role and one or two things they are known for.' },
       { name: 'linkedin_url', label: 'LinkedIn profile', type: 'url' },
       { name: 'substack_url', label: 'Substack profile', type: 'url' },
       { name: 'is_editor', label: 'Editor of the Digest', type: 'checkbox' },
       { name: 'login_email', label: 'Their sign-in email (optional)', type: 'email', hint: 'Lets this author change their own photo: they sign in on the Contribute page with this email. Never shown publicly.' },
     ],
     summary: (r) => [r.role, r.org].filter(Boolean).join(' · ') || 'No role yet',
-    state: (r) => (!r.bio ? { label: 'No bio', tone: 'warn' } : null),
+    state: (r) => (!r.bio ? { label: 'No bio', tone: 'warn' } : words(r.bio) > BIO_WORDS ? { label: 'Bio too long', tone: 'warn' } : null),
     defaults: () => ({}),
+    validate: (r) => (words(r.bio) > BIO_WORDS ? [`The bio has ${words(r.bio)} words; keep it to ${BIO_WORDS}.`] : []),
   },
   resources: {
     table: 'resources', label: 'Library', singular: 'resource',
