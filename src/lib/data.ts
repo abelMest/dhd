@@ -137,17 +137,17 @@ function revenueFrom(s: Record<string, unknown> | null): Revenue {
 
 // ---- Live figures ---------------------------------------------------------------------------
 
-/** Every post slug in the Substack archive (public, no login). null when Substack cannot be reached. */
-async function substackSlugs(base: string): Promise<string[] | null> {
-  const slugs: string[] = [];
+/** Every post in the Substack archive (slug and title; public, no login). null when Substack cannot be reached. */
+async function substackSlugs(base: string): Promise<{ slug: string; title: string }[] | null> {
+  const slugs: { slug: string; title: string }[] = [];
   try {
     for (let offset = 0; offset < 2000; offset += 50) {
       const r = await fetch(`${base.replace(/\/+$/, '')}/api/v1/archive?sort=new&offset=${offset}&limit=50`, {
         headers: { 'User-Agent': 'DigitalHealthDigest-site-build' }, signal: AbortSignal.timeout(8000),
       });
       if (!r.ok) return null;
-      const page = (await r.json()) as { slug?: string }[];
-      slugs.push(...page.map((p) => str(p.slug)).filter(Boolean));
+      const page = (await r.json()) as { slug?: string; title?: string }[];
+      slugs.push(...page.map((p) => ({ slug: str(p.slug), title: str(p.title) })).filter((p) => p.slug));
       if (page.length < 50) return slugs;
     }
     return slugs;
@@ -159,14 +159,22 @@ async function substackSlugs(base: string): Promise<string[] | null> {
 const substackSlug = (u: string) => (u.match(/\/p\/([^/?#]+)/) || [])[1] || '';
 
 /** Editions in total = on this site + on Substack but not yet here + only on LinkedIn (the editor keeps that one figure). */
-export function editionFigures(articles: Article[], linkedinOnly: number, fallbackTotal: number, slugs: string[] | null) {
+export function editionFigures(articles: Article[], linkedinOnly: number, fallbackTotal: number, slugs: { slug: string; title: string }[] | null) {
   const site = articles.length;
   if (!slugs) {
     // Substack unreachable during this build: never show fewer than we know about.
     return { editionsTotal: Math.max(fallbackTotal, site + linkedinOnly), editionsBreakdown: { site, substackOnly: null, linkedinOnly } };
   }
   const here = new Set(articles.map((a) => substackSlug(a.substackUrl)).filter(Boolean));
-  const substackOnly = slugs.filter((s) => !here.has(s)).length;
+  // A post re-published on Substack under a new address has the same title: count it once.
+  const norm = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const titles = new Set(articles.map((a) => norm(a.title)));
+  const seen = new Set<string>();
+  const substackOnly = slugs.filter((p) => {
+    if (here.has(p.slug) || titles.has(norm(p.title)) || seen.has(norm(p.title))) return false;
+    seen.add(norm(p.title));
+    return true;
+  }).length;
   return { editionsTotal: site + substackOnly + linkedinOnly, editionsBreakdown: { site, substackOnly, linkedinOnly } };
 }
 
