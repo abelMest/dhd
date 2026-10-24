@@ -1,5 +1,6 @@
 ---
 // Archive-style list, grouped by year. Used on /editions/, topic pages and author pages.
+// Rows show at once (no scroll reveal): this is a reading list, and the first rows are what a reader came for.
 import type { Article, SiteData } from '../lib/data';
 import { authorsFor, fmtDate } from '../lib/data';
 import { thumb } from '../lib/images';
@@ -19,7 +20,7 @@ const years = [...new Set(items.map((a) => a.publishedAt.slice(0, 4)))];
         const pic = a.image ? thumb(a.image, 180) : null;
         const names = authorsFor(site, a).map((x) => x.name).join(', ');
         return (
-          <li class:list={['row', { noimg: !pic }]} data-topic={a.topic} data-reveal data-text={`${a.title} ${a.dek} ${a.fr} ${names} ${a.topic} ${topicFr(a.topic)}`.toLowerCase()}>
+          <li class:list={['row', { noimg: !pic }]} data-topic={a.topic} data-text={`${a.title} ${a.dek} ${a.fr} ${names} ${a.topic} ${topicFr(a.topic)}`.toLowerCase()}>
             <div class="when"><time datetime={a.publishedAt}><T en={fmtDate(a.publishedAt, { day: 'numeric', month: 'short' })} fr={fmtDateFr(a.publishedAt, { day: 'numeric', month: 'short' })} /></time></div>
             <div class="card">
               {showTopic && <a class="kicker" href={`/topics/${topicSlug(a.topic)}/`}><T en={a.topic} fr={topicFr(a.topic)} /></a>}
