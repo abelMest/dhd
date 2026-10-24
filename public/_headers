@@ -1,3 +1,14 @@
+# Security headers for every page. A strict script policy is left out on purpose: it would break Google
+# AdSense and Supabase sign-in. frame-ancestors (with X-Frame-Options for older browsers) stops other sites
+# from framing the Digest (clickjacking); HSTS keeps returning visitors on HTTPS.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()
+
 # Only digitalhealthdigest.africa should appear in search results. The pages.dev addresses
 # (production alias and per-deploy previews) still work but ask search engines not to index them.
 https://digitalhealthdigest.pages.dev/*

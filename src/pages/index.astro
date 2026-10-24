@@ -120,7 +120,7 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
     <section class="reel" data-reel aria-label="Pictures from recent editions">
       <div class="stick">
         <div class="reelFrame">
-          {reelPics.map((p, i) => <img src={p.src} srcset={p.srcset} sizes="100vw" alt="" loading={i ? 'lazy' : 'eager'} decoding="async" />)}
+          {reelPics.map((p) => <img src={p.src} srcset={p.srcset} sizes="100vw" alt="" loading="lazy" decoding="async" />)}
         </div>
         <p class="reelLabel" aria-hidden="true"><span class="pulse-dot"></span>Scroll to open</p>
         <div class="reelCap"><p>Field lessons <span class="accent">from</span> the people doing the work</p></div>
@@ -150,7 +150,7 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
       <div class="wrap">
         <div class="lead" data-reveal>
           <a href={`/editions/${lead.id}/`} class="thumb leadThumb" aria-hidden="true" tabindex="-1">
-            {leadPic ? <img src={leadPic.src} srcset={leadPic.srcset} sizes="(max-width: 860px) 100vw, 680px" alt="" width="4" height="3" decoding="async" style="width:100%;height:100%;object-fit:cover" /> : null}
+            {leadPic ? <img src={leadPic.src} srcset={leadPic.srcset} sizes="(max-width: 860px) 100vw, 680px" alt="" width="4" height="3" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover" /> : null}
           </a>
           <div>
             <p class="kicker line">Latest edition · <a class="kicker" href={`/topics/${topicSlug(lead.topic)}/`} style="letter-spacing:inherit">{lead.topic}</a></p>

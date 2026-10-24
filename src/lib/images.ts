@@ -22,6 +22,8 @@ export function firstImage(md: string): string {
 export function thumb(src: string, displayWidth: number) {
   const cdn = substackImage(src);
   if (!cdn) return { src, srcset: undefined as string | undefined };
-  const widths = [displayWidth, displayWidth * 2].map((w) => Math.min(1456, Math.round(w / 8) * 8));
-  return { src: cdn.at(widths[0]), srcset: widths.map((w) => `${cdn.at(w)} ${w}w`).join(', ') };
+  // A range of widths so phones download phone-sized pictures; the browser picks from `sizes`.
+  const max = Math.min(1456, displayWidth * 2);
+  const widths = [...new Set([360, 480, 640, 800, 960, 1104, 1280, 1456, displayWidth].filter((w) => w <= max).map((w) => Math.round(w / 8) * 8))].sort((x, y) => x - y);
+  return { src: cdn.at(Math.min(1456, Math.round(displayWidth / 8) * 8)), srcset: widths.map((w) => `${cdn.at(w)} ${w}w`).join(', ') };
 }

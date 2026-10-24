@@ -249,11 +249,14 @@ test('back-to-top appears after scrolling and returns to the top', async ({ page
   await expect.poll(() => page.evaluate(() => scrollY), { timeout: 5000 }).toBeLessThan(10);
 });
 
-test('wide screens fly through the archive in 3D; the list is one click away', async ({ page }) => {
-  test.skip((page.viewportSize()?.width ?? 0) < 1024, 'The tunnel opens by default on wide screens only');
+test('the archive opens as a list; the 3D tour is one click away', async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 0) < 1024, 'The 3D tour is offered on wide screens');
   const total = await editionCount(page);
   await page.goto('/editions/');
   const tunnel = page.locator('[data-tunnel]');
+  await expect(tunnel).toBeHidden();
+  await expect(page.locator('.row[data-topic]').first()).toBeVisible();
+  await page.locator('[data-viewtoggle] [data-view="tunnel"]').click();
   await expect(tunnel).toBeVisible();
   await expect(tunnel.locator('canvas')).toHaveCount(1);
   await expect(tunnel.locator('.tCard h2')).not.toBeEmpty();

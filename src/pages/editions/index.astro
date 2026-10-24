@@ -23,7 +23,7 @@ const topicsHere = TOPICS.filter((t) => articles.some((a) => a.topic === t));
           : `${articles.length} editions.`}
       </p>
       <div class="viewToggle" role="group" aria-label="How to view the archive" style="margin-top:28px" data-viewtoggle hidden>
-        <button type="button" data-view="tunnel" aria-pressed="false">Tunnel</button>
+        <button type="button" data-view="tunnel" aria-pressed="false">3D tour</button>
         <button type="button" data-view="list" aria-pressed="true">List</button>
       </div>
     </div>
@@ -115,9 +115,9 @@ const topicsHere = TOPICS.filter((t) => articles.some((a) => a.topic === t));
   if (toggle && tunnel && canFly()) {
     toggle.hidden = false;
     let unmount: (() => void) | null = null;
-    const set = async (view: 'tunnel' | 'list') => {
+    const set = async (view: 'tunnel' | 'list', remember = false) => {
       toggle.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
-      try { localStorage.setItem('dhd-archive-view', view); } catch { /* private mode */ }
+      if (remember) try { localStorage.setItem('dhd-archive-choice', view); } catch { /* private mode */ }
       const fly = view === 'tunnel';
       tunnel.hidden = !fly;
       lists.forEach((l) => (l.hidden = fly));
@@ -127,10 +127,11 @@ const topicsHere = TOPICS.filter((t) => articles.some((a) => a.topic === t));
         unmount = mountTunnel(tunnel, data);
       } else if (!fly && unmount) { unmount(); unmount = null; }
     };
-    toggle.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.addEventListener('click', () => set(b.dataset.view as 'tunnel' | 'list')));
-    // Wide screens open in the tunnel unless the reader chose the list before; phones start with the list.
+    toggle.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.addEventListener('click', () => set(b.dataset.view as 'tunnel' | 'list', true)));
+    // Everyone starts with the list (fast, readable). The 3D tunnel opens only when a reader picks it,
+    // and is remembered only after that explicit choice.
     let saved: string | null = null;
-    try { saved = localStorage.getItem('dhd-archive-view'); } catch { /* private mode */ }
-    if (saved ? saved === 'tunnel' : innerWidth >= 1024) set('tunnel');
+    try { saved = localStorage.getItem('dhd-archive-choice'); localStorage.removeItem('dhd-archive-view'); } catch { /* private mode */ }
+    if (saved === 'tunnel') set('tunnel');
   }
 </script>
