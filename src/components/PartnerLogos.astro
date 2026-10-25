@@ -5,13 +5,15 @@
 //   variant="rail": an endless, slow carousel that pauses on hover (home). With reduced motion
 //                   it is a still, wrapped row.
 import type { Partner } from '../lib/data';
-interface Props { partners: Partner[]; kicker: string; title?: string; variant?: 'grid' | 'rail' }
-const { partners, kicker, title, variant = 'grid' } = Astro.props;
+//   tone="color": logos keep their colours on small white tiles, softened to grey until hovered. For seals
+//                 and crests, which turn into blobs when drawn in one colour (readers' organisations).
+interface Props { partners: Partner[]; kicker: string; title?: string; variant?: 'grid' | 'rail'; tone?: 'mono' | 'color' }
+const { partners, kicker, title, variant = 'grid', tone = 'mono' } = Astro.props;
 // Three copies, so the loop never shows a gap even on very wide screens.
 const copies = variant === 'rail' ? [0, 1, 2] : [0];
 ---
 {partners.length > 0 && (
-  <div class:list={['partnerLogos', variant]}>
+  <div class:list={['partnerLogos', variant, tone]}>
     <p class="kicker line">{kicker}</p>
     {title && <h2 class="display" style="font-size:clamp(1.6rem,3vw,2.2rem);margin:10px 0 0">{title}</h2>}
     <div class="logoRail" style={`--n:${partners.length}`}>

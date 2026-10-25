@@ -48,8 +48,8 @@ export interface Partner {
   id: string; name: string; url: string; logoUrl: string;
   /** Percentage of the standard logo height, to even out visual weight. */
   scale: number;
-  /** partner: works with the Digest now. past: organisations the team has worked with. */
-  kind: 'partner' | 'past';
+  /** partner: works with the Digest now. past: organisations the team has worked with. reader: where readers work. */
+  kind: 'partner' | 'past' | 'reader';
 }
 export interface Settings {
   subscribers: number; subscribersLabel: string; editionsTotal: number; substackUrl: string; linkedinUrl: string;
@@ -62,6 +62,8 @@ export interface Settings {
 export interface SiteData {
   articles: Article[]; authors: Author[]; resources: Resource[]; opportunities: Opportunity[];
   partners: Partner[];
+  /** Organisations readers work at ("Read by people at"); kept apart so they never show as partners. */
+  readerOrgs: Partner[];
   sponsorships: Sponsorship[];
   settings: Settings; copy: Copy; source: 'supabase' | 'seed';
 }
@@ -115,7 +117,7 @@ function fromSeed(): SiteData {
   const site = s.settings.find((x) => x.id === 'site') || {};
   const copy = s.settings.find((x) => x.id === 'copy') || {};
   return {
-    articles, authors, resources, opportunities, partners: [], sponsorships: [], source: 'seed',
+    articles, authors, resources, opportunities, partners: [], readerOrgs: [], sponsorships: [], source: 'seed',
     settings: {
       subscribers: Number(site.subscribers) || 0, subscribersLabel: str(site.subscribersLabel),
       editionsTotal: Number(site.editions) || articles.length,
@@ -225,8 +227,11 @@ async function fromSupabase(url: string, key: string): Promise<SiteData> {
       id: x.id, name: str(x.name), url: str(x.url), logoUrl: storage(str(x.logo_path)), note: str(x.note),
       scope: x.scope === 'edition' ? 'edition' : 'site', articleId: str(x.article_id), startsOn: str(x.starts_on), endsOn: str(x.ends_on),
     })),
-    partners: parts.filter((p) => p.logo_path).map((p) => ({
+    partners: parts.filter((p) => p.logo_path && p.kind !== 'reader').map((p) => ({
       id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), scale: Number(p.logo_scale) || 100, kind: p.kind === 'past' ? 'past' : 'partner',
+    })),
+    readerOrgs: parts.filter((p) => p.logo_path && p.kind === 'reader').map((p) => ({
+      id: p.id, name: str(p.name), url: str(p.url), logoUrl: storage(str(p.logo_path)), scale: Number(p.logo_scale) || 100, kind: 'reader' as const,
     })),
     authors: auths.map((a) => ({
       id: a.id, name: str(a.name), role: str(a.role), org: str(a.org), country: str(a.country), bio: str(a.bio),

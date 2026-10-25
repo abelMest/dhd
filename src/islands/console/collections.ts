@@ -29,7 +29,7 @@ const words = (t: unknown) => String(t || '').trim().split(/\s+/).filter(Boolean
 export const slugify = (s: string) =>
   s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 
-const KINDS = ['partner', 'past'];
+const KINDS = ['partner', 'past', 'reader'];
 
 export const COLLECTIONS: Record<TableName, Collection> = {
   sponsorships: {
@@ -67,14 +67,14 @@ export const COLLECTIONS: Record<TableName, Collection> = {
     fields: [
       { name: 'name', label: 'Organisation', required: true },
       { name: 'id', label: 'Short id', required: true, hint: 'Lowercase words and hyphens, e.g. medrafa.' },
-      { name: 'kind', label: 'Relationship', type: 'select', options: KINDS, required: true, hint: 'partner: works with the Digest now (home and About). past: the team has worked with them (About only).' },
+      { name: 'kind', label: 'Relationship', type: 'select', options: KINDS, required: true, hint: 'partner: works with the Digest now (home and About). past: the team has worked with them (About only). reader: readers work there (“Read by people at”, home and Partner pages).' },
       { name: 'logo_path', label: 'Logo', type: 'logo', hint: 'PNG or WebP with a transparent background works best. It is shown in one colour, so any style fits.' },
       { name: 'url', label: 'Website', type: 'url' },
       { name: 'logo_scale', label: 'Logo size (%)', type: 'number', hint: 'Evens out logos of different weight. 100 is standard; try 75 for a bold wordmark, 120 for a logo with small text. From 40 to 160.' },
       { name: 'position', label: 'Order', type: 'number', hint: 'Lower numbers come first.' },
       { name: 'status', label: 'Status', type: 'select', options: ['pending', 'published'], required: true, hint: 'Show a logo only once the organisation has agreed to it.' },
     ],
-    summary: (r) => [r.kind === 'past' ? 'Past work' : 'Current partner', r.url].filter(Boolean).join(' · '),
+    summary: (r) => [r.kind === 'past' ? 'Past work' : r.kind === 'reader' ? 'Readers work here' : 'Current partner', r.url].filter(Boolean).join(' · '),
     state: (r) => (r.status === 'published' ? (r.logo_path ? { label: 'Shown', tone: 'ok' } : { label: 'No logo', tone: 'warn' }) : { label: 'Hidden', tone: 'warn' }),
     defaults: () => ({ kind: 'partner', status: 'pending', position: 10, logo_scale: 100 }),
     validate: (r) => (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(String(r.id || '')) ? ['The short id may only use lowercase letters, numbers and single hyphens.'] : []),

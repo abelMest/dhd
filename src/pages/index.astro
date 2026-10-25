@@ -116,9 +116,9 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
     </div>
   </section>
 
-  {copy.readersAt.trim() && (
+  {(site.readerOrgs.length > 0 || copy.readersAt.trim()) && (
     <section class="section tight" aria-label="Who reads the Digest">
-      <div class="wrap"><ReadersAt copy={copy} /></div>
+      <div class="wrap"><ReadersAt copy={copy} orgs={site.readerOrgs} /></div>
     </section>
   )}
 
