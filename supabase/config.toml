@@ -244,6 +244,16 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Branded sign-in emails. The live project uses the same files, pasted into
+# Authentication > Emails > Templates in the Supabase dashboard.
+[auth.email.template.magic_link]
+subject = "Your sign-in link for the Digital Health Digest"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.confirmation]
+subject = "Confirm your email for the Digital Health Digest"
+content_path = "./supabase/templates/confirmation.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
