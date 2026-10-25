@@ -85,6 +85,12 @@ html.menu-open .masthead.hide { transform: none; }
 
 /* ---------- Image reel: a pill-shaped frame of edition pictures grows to fill the screen as you scroll ---------- */
 .reel { position: relative; height: 260vh; }
+/* "Read by people at" sits just above the reel: little padding, and the reel's empty top half tucks under it. */
+.readersBand { position: relative; z-index: 2; padding: clamp(24px, 3vw, 40px) 0 0; }
+@media (min-width: 761px) {
+  html.motion-on .readersBand + .reel { margin-top: -18vh; pointer-events: none; }
+  html.motion-on .readersBand + .reel .reelFrame { pointer-events: auto; }
+}
 .reel .stick { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; overflow: hidden; }
 .reelFrame { position: relative; width: 40vw; height: 22vw; max-height: 60vh; border-radius: 999px; overflow: hidden; background: var(--navy); will-change: width, height, border-radius; }
 .reelFrame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s var(--ease-io), scale 6s linear; scale: 1.08; }
