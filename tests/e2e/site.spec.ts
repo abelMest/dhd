@@ -301,6 +301,9 @@ test('Partner with us, Privacy and ads.txt are in place, and paid things are lab
   await expect(page.locator('h1')).toContainText(/digital health/i);
   await expect(page.locator('#policy li')).toHaveCount(6);
   await expect(page.locator('.statStrip dd').first()).not.toBeEmpty();
+  // "Read by people at" shows only with three or more organisations listed in the console.
+  const orgs = page.locator('.readersAt li');
+  if (await orgs.count()) expect(await orgs.count()).toBeGreaterThanOrEqual(3);
   await page.goto('/privacy/');
   await expect(page.locator('h1')).toHaveText(/privacy/i);
   await expect(page.locator('.prose h2', { hasText: 'Advertising' })).toBeVisible();

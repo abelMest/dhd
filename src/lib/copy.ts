@@ -42,6 +42,8 @@ export const COPY_DEFAULTS = {
   standardTitle: 'Our editorial standard',
   standard: 'Every claim links to a source you can check.\nEvery opportunity shows the date an editor last verified it against the source.\nGuest pieces pass an editor review before they publish.\nAuthors declare funding and affiliations relevant to their piece.\nWe correct errors in the open and date the correction.',
   partners: '',
+  readersAt: '',
+  readersNote: '',
   aboutPhoto: '',
 };
 

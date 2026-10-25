@@ -29,6 +29,7 @@ const COPY_GROUPS: { title: string; keys: CopyKey[] }[] = [
   { title: 'Homepage', keys: ['heroL1', 'heroRotate', 'heroL3', 'lede', 'statement', 'latestTitle', 'latestSub', 'pinsTitle', 'pinsSub', 'startTitle', 'startSub', 'topicsTitle', 'topicsSub', 'oppTitle', 'libTitle', 'libSub'] },
   { title: 'Subscribe and contribute', keys: ['subTitle', 'subSub', 'ctaTitle', 'ctaSub', 'builderTitle', 'builderSub'] },
   { title: 'About and standards', keys: ['aboutTitle', 'aboutName', 'aboutRoles', 'aboutBody', 'standardTitle', 'standard', 'partners'] },
+  { title: 'Who reads the Digest', keys: ['readersAt', 'readersNote'] },
   { title: 'Announcement bar and footer', keys: ['announce', 'announceUrl', 'footerAbout'] },
   { title: 'Start here guide (/start/)', keys: ['startGuide'] },
 ];
@@ -36,9 +37,11 @@ const LABELS: Partial<Record<CopyKey, string>> = {
   heroL1: 'Headline, first words', heroRotate: 'Headline, emphasised words (first item is used)', heroL3: 'Headline, last word',
   lede: 'Introduction', statement: 'Statement (the paragraph that lights up as you scroll)', aboutRoles: 'Roles (one per line)', standard: 'Editorial standard (one commitment per line)',
   startGuide: 'Guide text in Markdown (## sections, ### the four paths, [links](https://…)). Clear the box to restore the original guide.',
-  partners: 'Partners (one per line; list only organisations that agreed)', announce: 'Announcement (leave empty to hide)', announceUrl: 'Announcement link',
+  partners: 'Partners (one per line; list only organisations that agreed)',
+  readersAt: 'Organisations readers work at (one per line). Shown as “Read by people at…” once there are at least three. List only places you know readers work, for example from LinkedIn newsletter analytics, Subscriber demographics, Companies.',
+  readersNote: 'One line under the list about the fields readers work in (leave empty to hide)', announce: 'Announcement (leave empty to hide)', announceUrl: 'Announcement link',
 };
-const LONG = new Set<CopyKey>(['startGuide', 'lede', 'statement', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'ctaSub', 'footerAbout', 'heroRotate']);
+const LONG = new Set<CopyKey>(['startGuide', 'lede', 'statement', 'aboutBody', 'aboutRoles', 'standard', 'partners', 'readersAt', 'readersNote', 'ctaSub', 'footerAbout', 'heroRotate']);
 
 export default function SiteSettings() {
   const sb = supabase()!;

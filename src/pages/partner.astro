@@ -3,6 +3,7 @@
 // Every figure comes from the site's own data; options appear only once they are set up in the console.
 import Base from '../layouts/Base.astro';
 import PartnerLogos from '../components/PartnerLogos.astro';
+import ReadersAt from '../components/ReadersAt.astro';
 import { loadSite } from '../lib/data';
 import { TOPICS } from '../lib/taxonomy';
 
@@ -37,6 +38,7 @@ const options = [
       <dl class="statStrip">
         {figures.map((f) => <div><dt>{f.label}</dt><dd class="num">{f.n}</dd></div>)}
       </dl>
+      <div style="margin-top:28px"><ReadersAt copy={site.copy} align="start" /></div>
       <div class="actions" style="margin-top:24px">
         <a class="btn" href={contact.href} rel="noopener">{contact.label}</a>
         {rev.supportUrl && <a class="btn line" href={rev.supportUrl} rel="noopener">Support the Digest as a reader</a>}
