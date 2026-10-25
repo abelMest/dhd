@@ -68,12 +68,16 @@ html.menu-open { overflow: hidden; }
 :root[data-theme='dark'] .glass { background: linear-gradient(140deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .02)); border-color: rgba(255, 255, 255, .12); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .1); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .glass { background: linear-gradient(140deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .02)); border-color: rgba(255, 255, 255, .12); } }
 /* Cards sit in the corners so the heartbeat runs boldly through the middle and only its tips pass under the glass. */
-.glass.g1 { left: 0; bottom: 4%; width: 44%; height: 40%; rotate: -8deg; }
-.glass.g2 { right: 0; top: 0; width: 42%; height: 42%; rotate: 8deg; }
-.glass.g3 { right: 4%; bottom: 0; width: 40%; height: 34%; rotate: -3deg; }
-.glass .gl { position: absolute; left: 16px; right: 16px; bottom: 16px; display: grid; gap: 6px; padding: 14px 16px; border-radius: 18px; background: color-mix(in srgb, var(--card) 92%, transparent); box-shadow: 0 10px 24px -14px rgba(11, 28, 42, .35); font: 600 .74rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--blue-ink); }
-.glass .gl b { font: 700 .98rem/1.25 var(--display); letter-spacing: -0.005em; text-transform: none; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.glass .gl:hover b { text-decoration: underline; }
+.glass.g1 { left: 0; bottom: 4%; width: 46%; height: 40%; rotate: -4deg; }
+.glass.g2 { right: 0; top: 0; width: 44%; height: 42%; rotate: 4deg; }
+.glass.g3 { right: 3%; bottom: 0; width: 42%; height: 34%; rotate: -2deg; }
+/* The white label card: room for a full title (up to four lines) and a clear call to action. */
+.glass .gl { position: absolute; left: 12px; right: 12px; bottom: 12px; display: grid; gap: 6px; padding: 14px 16px; border-radius: 18px; background: var(--card); box-shadow: 0 10px 24px -14px rgba(11, 28, 42, .35); font: 600 .72rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--blue-ink); }
+.glass .gl b { font: 700 clamp(.9rem, 1.15vw, .98rem)/1.25 var(--display); letter-spacing: -0.005em; text-transform: none; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
+.glass .gl i { font: 700 .78rem var(--sans); font-style: normal; letter-spacing: .02em; text-transform: none; color: var(--blue-ink); }
+.glass:hover .gl b, .glass:focus-visible .gl b { text-decoration: underline; text-underline-offset: 3px; }
+.glass:hover .gl i, .glass:focus-visible .gl i { text-decoration: underline; }
+.glass:focus-visible { outline: 3px solid var(--blue-ink); outline-offset: 4px; }
 .bigBeatShape { position: absolute; z-index: 0; left: -4%; top: 10%; width: 108%; height: 80%; overflow: visible; pointer-events: none; filter: drop-shadow(0 26px 34px color-mix(in srgb, var(--blue) 45%, transparent)); }
 .bigBeatShape path { fill: none; stroke: url(#beatGrad); stroke-width: 30; stroke-linecap: round; stroke-linejoin: round; }
 @media (prefers-reduced-motion: no-preference) {
@@ -81,11 +85,16 @@ html.menu-open { overflow: hidden; }
   .motion .glass.g2 { animation: drift2 17s ease-in-out infinite alternate; }
   .motion .glass.g3 { animation: drift3 12s ease-in-out infinite alternate; }
 }
-@keyframes drift1 { to { translate: 10px -14px; rotate: -9deg; } }
-@keyframes drift2 { to { translate: -12px 10px; rotate: 12deg; } }
-@keyframes drift3 { to { translate: 8px 8px; rotate: -7deg; } }
+@keyframes drift1 { to { translate: 8px -10px; rotate: -5deg; } }
+@keyframes drift2 { to { translate: -10px 8px; rotate: 6deg; } }
+@keyframes drift3 { to { translate: 6px 6px; rotate: -3deg; } }
 @media (max-width: 960px) { .stage { max-width: 440px; } }
-@media (max-width: 560px) { .glass .gl { display: none; } }
+/* Phones: the cards keep their label and a two-line title instead of standing empty. */
+@media (max-width: 560px) {
+  .glass .gl { left: 8px; right: 8px; bottom: 8px; padding: 9px 10px; gap: 3px; border-radius: 12px; font-size: .6rem; }
+  .glass .gl b { font-size: .78rem; -webkit-line-clamp: 2; }
+  .glass .gl i { display: none; }
+}
 
 /* ---------- Statement: a thick ribbon winds through while the words light up ---------- */
 .statement { position: relative; overflow: hidden; padding: clamp(72px, 11vw, 150px) 0; }

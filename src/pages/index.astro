@@ -30,11 +30,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-GB');
 // Hero glass cards point at three real things: the newest edition, an essential read, and the next deadline.
 const essential = pins.find((a) => a.id !== lead?.id);
 const nextOpp = opps.find((o) => o.deadline);
+// Each card's clicks are counted (data-count, see scripts/track.ts) and shown in the console.
 const glassCards = [
-  lead && { cls: 'g1', label: 'Latest edition', title: lead.title, href: `/editions/${lead.id}/` },
-  essential && { cls: 'g2', label: 'Essential read', title: essential.title, href: `/editions/${essential.id}/` },
-  nextOpp && { cls: 'g3', label: `Closes ${fmtDate(nextOpp.deadline, { day: 'numeric', month: 'short' })}`, title: nextOpp.title, href: `/opportunities/#opp-${nextOpp.id}` },
-].filter(Boolean) as { cls: string; label: string; title: string; href: string }[];
+  lead && { cls: 'g1', track: 'hero-latest', label: 'Latest edition', title: lead.title, href: `/editions/${lead.id}/` },
+  essential && { cls: 'g2', track: 'hero-essential', label: 'Essential read', title: essential.title, href: `/editions/${essential.id}/` },
+  nextOpp && { cls: 'g3', track: 'hero-opportunity', label: `Closes ${fmtDate(nextOpp.deadline, { day: 'numeric', month: 'short' })}`, title: nextOpp.title, href: `/opportunities/#opp-${nextOpp.id}` },
+].filter(Boolean) as { cls: string; track: string; label: string; title: string; href: string }[];
 
 // The statement lights up word by word; *asterisked* words are the brand-blue highlight.
 let inHl = false;
@@ -108,8 +109,8 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
           <path d="M-40 300 H190 L268 470 L350 70 L436 560 L486 300 H660" pathLength="1" data-beat />
         </svg>
         {glassCards.map((g) => (
-          <a class:list={['glass', g.cls]} href={g.href} aria-label={`${g.label}: ${g.title}`} data-depth={g.cls === 'g2' ? '18' : g.cls === 'g1' ? '10' : '26'}>
-            <span class="gl"><span>{g.label}</span><b>{g.title}</b></span>
+          <a class:list={['glass', g.cls]} href={g.href} data-count={g.track} aria-label={`${g.label}: ${g.title}`} data-depth={g.cls === 'g2' ? '18' : g.cls === 'g1' ? '10' : '26'}>
+            <span class="gl"><span>{g.label}</span><b>{g.title}</b><i aria-hidden="true">{g.cls === 'g3' ? 'See the call' : 'Read'} →</i></span>
           </a>
         ))}
       </div>
@@ -383,6 +384,11 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
     </div>
   </section>
 </Base>
+
+<script>
+  import { trackHome } from '../scripts/track';
+  trackHome();
+</script>
 
 <script>
   // Carousel: buttons page by about one screen, a bar shows position, and a mouse can drag it like a phone.

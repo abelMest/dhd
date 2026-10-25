@@ -7,19 +7,36 @@ import { fmtDay, type Values } from '../ui';
 type Go = (v: any, id?: string | null) => void;
 const today = () => new Date().toISOString().slice(0, 10);
 const plusDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+// The home page's hero cards, in the order they sit on the page (see scripts/track.ts).
+const CARDS = [
+  { target: 'hero-latest', label: 'Latest edition' },
+  { target: 'hero-essential', label: 'Essential read' },
+  { target: 'hero-opportunity', label: 'Next deadline' },
+];
+type Counts = Record<string, { d7: number; d30: number }>;
 
 export default function Overview({ go }: { go: Go }) {
   const sb = supabase()!;
-  const [s, setS] = useState<{ subs: Values[]; drafts: Values[]; stale: Values[]; closing: Values[]; noTopic: Values[]; figuresAge: number | null } | null>(null);
+  const [s, setS] = useState<{ subs: Values[]; drafts: Values[]; stale: Values[]; closing: Values[]; noTopic: Values[]; figuresAge: number | null; counts: Counts | null } | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [subs, drafts, opps, settings] = await Promise.all([
+      const since30 = new Date(Date.now() - 30 * 86400000).toISOString(), since7 = new Date(Date.now() - 7 * 86400000).toISOString();
+      const [subs, drafts, opps, settings, clicks] = await Promise.all([
         sb.from('submissions').select('id,kind,status,payload,created_at,draft_at').order('created_at', { ascending: false }).limit(50),
         sb.from('articles').select('id,title,topic,published_at').eq('status', 'draft').order('published_at', { ascending: false }),
         sb.from('opportunities').select('id,title,deadline,verified_at,status').eq('status', 'published'),
         sb.from('settings').select('subscribers_updated_at').eq('id', 1).single(),
+        sb.from('clicks').select('target,at').gte('at', since30).limit(20000),
       ]);
+      let counts: Counts | null = null;
+      if (!clicks.error) {
+        counts = {};
+        for (const c of (clicks.data as Values[]) || []) {
+          const k = String(c.target), e = (counts[k] ||= { d7: 0, d30: 0 });
+          e.d30++; if (String(c.at) >= since7) e.d7++;
+        }
+      }
       const stamped = (settings.data as Values | null)?.subscribers_updated_at;
       const o = (opps.data as Values[]) || [];
       const open = o.filter((x) => !x.deadline || String(x.deadline) >= today());
@@ -30,6 +47,7 @@ export default function Overview({ go }: { go: Go }) {
         stale: open.filter((x) => !x.verified_at || String(x.verified_at) < plusDays(-30)),
         closing: open.filter((x) => x.deadline && String(x.deadline) <= plusDays(14)),
         figuresAge: stamped ? Math.floor((Date.parse(today()) - Date.parse(String(stamped))) / 86400000) : null,
+        counts,
       });
     })();
   }, []);
@@ -57,6 +75,27 @@ export default function Overview({ go }: { go: Go }) {
       {s.noTopic.length > 0 && (
         <p class="notice" style="margin-top:20px">{s.noTopic.length} new {s.noTopic.length === 1 ? 'edition was' : 'editions were'} imported from Substack. Add a topic, author and En bref, then set them to published.</p>
       )}
+      {s.counts && (() => {
+        const views = s.counts['home-view'] || { d7: 0, d30: 0 };
+        const rate = (n: number, of: number) => (of ? `${((n / of) * 100).toFixed(1)}%` : '–');
+        return (
+          <div style="margin-top:32px">
+            <h3>Home page cards</h3>
+            <p class="meta">Clicks on the three cards beside the headline, counted without cookies. Click rate is clicks per home page visit.</p>
+            <table class="dataTable">
+              <thead><tr><th>Card</th><th>Clicks, 7 days</th><th>Clicks, 30 days</th><th>Click rate, 30 days</th></tr></thead>
+              <tbody>
+                {CARDS.map((c) => {
+                  const n = s.counts![c.target] || { d7: 0, d30: 0 };
+                  return <tr><td>{c.label}</td><td class="num">{n.d7}</td><td class="num">{n.d30}</td><td class="num">{rate(n.d30, views.d30)}</td></tr>;
+                })}
+                <tr><td><b>Home page visits</b></td><td class="num">{views.d7}</td><td class="num">{views.d30}</td><td></td></tr>
+              </tbody>
+            </table>
+            <p class="meta">For all pages, countries and sources, open Cloudflare, Web Analytics, digitalhealthdigest.africa.</p>
+          </div>
+        );
+      })()}
       <div class="grid2" style="margin-top:32px">
         <div>
           <h3>Latest submissions</h3>
