@@ -241,6 +241,10 @@ const siteLd = {
     </footer>
 
     <script>
+      // Cookie-free page and visit counts for the console's Traffic panel (see scripts/track.ts).
+      import { trackPage } from '../scripts/track';
+      trackPage();
+
       // Motion is a separate download, fetched only when it's welcome (see the inline script in <head>).
       if (document.documentElement.classList.contains('motion')) {
         const go = () => import('../scripts/motion');
