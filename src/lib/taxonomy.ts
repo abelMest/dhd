@@ -28,13 +28,13 @@ export const AUDIENCES = ['Policymakers', 'Implementers', 'Clinicians', 'Researc
 // The home page's Start here tabs: the same four paths as the /start/ guide (guide = that section's anchor).
 // `role` is what an edition's "Start here for" field stores.
 export const START_ROLES = [
-  { role: 'Students', label: 'Students and early career', short: 'Students', icon: '🎓', guide: 'students-and-early-career',
+  { role: 'Students', label: 'Students and early career', short: 'Students', guide: 'students-and-early-career',
     blurb: 'No experience yet? Begin with the skills that matter and how the field fits together.' },
-  { role: 'Clinicians', label: 'Clinicians and health workers', short: 'Clinicians', icon: '🩺', guide: 'clinicians-and-health-workers',
+  { role: 'Clinicians', label: 'Clinicians and health workers', short: 'Clinicians', guide: 'clinicians-and-health-workers',
     blurb: 'Turn what you know about care into better tools, safer data and smarter decisions.' },
-  { role: 'Tech', label: 'Tech people entering health', short: 'Tech', icon: '💻', guide: 'tech-people-entering-health',
+  { role: 'Tech', label: 'Tech people entering health', short: 'Tech', guide: 'tech-people-entering-health',
     blurb: 'You know the tech. Learn the standards, the data and who controls it.' },
-  { role: 'Policy', label: 'Policy and programme staff', short: 'Policy', icon: '📋', guide: 'policy-and-programme-staff',
+  { role: 'Policy', label: 'Policy and programme staff', short: 'Policy', guide: 'policy-and-programme-staff',
     blurb: 'Strategy, financing and governance: what decides whether digital health lasts.' },
 ] as const;
 

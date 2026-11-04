@@ -18,6 +18,13 @@ const { articles, copy, settings } = site;
 const [lead, ...rest] = articles;
 const pins = articles.filter((a) => a.pinned).slice(0, 3);
 const carousel = rest.slice(0, 10);
+// Line icons for the Start here tabs (24 x 24, stroked in currentColor).
+const PATH_ICONS: Record<string, string> = {
+  Students: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/><path d="M22 9v6"/>',
+  Clinicians: '<path d="M6 3v6a5 5 0 0 0 10 0V3"/><path d="M11 14v2a5 5 0 0 0 10 0v-1"/><circle cx="21" cy="12.5" r="2"/>',
+  Tech: '<path d="M8 8l-5 4 5 4"/><path d="M16 8l5 4-5 4"/><path d="M13.5 5l-3 14"/>',
+  Policy: '<path d="M3 10h18"/><path d="M12 3l9 5H3z"/><path d="M5 10v8M9.7 10v8M14.3 10v8M19 10v8"/><path d="M3 21h18"/>',
+};
 const start = START_ROLES.map((r) => ({ ...r, items: articles.filter((a) => a.startFor.includes(r.role)).slice(0, 3) })).filter((s) => s.items.length);
 const opps = openOpportunities(site);
 const showOpps = opps.length >= HOME_THRESHOLD;
@@ -223,8 +230,9 @@ const stats = [
     </section>
   )}
 
-  <!-- Start here: the guide's four paths as tabs, three editions each, all on one screen. Without JavaScript
-       the four panels simply stack. Tab clicks are counted (data-count) for the console's Traffic panel. -->
+  <!-- Start here: the guide's four paths as tabs, three editions each, all on one screen. A highlight slides
+       to the chosen tab; cards show the edition's picture, topic and reading time. Without JavaScript the four
+       panels simply stack. Tab clicks are counted (data-count) for the console's Traffic panel. -->
   {start.length > 0 && (
     <section class="startTabs" id="start" aria-labelledby="start-h" data-start-tabs>
       <div class="wrap">
@@ -232,14 +240,21 @@ const stats = [
           <p class="kicker line">New to the Digest?</p>
           <h2 class="display" id="start-h"><Accent text={copy.startTitle} /></h2>
           <p>{copy.startSub}</p>
+          <svg class="stBeat" viewBox="0 0 320 60" aria-hidden="true"><path d="M2 40 H120 L134 22 L148 54 L166 6 L184 52 L196 34 H318" pathLength="1" /></svg>
+          <ul class="stFacts">
+            <li><b class="num">{start.length}</b>paths</li>
+            <li><b class="num">{start.reduce((n, s) => n + s.items.length, 0)}</b>starter reads</li>
+            <li><b>Free</b>guide</li>
+          </ul>
           <a class="btn sm" href="/start/">Read the full guide <span class="arrow" aria-hidden="true">→</span></a>
         </div>
         <div class="stBody">
           <div class="stTabs" role="tablist" aria-label="Choose your path">
+            <span class="stInk" aria-hidden="true"></span>
             {start.map((s, i) => (
               <button type="button" role="tab" id={`st-tab-${i}`} aria-controls={`st-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'}
                 tabindex={i === 0 ? 0 : -1} data-count={`start-${s.role.toLowerCase()}`}>
-                <span class="ic" aria-hidden="true">{s.icon}</span><span>{s.short}</span>
+                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" set:html={PATH_ICONS[s.role] || ''} /><span>{s.short}</span>
               </button>
             ))}
           </div>
@@ -248,9 +263,21 @@ const stats = [
               <h3>{s.label}</h3>
               <p class="blurb">{s.blurb}</p>
               <ol>
-                {s.items.map((a, j) => (
-                  <li><a href={`/editions/${a.id}/`}><span class="n num">{String(j + 1).padStart(2, '0')}</span><b>{a.title}</b>{a.readMins > 0 && <span class="mins">{a.readMins} min</span>}<span class="go" aria-hidden="true">→</span></a></li>
-                ))}
+                {s.items.map((a, j) => {
+                  const pic = a.image ? thumb(a.image, 160) : null;
+                  return (
+                    <li style={`--i:${j}`}>
+                      <a href={`/editions/${a.id}/`} data-glow-card>
+                        <span class="pic">
+                          {pic ? <img src={pic.src} srcset={pic.srcset} sizes="88px" alt="" loading="lazy" decoding="async" /> : <span class="ph">{a.topic.charAt(0)}</span>}
+                          <span class="n num">{String(j + 1).padStart(2, '0')}</span>
+                        </span>
+                        <span class="txt"><b>{a.title}</b><span class="meta">{a.topic}{a.readMins > 0 && <> · {a.readMins} min read</>}</span></span>
+                        <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+                      </a>
+                    </li>
+                  );
+                })}
               </ol>
               <a class="stGuide" href={`/start/#${s.guide}`}>Your full path in the guide <span aria-hidden="true">→</span></a>
             </div>
@@ -458,11 +485,32 @@ const stats = [
     tabsRoot.classList.add('tabbed');
     const tabs = Array.from(tabsRoot.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
     const panels = Array.from(tabsRoot.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    const ink = tabsRoot.querySelector<HTMLElement>('.stInk');
+    let current = 0;
+    // The highlight slides under the chosen tab (it measures the tab, so it fits any label or screen width).
+    const moveInk = () => {
+      const t = tabs[current]; if (!ink || !t) return;
+      ink.style.width = `${t.offsetWidth}px`; ink.style.height = `${t.offsetHeight}px`;
+      ink.style.transform = `translate(${t.offsetLeft}px, ${t.offsetTop}px)`;
+    };
     const select = (k: number, focus = false) => {
+      tabsRoot.dataset.dir = k >= current ? 'next' : 'prev';   // cards slide in from the side you moved towards
+      current = k;
       tabs.forEach((t, i) => { const on = i === k; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
       panels.forEach((p, i) => { p.hidden = i !== k; if (i === k) p.dataset.active = 'true'; else delete p.dataset.active; });
+      moveInk();
       if (focus) tabs[k].focus();
     };
+    addEventListener('resize', moveInk, { passive: true });
+    document.fonts?.ready.then(moveInk);
+    // A soft glow follows the pointer across each reading card.
+    tabsRoot.querySelectorAll<HTMLElement>('[data-glow-card]').forEach((c) => c.addEventListener('pointermove', (e) => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`);
+    }));
+    // The heartbeat beside the heading draws itself when the section comes into view.
+    const beat = tabsRoot.querySelector('.stBeat');
+    if (beat) new IntersectionObserver(([e], o) => { if (e.isIntersecting) { beat.classList.add('drawn'); o.disconnect(); } }, { threshold: 0.4 }).observe(beat);
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i));
       t.addEventListener('keydown', (e) => {
