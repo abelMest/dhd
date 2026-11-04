@@ -87,7 +87,9 @@
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 96px; }
+/* overflow-x: clip on both, so nothing off-canvas (the closed menu panel) can make a phone page scroll sideways;
+   clip, unlike hidden, keeps position: sticky working. */
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 96px; overflow-x: clip; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
   font: 400 18px/1.6 var(--serif); font-optical-sizing: auto;

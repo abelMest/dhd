@@ -9,8 +9,9 @@ test.beforeEach(({ page }) => {
 test.afterEach(() => expect(errors, 'JavaScript errors on the page').toEqual([]));
 
 // How many editions are live, read from the feed, so the tests keep passing as editions are added.
+// Every published edition has its own page in the sitemap (the RSS feed lists only the newest 50).
 const editionCount = async (page: Page) =>
-  ((await (await page.request.get('/rss.xml')).text()).match(/<item>/g) || []).length;
+  ((await (await page.request.get('/sitemap-0.xml')).text()).match(/\/editions\/[a-z0-9-]+\/<\/loc>/g) || []).length;
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
 const noSideScroll = async (page: Page) =>
@@ -31,13 +32,17 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
   expect(await words.count()).toBeGreaterThan(20);
   await page.locator('[data-words]').scrollIntoViewIfNeeded();
   await expect.poll(() => page.locator('[data-words] .w.lit').count(), { timeout: 5000 }).toBeGreaterThan(0);
-  // Start here: one block per role; on wide screens the pinned label follows the role in view.
-  const roles = page.locator('#start .roleBlock');
-  await expect(roles).toHaveCount(3);
-  if ((page.viewportSize()?.width ?? 0) > 860) {
-    await roles.nth(2).scrollIntoViewIfNeeded();
-    await expect(page.locator('[data-role-name]')).toHaveText('Developers');
-  }
+  // Start here: the guide's four paths as tabs; one panel shows at a time, and arrow keys move between tabs.
+  const tabs = page.locator('#start [role="tab"]');
+  await expect(tabs).toHaveCount(4);
+  await expect(page.locator('#start [role="tabpanel"]:visible')).toHaveCount(1);
+  await tabs.nth(2).click();
+  await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#st-panel-2')).toBeVisible();
+  await expect(page.locator('#st-panel-2 ol li')).toHaveCount(3);
+  await page.keyboard.press('ArrowRight');
+  await expect(tabs.nth(3)).toBeFocused();
+  await expect(page.locator('#st-panel-3 .stGuide')).toHaveAttribute('href', '/start/#policy-and-programme-staff');
   // Carousel: ten recent editions; the next button moves it along.
   const track = page.locator('[data-track]');
   await expect(track.locator('.slide')).toHaveCount(10);
@@ -50,8 +55,8 @@ test('home shows the lead edition, essential reads and start here', async ({ pag
     await page.locator('[data-car="1"]').click();
     await expect.poll(() => track.evaluate((t) => t.scrollLeft), { timeout: 5000 }).toBeGreaterThan(50);
   }
-  // Library and opportunities only appear once they hold 5+ live items: library is empty, the board has 5+.
-  await expect(page.getByRole('heading', { name: 'Find what you need' })).toHaveCount(0);
+  // Library and opportunities only appear once they hold 5+ live items; the Library now has 20+.
+  await expect(page.getByRole('heading', { name: 'Find what you need' })).toHaveCount(1);
   await noSideScroll(page);
 });
 
@@ -66,7 +71,8 @@ test('archive is honest about the count and filters by topic', async ({ page }) 
   await page.addInitScript(() => localStorage.setItem('dhd-archive-view', 'list'));
   const total = await editionCount(page);
   await page.goto('/editions/');
-  await expect(page.locator('.pageHead .lede')).toContainText(`Showing ${total} of `);
+  // "68 editions." when every edition is on the site, "Showing N of M editions." while some are elsewhere.
+  await expect(page.locator('.pageHead .lede')).toContainText(new RegExp(`(Showing ${total} of |^\\s*${total} editions)`));
   await expect(page.locator('.row[data-topic]:visible')).toHaveCount(total);
   await page.locator('#topicChips .chip', { hasText: 'AI & data' }).click();
   const n = await page.locator('.row[data-topic]:visible').count();
@@ -274,7 +280,8 @@ test('the archive opens as a list; the 3D tour is one click away', async ({ page
 test('first visit plays the title card once; it never blocks reduced-motion readers', async ({ browser }) => {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
-  await page.goto('/');
+  // The card lasts about 2 s, so look as soon as the page renders rather than after every image has loaded.
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#preloader')).toBeVisible();
   await expect(page.locator('#preloader')).toHaveCount(0, { timeout: 5000 });
   await page.goto('/about/');

@@ -71,7 +71,7 @@ document.querySelectorAll<HTMLElement>('.leadThumb, .card .thumb, .rthumb, .pros
 });
 
 // ---------- Headings rise word by word out of masks. ----------
-document.querySelectorAll<HTMLElement>('.secHead h2, .pageHead h1, .stackHead h2, .pinLeft h2, .board h2, .giantLead').forEach((h) => {
+document.querySelectorAll<HTMLElement>('.secHead h2, .pageHead h1, .stackHead h2, .stIntro h2, .board h2, .giantLead').forEach((h) => {
   const split = SplitText.create(h, { type: 'words', mask: 'words' });
   const play = () => gsap.from(split.words, { yPercent: 100, opacity: 0.5, duration: 0.8, ease: 'cubic-bezier(.19,1,.22,1)', stagger: 0.07 });
   if (below(h)) ScrollTrigger.create({ trigger: h, start: 'top 88%', once: true, onEnter: play });

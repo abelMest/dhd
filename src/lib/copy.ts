@@ -33,7 +33,7 @@ export const COPY_DEFAULTS = {
   pinsTitle: 'Essential *reads*',
   pinsSub: 'Three editions to start with. They hold up.',
   startTitle: 'Start *here*',
-  startSub: 'Three editions for each role. Scroll to move through them.',
+  startSub: 'Pick your path: three editions to begin with, and a full guide when you want more.',
   statement: 'The Digest is where the people building health systems across Africa share *what works, what fails and why.* Every claim links to a source. Every guest piece passes an editor. Every opportunity is checked before it goes up.',
   aboutTitle: 'Who edits the Digest',
   aboutName: 'Dr. Abel Mestie Mekonnen',
