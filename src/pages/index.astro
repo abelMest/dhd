@@ -66,8 +66,6 @@ const stats = [
   ...(settings.subscribers > 0 ? [{ n: fmtNum(settings.subscribers), label: `Subscribers${settings.subscribersLabel ? `, ${settings.subscribersLabel}` : ''}` }] : []),
   { n: String(TOPICS.length), label: 'Topics we follow' },
 ];
-// Image reel: pictures from recent editions.
-const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.image, 1100));
 // Topic rows show a picture from each topic's latest edition while hovered.
 ---
 <Base>
@@ -123,18 +121,21 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
     </section>
   )}
 
-  <!-- Image reel: a pill-shaped frame of edition pictures grows to fill the screen as you scroll. -->
-  {reelPics.length > 0 && (
-    <section class="reel" data-reel aria-label="Pictures from recent editions">
-      <div class="stick">
-        <div class="reelFrame">
-          {reelPics.map((p) => <img src={p.src} srcset={p.srcset} sizes="100vw" alt="" loading="lazy" decoding="async" />)}
-        </div>
-        <p class="reelLabel" aria-hidden="true"><span class="pulse-dot"></span>Scroll to open</p>
-        <div class="reelCap"><p>Field lessons <span class="accent">from</span> the people doing the work</p></div>
+  <!-- Reel: a pill-shaped frame grows to fill the screen as you scroll, playing "Digital health: a history in
+       gears" (75 s, made for the Digest; source in /history-video). Muted until the reader turns the sound on. -->
+  <section class="reel" data-reel aria-label="Video: Digital health, a history in gears">
+    <div class="stick">
+      <div class="reelFrame hasVideo">
+        <video data-reel-video muted playsinline loop preload="none" poster="/video/digital-health-history-poster.jpg"
+          data-src-small="/video/digital-health-history-960.mp4" data-src-large="/video/digital-health-history-1600.mp4"
+          aria-label="Digital health, a history in gears: milestones from Einthoven's telephone heartbeat in 1905 to generative AI in 2022, ending in Addis Ababa"></video>
+        <button type="button" class="reelSound" data-reel-sound data-count="reel-sound" aria-pressed="false">
+          <span class="on">Sound on</span><span class="off">Mute</span>
+        </button>
       </div>
-    </section>
-  )}
+      <p class="reelLabel" aria-hidden="true"><span class="pulse-dot"></span>Scroll to open</p>
+    </div>
+  </section>
 
   <!-- Statement: the Digest in one paragraph, lighting up as you read; a thick ribbon winds through behind it. -->
   <section class="statement" aria-labelledby="statement-k">
@@ -388,6 +389,29 @@ const reelPics = articles.filter((a) => a.image).slice(0, 6).map((a) => thumb(a.
 <script>
   import { trackHome } from '../scripts/track';
   trackHome();
+
+  // The reel's video: fetched only when the reader nears it (a smaller file on phones), plays muted while on
+  // screen, pauses when off it. With reduced motion it never autoplays; the reader gets normal controls.
+  const video = document.querySelector<HTMLVideoElement>('[data-reel-video]');
+  const sound = document.querySelector<HTMLButtonElement>('[data-reel-sound]');
+  if (video) {
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const load = () => {
+      if (video.src) return;
+      video.src = (innerWidth < 900 ? video.dataset.srcSmall : video.dataset.srcLarge) || '';
+    };
+    if (still) { video.controls = true; video.preload = 'none'; load(); }
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { load(); if (!still) video.play().catch(() => {}); }
+      else video.pause();
+    }, { threshold: 0.2 }).observe(video);   // only once the reader scrolls to it: the file is about 12 MB
+    sound?.addEventListener('click', () => {
+      const on = video.muted;               // turning sound on restarts the film from the beginning
+      video.muted = !on;
+      if (on) { video.currentTime = 0; video.play().catch(() => {}); }
+      sound.setAttribute('aria-pressed', String(on));
+    });
+  }
 </script>
 
 <script>

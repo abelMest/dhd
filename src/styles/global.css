@@ -699,6 +699,10 @@ a.kindTile:hover .kindIcon { transform: rotate(-6deg) scale(1.08); background: v
 .policyList b { color: var(--ink); }
 
 /* Start here guide: four path cards that jump to each section. */
+/* Start here: the history film. */
+.historyFilm { margin: 0; max-width: 1040px; }
+.historyFilm video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; background: #08131d; box-shadow: 0 30px 60px -36px rgba(11, 28, 42, .55); }
+.historyFilm figcaption { display: grid; gap: 6px; margin-top: 14px; font: 400 1.02rem/1.5 var(--serif); color: var(--ink-2); max-width: 64ch; }
 .pathCards { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 980px) { .pathCards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .pathCards { grid-template-columns: 1fr; } }

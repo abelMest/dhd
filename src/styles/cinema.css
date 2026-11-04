@@ -96,6 +96,22 @@ html.menu-open .masthead.hide { transform: none; }
 .reelFrame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s var(--ease-io), scale 6s linear; scale: 1.08; }
 .reelFrame img.on { opacity: 1; scale: 1; }
 .reelFrame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 26, 41, .1), rgba(7, 26, 41, .55)); }
+.reelFrame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #08131d; }
+/* The film carries its own text, so only a light shade at the very bottom, for the caption. */
+.reelFrame.hasVideo::after { background: linear-gradient(180deg, transparent 70%, rgba(7, 26, 41, .55)); pointer-events: none; }
+/* Centred at the bottom, where the pill shape is flat. */
+.reelSound { position: absolute; z-index: 3; left: 50%; translate: -50% 0; bottom: max(6%, 14px); display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border: 0; border-radius: 999px; background: rgba(243, 237, 224, .92); color: #0b1c2a; font: 700 .82rem var(--sans);
+  letter-spacing: .04em; cursor: pointer; box-shadow: 0 8px 24px -10px rgba(0, 0, 0, .5); }
+.reelSound::before { content: ''; width: 16px; height: 16px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z'/%3E%3C/svg%3E") center/contain no-repeat; }
+.reelSound:hover { background: #fff; }
+.reelSound:focus-visible { outline: 3px solid #8fd0f5; outline-offset: 3px; }
+.reelSound .off, .reelSound[aria-pressed="true"] .on { display: none; }
+.reelSound[aria-pressed="true"] .off { display: inline; }
+/* With normal video controls (reduced motion), the controls take the bottom edge. */
+.reelFrame video[controls] ~ .reelSound { display: none; }
 .reelCap { position: absolute; z-index: 2; left: 50%; bottom: 14vh; translate: -50% 0; width: min(92vw, 900px); text-align: center; color: #fff; opacity: 0; pointer-events: none; }
 .reelCap p { font: 800 clamp(1.8rem, 4.4vw, 3.8rem)/1.02 var(--display); text-transform: uppercase; letter-spacing: -0.02em; margin: 0; }
 .reelCap p .accent { color: #8fd0f5; }

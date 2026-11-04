@@ -98,18 +98,18 @@ document.querySelectorAll<HTMLElement>('[data-statroll]').forEach((el) => {
   }, 2200);
 });
 
-// ---------- Image reel: the pill-shaped frame grows to fill the screen as you scroll through it. ----------
+// ---------- Reel: the pill-shaped frame grows to fill the screen as you scroll through it (home: the history film). ----------
 document.querySelectorAll<HTMLElement>('[data-reel]').forEach((reel) => {
   const frame = reel.querySelector<HTMLElement>('.reelFrame');
   const cap = reel.querySelector<HTMLElement>('.reelCap');
   const label = reel.querySelector<HTMLElement>('.reelLabel');
   const imgs = [...reel.querySelectorAll<HTMLImageElement>('.reelFrame img')];
   if (!frame || innerWidth < 760) return;
-  gsap.timeline({ scrollTrigger: { trigger: reel, start: 'top top', end: 'bottom bottom', scrub: 0.6 } })
-    .to(frame, { width: '100vw', height: '100vh', maxHeight: '100vh', borderRadius: 0, ease: 'none', duration: 1 }, 0)
-    .to(label, { opacity: 0, y: -30, duration: 0.25 }, 0)
-    // The caption arrives once the frame is nearly full, so it never spills past the frame's edge.
-    .fromTo(cap, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.22 }, 0.78);
+  const tl = gsap.timeline({ scrollTrigger: { trigger: reel, start: 'top top', end: 'bottom bottom', scrub: 0.6 } })
+    .to(frame, { width: '100vw', height: '100vh', maxHeight: '100vh', borderRadius: 0, ease: 'none', duration: 1 }, 0);
+  if (label) tl.to(label, { opacity: 0, y: -30, duration: 0.25 }, 0);
+  // The caption (if any; the video reel has none) arrives once the frame is nearly full.
+  if (cap) tl.fromTo(cap, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.22 }, 0.78);
   // Pictures cross-fade while the reel is on screen.
   let k = 0, timer = 0;
   imgs[0]?.classList.add('on');

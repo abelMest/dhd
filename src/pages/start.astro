@@ -33,6 +33,19 @@ const paths = [
       )}
     </div>
   </header>
+  <!-- Where it all began: the 75-second history film (also in the home page reel). Plays only when pressed. -->
+  <section class="section tight" aria-labelledby="history-k" data-pagefind-ignore>
+    <div class="wrap">
+      <figure class="historyFilm">
+        <video controls playsinline preload="none" poster="/video/digital-health-history-poster.jpg"
+          aria-label="Digital health, a history in gears: milestones from Einthoven's telephone heartbeat in 1905 to generative AI in 2022">
+          <source src="/video/digital-health-history-960.mp4" type="video/mp4" media="(max-width: 899px)" />
+          <source src="/video/digital-health-history-1600.mp4" type="video/mp4" />
+        </video>
+        <figcaption><span class="kicker" id="history-k">Where it began, in 75 seconds</span>From a heartbeat sent down a telephone wire in 1905 to DHIS2, OpenMRS and drones over Rwanda. Turn the sound on.</figcaption>
+      </figure>
+    </div>
+  </section>
   <article class="article" data-pagefind-body>
     <div class="wrap">
       <div class="articleBody">

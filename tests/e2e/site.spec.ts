@@ -345,3 +345,18 @@ test('readers can switch to French: interface and En bref lines, remembered acro
   await toggle();
   await expect(page.locator('html')).not.toHaveClass(/\bfr\b/);
 });
+
+test('the history film is in the home reel and on Start here, and loads only when needed', async ({ page }) => {
+  const mp4s: string[] = [];
+  page.on('request', (r) => { if (r.url().endsWith('.mp4')) mp4s.push(r.url()); });
+  await page.goto('/');
+  const reel = page.locator('[data-reel-video]');
+  await expect(reel).toHaveAttribute('poster', /digital-health-history-poster\.jpg/);
+  await expect(page.locator('[data-reel-sound]')).toHaveAttribute('aria-pressed', 'false');
+  expect(mp4s).toHaveLength(0); // nothing downloads until the reader scrolls to it
+  for (const f of ['digital-health-history-960.mp4', 'digital-health-history-1600.mp4', 'digital-health-history-poster.jpg']) {
+    expect((await page.request.head(`/video/${f}`)).ok()).toBe(true);
+  }
+  await page.goto('/start/');
+  await expect(page.locator('.historyFilm video')).toHaveAttribute('preload', 'none');
+});
