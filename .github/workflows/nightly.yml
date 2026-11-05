@@ -1,11 +1,11 @@
-# Every night: bring in new Substack posts as draft editions, then rebuild the site
-# (closed opportunities drop off the board on each rebuild).
+# Manual only: bring in new Substack posts as draft editions, then rebuild the site.
+# The nightly schedule was removed (2026-11-05): Supabase's dhd-daily-refresh cron already rebuilds
+# the site every night, and editions are now published on the site first.
+# To run it, use "Run workflow" in GitHub Actions (needs Actions enabled on the account).
 # Repository secrets needed: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, DEPLOY_HOOK_URL.
-name: Nightly import and rebuild
+name: Import Substack posts and rebuild
 
 on:
-  schedule:
-    - cron: '30 2 * * *'   # 02:30 UTC, 05:30 in Addis Ababa
   workflow_dispatch: {}
 
 jobs:
