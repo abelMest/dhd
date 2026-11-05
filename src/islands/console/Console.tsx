@@ -256,7 +256,7 @@ function SendToSubstack({ id, title, dek, body }: { id: string; title: string; d
     return `${sp}${html}<hr><p><em>This edition first appeared on <a href="${url}">Digital Health Digest</a>.</em></p>`;
   };
   return (
-    <details class="panel" style="margin:0 0 20px">
+    <details class="panel" id="send-substack" style="margin:0 0 20px">
       <summary style="cursor:pointer;font-weight:600">Send to subscribers through Substack</summary>
       <p class="meta" style="margin:10px 0">Substack emails your subscribers when you publish there. Publish here first, so the link back works, then:</p>
       <ol style="margin:0 0 12px;padding-left:20px;display:grid;gap:8px">
@@ -400,7 +400,12 @@ ${text.slice(at)}`);
         const pub = await sb.functions.invoke('publish', { method: 'POST' });
         if (pub.error) throw pub.error;
         window.dispatchEvent(new Event('console:saved'));
-        setMsg({ kind: 'info', text: 'Published. The site is rebuilding and this edition is live in about two minutes.' });
+        setMsg({ kind: 'info', text: 'Published. The site is rebuilding and this edition is live in about two minutes; the LinkedIn connector posts it to the page soon after. Next: send it to your Substack subscribers (opened above).' });
+        // Substack has no publishing API, so open its three-step panel and bring it into view.
+        setTimeout(() => {
+          const d = document.getElementById('send-substack') as HTMLDetailsElement | null;
+          if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        }, 300);
       } else if (table === 'articles' && w.status !== 'published') {
         setMsg({ kind: 'info', text: 'Saved as a draft. It stays off the site until you choose Save and publish.' });
       } else {
