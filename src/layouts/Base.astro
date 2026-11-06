@@ -223,6 +223,7 @@ const siteLd = {
               <li><a href="/contribute/"><T en="Write for the Digest" fr="Écrire pour le Digest" /></a></li>
               <li><a href="/about/"><T en="About and standards" fr="À propos et principes éditoriaux" /></a></li>
               <li><a href="/partner/"><T en="Partner with us" fr="Devenir partenaire" /></a></li>
+              {settings.revenue.contactEmail && <li><a href={`mailto:${settings.revenue.contactEmail}`}><T en="Contact us" fr="Nous contacter" /></a></li>}
             </ul>
           </div>
           <div>
