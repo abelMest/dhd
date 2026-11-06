@@ -83,6 +83,9 @@ const siteLd = {
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     {settings.revenue.adsense.client && <meta name="google-adsense-account" content={settings.revenue.adsense.client} />}
+    {settings.revenue.adsense.client && !path.startsWith('/console') && (
+      <script is:inline async crossorigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${settings.revenue.adsense.client}`}></script>
+    )}
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title || SITE_NAME} />

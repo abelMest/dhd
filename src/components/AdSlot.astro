@@ -27,6 +27,8 @@ const id = slot === 'article' ? slotArticle : slotList;
     let loaded = false;
     const load = () => {
       if (loaded) return; loaded = true;
+      // The site-wide AdSense tag in <head> (Base.astro) usually loaded it already.
+      if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
       const s = document.createElement('script');
       s.async = true; s.crossOrigin = 'anonymous';
       s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(client)}`;
