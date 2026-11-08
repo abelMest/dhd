@@ -25,6 +25,9 @@ const storyOutline = (p: Values) => ([
   ['What went wrong', p.setback], ['Results', p.results], ['Lessons for others', ''],
 ] as [string, unknown][]).map(([h, v]) => `## ${h}\n\n${String(v || '').trim() || '_To write._'}\n`).join('\n');
 
+// Status changes that email the contributor (the notify edge function writes the message). Saving a new note emails too.
+const NOTIFY: Stage[] = ['accepted', 'changes', 'approved', 'published', 'added', 'declined'];
+
 const KIND_LABEL = { pitch: 'Pitch', story: 'Story', resource: 'Resource', opportunity: 'Opportunity tip' };
 
 export default function Submissions({ openEdition, openNew }: { openEdition: (id: string) => void; openNew: (t: TableName, prefill: Values) => void }) {
@@ -73,12 +76,29 @@ function Review({ s, onClose, openEdition, openNew }: { s: Sub; onClose: () => v
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: 'info' | 'err'; text: string } | null>(null);
   const p = s.payload;
+  const [emailOn, setEmailOn] = useState(true);
+
+  /** Emails the contributor about the change just saved. Returns an error message, or '' when sent or not needed. */
+  const notify = async (status: Stage): Promise<string> => {
+    const changed = status !== s.status;
+    const noteOnly = !changed && note.trim() !== (s.editor_note || '').trim() && !!note.trim();
+    if (!emailOn || (!changed && !noteOnly) || (changed && !NOTIFY.includes(status))) return '';
+    const { data, error } = await sb.functions.invoke('notify', { method: 'POST', body: { submissionId: s.id, noteOnly } });
+    if (error) {
+      let detail = error.message;
+      try { detail = (await (error as { context?: Response }).context?.json())?.error || detail; } catch { /* keep message */ }
+      return detail;
+    }
+    return data?.error || '';
+  };
 
   const setStatus = async (status: Stage, extra: Values = {}) => {
     setBusy(true); setMsg(null);
     const { error } = await sb.from('submissions').update({ status, editor_note: note, reviewed_at: new Date().toISOString(), ...extra }).eq('id', s.id);
+    if (error) { setBusy(false); return setMsg({ kind: 'err', text: friendlyError(error) }); }
+    const mailErr = await notify(status);
     setBusy(false);
-    if (error) setMsg({ kind: 'err', text: friendlyError(error) }); else onClose();
+    if (mailErr) setMsg({ kind: 'err', text: `Saved, but the email to the contributor was not sent: ${mailErr}` }); else onClose();
   };
 
   // Pitch → draft edition: match the author by name or create them, then open the new draft in the editor.
@@ -106,6 +126,8 @@ function Review({ s, onClose, openEdition, openNew }: { s: Sub; onClose: () => v
       if (error) throw error;
       if (authorId) await sb.from('article_authors').insert({ article_id: id, author_id: authorId, position: 0 });
       await sb.from('submissions').update({ status: 'approved', article_id: id, editor_note: note, reviewed_at: new Date().toISOString() }).eq('id', s.id);
+      const mailErr = await notify('approved');
+      if (mailErr) alert(`The draft edition was created, but the email to the contributor was not sent: ${mailErr}`);
       openEdition(id);
     } catch (e) {
       setMsg({ kind: 'err', text: friendlyError(e) });
@@ -134,7 +156,11 @@ function Review({ s, onClose, openEdition, openNew }: { s: Sub; onClose: () => v
         </div>
       )}
       <label class="field" style="margin-top:20px"><span>Note to the contributor</span>
-        <textarea rows={3} value={note} onInput={(e) => setNote((e.target as HTMLTextAreaElement).value)} placeholder="They see this next to the status." />
+        <textarea rows={3} value={note} onInput={(e) => setNote((e.target as HTMLTextAreaElement).value)} placeholder="They see this next to the status, and in the email." />
+      </label>
+      <label style="display:flex;gap:8px;align-items:center;margin:4px 0 12px" class="meta">
+        <input type="checkbox" checked={emailOn} onChange={(e) => setEmailOn((e.target as HTMLInputElement).checked)} />
+        Email the contributor about this change
       </label>
       {msg && <Notice kind={msg.kind}>{msg.text}</Notice>}
       <div class="actions">

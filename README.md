@@ -80,6 +80,22 @@ In GitHub, open **Settings → Secrets and variables → Actions** and add `SUPA
 - imports new Substack posts as **draft** editions;
 - rebuilds the site, so closed opportunities drop off.
 
+### 5. Emails to contributors
+
+When an editor accepts, declines, approves or publishes a submission (or saves a new note), /console asks the
+`notify` edge function to email the contributor. It sends through [Resend](https://resend.com) (free up to 3,000
+emails a month).
+
+1. Create a Resend account, add the domain `digitalhealthdigest.africa` and add the DNS records it shows in Cloudflare.
+2. Create an API key in Resend, then set it and the sender as secrets (type the key yourself; never commit it):
+
+```bash
+npx supabase secrets set RESEND_API_KEY=re_...  EMAIL_FROM="Digital Health Digest <editor@digitalhealthdigest.africa>"  EMAIL_REPLY_TO=contact@digitalhealthdigest.africa
+npx supabase functions deploy notify
+```
+
+Untick **Email the contributor** in the review panel to change a status quietly.
+
 ## Everyday editing
 
 | You want to | Do this |
