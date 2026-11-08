@@ -6,9 +6,14 @@ import { Fields, Notice, SignIn, useSession, missingRequired, fmtDay, type Field
 import { photoUrl, uploadSquare } from '../lib/upload';
 
 type Kind = 'pitch' | 'resource' | 'opportunity';
+// A story is stored as a pitch with payload.story = true, so it follows the same accept → draft → edition path.
+type Tab = Kind | 'story';
 const FORMATS = PITCH_FORMATS.map((p) => p.format);
+export const STORY_TYPES = ['Implementation that scaled', 'Startup story'] as const;
+/** Which form describes a submission: stories are pitches with their own fields. */
+export const formFor = (kind: Kind, payload: Values): Tab => (kind === 'pitch' && payload.story ? 'story' : kind);
 
-export const FORMS: Record<Kind, { title: string; intro: string; fields: FieldDef[] }> = {
+export const FORMS: Record<Tab, { title: string; intro: string; fields: FieldDef[] }> = {
   pitch: {
     title: 'Pitch a piece',
     intro: 'Tell us the idea first. If it fits, the editor invites a draft and works with you on it.',
@@ -25,6 +30,27 @@ export const FORMS: Record<Kind, { title: string; intro: string; fields: FieldDe
       { name: 'bio', label: 'Short bio', type: 'textarea', rows: 3, hint: 'Two lines, as it would appear under your piece.' },
       { name: 'contact', label: 'Best way to reach you', required: true, hint: 'Email or phone.' },
       { name: 'links', label: 'Links to past work', type: 'textarea', rows: 2 },
+    ],
+  },
+  story: {
+    title: 'Share a story',
+    intro: 'A digital health project in Africa that scaled and lasted, or a startup with real users. We feature stories on merit, never for payment, and an editor checks the evidence before anything runs.',
+    fields: [
+      { name: 'title', label: 'Project or startup name', required: true },
+      { name: 'storyType', label: 'Kind of story', type: 'select', options: STORY_TYPES, required: true },
+      { name: 'country', label: 'Country', type: 'select', options: COUNTRIES },
+      { name: 'topic', label: 'Topic', type: 'select', options: TOPICS },
+      { name: 'problem', label: 'The problem', type: 'textarea', rows: 3, required: true, hint: 'Who was affected, and how big was it?' },
+      { name: 'built', label: 'What was built', type: 'textarea', rows: 3, required: true, hint: 'The system or product, in plain words.' },
+      { name: 'worked', label: 'What made it work', type: 'textarea', rows: 3, hint: 'One to three things: leadership, funding, standards, training, partnerships…' },
+      { name: 'setback', label: 'What went wrong, and how it was fixed', type: 'textarea', rows: 3, hint: 'Every real story has one. It is what makes it useful to others.' },
+      { name: 'results', label: 'Results so far', type: 'textarea', rows: 3, hint: 'Numbers, with where they come from (report, ministry data, evaluation). Say if they are self-reported.' },
+      { name: 'links', label: 'Links to evidence or coverage', type: 'textarea', rows: 2 },
+      { name: 'authorName', label: 'Your name', required: true },
+      { name: 'authorRole', label: 'Role' },
+      { name: 'authorOrg', label: 'Organisation' },
+      { name: 'relation', label: 'Your connection to it', type: 'select', options: ['I led or worked on it', 'I founded it', 'I know the team', 'Other'] },
+      { name: 'contact', label: 'Best way to reach you', required: true, hint: 'Email or phone.' },
     ],
   },
   resource: {
@@ -63,16 +89,16 @@ interface Submission {
   reviewed_at: string | null; draft_url: string; draft_text: string; draft_at: string | null; article_id: string | null;
 }
 
-function initialTab(): Kind {
+function initialTab(): Tab {
   const h = location.hash.replace('#', '');
-  return h === 'resource' ? 'resource' : h === 'tip' || h === 'opportunity' ? 'opportunity' : 'pitch';
+  return h === 'resource' ? 'resource' : h === 'story' ? 'story' : h === 'tip' || h === 'opportunity' ? 'opportunity' : 'pitch';
 }
 
 export default function Contribute() {
   const sb = supabase();
   const session = useSession();
-  const [tab, setTab] = useState<Kind>('pitch');
-  const [values, setValues] = useState<Record<Kind, Values>>({ pitch: {}, resource: {}, opportunity: {} });
+  const [tab, setTab] = useState<Tab>('pitch');
+  const [values, setValues] = useState<Record<Tab, Values>>({ pitch: {}, story: {}, resource: {}, opportunity: {} });
   const [mine, setMine] = useState<Submission[]>([]);
   const [msg, setMsg] = useState<{ kind: 'info' | 'err'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -81,7 +107,7 @@ export default function Contribute() {
   useEffect(() => {
     const go = (scroll: boolean) => {
       setTab(initialTab());
-      if (scroll && /^#(pitch|resource|tip|opportunity|forms)$/.test(location.hash)) document.getElementById('forms')?.scrollIntoView({ behavior: 'smooth' });
+      if (scroll && /^#(pitch|story|resource|tip|opportunity|forms)$/.test(location.hash)) document.getElementById('forms')?.scrollIntoView({ behavior: 'smooth' });
     };
     go(true);
     const onHash = () => go(true);
@@ -89,7 +115,7 @@ export default function Contribute() {
     return () => removeEventListener('hashchange', onHash);
   }, []);
   useEffect(() => {
-    if (session?.user.email) setValues((v) => ({ ...v, pitch: { contact: session.user.email, ...v.pitch } }));
+    if (session?.user.email) setValues((v) => ({ ...v, pitch: { contact: session.user.email, ...v.pitch }, story: { contact: session.user.email, ...v.story } }));
     if (session) load();
   }, [session?.user.id]);
 
@@ -99,7 +125,7 @@ export default function Contribute() {
   }
 
   const set = (k: string, v: unknown) => setValues((all) => ({ ...all, [tab]: { ...all[tab], [k]: v } }));
-  const switchTab = (k: Kind) => { setTab(k); setMsg(null); history.replaceState(null, '', k === 'opportunity' ? '#tip' : `#${k}`); };
+  const switchTab = (k: Tab) => { setTab(k); setMsg(null); history.replaceState(null, '', k === 'opportunity' ? '#tip' : `#${k}`); };
 
   async function submit(e: Event) {
     e.preventDefault();
@@ -107,11 +133,12 @@ export default function Contribute() {
     const missing = missingRequired(form.fields, values[tab]);
     if (missing.length) return setMsg({ kind: 'err', text: `Please fill in: ${missing.join(', ')}.` });
     setBusy(true); setMsg(null);
-    const { error } = await sb!.from('submissions').insert({ kind: tab, payload: values[tab] });
+    const row: { kind: Kind; payload: Values } = tab === 'story' ? { kind: 'pitch', payload: { ...values.story, story: true, format: 'Story', summary: values.story.problem } } : { kind: tab, payload: values[tab] };
+    const { error } = await sb!.from('submissions').insert(row);
     setBusy(false);
     if (error) return setMsg({ kind: 'err', text: friendlyError(error) });
-    setValues((all) => ({ ...all, [tab]: tab === 'pitch' ? { contact: session?.user.email } : {} }));
-    setMsg({ kind: 'info', text: tab === 'pitch' ? 'Pitch sent. Its status, and any note from the editor, shows below under Your submissions.' : 'Thank you. An editor will check it against the source.' });
+    setValues((all) => ({ ...all, [tab]: tab === 'pitch' || tab === 'story' ? { contact: session?.user.email } : {} }));
+    setMsg({ kind: 'info', text: tab === 'pitch' ? 'Pitch sent. Its status, and any note from the editor, shows below under Your submissions.' : tab === 'story' ? 'Story sent, thank you. The editor may get in touch to check details. Its status shows below under Your submissions.' : 'Thank you. An editor will check it against the source.' });
     load();
   }
 
@@ -121,7 +148,7 @@ export default function Contribute() {
 
       <section id="forms" style="margin-top:56px;scroll-margin-top:90px">
         <div class="tabs" role="tablist" aria-label="What would you like to send?">
-          {(Object.keys(FORMS) as Kind[]).map((k) => (
+          {(Object.keys(FORMS) as Tab[]).map((k) => (
             <button type="button" role="tab" aria-selected={tab === k} onClick={() => switchTab(k)}>{FORMS[k].title}</button>
           ))}
         </div>
@@ -239,7 +266,7 @@ function SubmissionRow({ s, onChange }: { s: Submission; onChange: () => void })
   };
   return (
     <li class="row">
-      <div class="when">{fmtDay(s.created_at)}<br />{s.kind === 'pitch' ? 'Pitch' : s.kind === 'resource' ? 'Resource' : 'Opportunity'}</div>
+      <div class="when">{fmtDay(s.created_at)}<br />{s.kind === 'pitch' ? (s.payload.story ? 'Story' : 'Pitch') : s.kind === 'resource' ? 'Resource' : 'Opportunity'}</div>
       <div class="card">
         <h3 style="font-size:1.15rem">{String(s.payload.title || 'Untitled')}</h3>
         <div><span class={`pill ${stage.tone}`}>{stage.label}</span></div>

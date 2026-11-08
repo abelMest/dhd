@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { supabase, friendlyError } from '../../lib/supabase';
 import { STAGES, type Stage } from '../../lib/taxonomy';
 import { Notice, fmtDay, type Values } from '../ui';
-import { FORMS } from '../Contribute';
+import { FORMS, formFor } from '../Contribute';
 import { slugify, type TableName } from './collections';
 
 interface Sub {
@@ -13,12 +13,19 @@ interface Sub {
 }
 const FILTERS = [
   { id: 'action', label: 'Needs action', test: (s: Sub) => s.status === 'new' || s.status === 'draft' },
-  { id: 'pitch', label: 'Pitches', test: (s: Sub) => s.kind === 'pitch' },
+  { id: 'pitch', label: 'Pitches', test: (s: Sub) => s.kind === 'pitch' && !s.payload.story },
+  { id: 'story', label: 'Stories', test: (s: Sub) => s.kind === 'pitch' && !!s.payload.story },
   { id: 'resource', label: 'Resources', test: (s: Sub) => s.kind === 'resource' },
   { id: 'opportunity', label: 'Opportunities', test: (s: Sub) => s.kind === 'opportunity' },
   { id: 'all', label: 'All', test: () => true },
 ];
-const KIND_LABEL = { pitch: 'Pitch', resource: 'Resource', opportunity: 'Opportunity tip' };
+// A story's sections become the headings of its draft edition, filled with what the contributor sent.
+const storyOutline = (p: Values) => ([
+  ['The problem', p.problem], ['What they built', p.built], ['What made it work', p.worked],
+  ['What went wrong', p.setback], ['Results', p.results], ['Lessons for others', ''],
+] as [string, unknown][]).map(([h, v]) => `## ${h}\n\n${String(v || '').trim() || '_To write._'}\n`).join('\n');
+
+const KIND_LABEL = { pitch: 'Pitch', story: 'Story', resource: 'Resource', opportunity: 'Opportunity tip' };
 
 export default function Submissions({ openEdition, openNew }: { openEdition: (id: string) => void; openNew: (t: TableName, prefill: Values) => void }) {
   const sb = supabase()!;
@@ -49,7 +56,7 @@ export default function Submissions({ openEdition, openNew }: { openEdition: (id
           <li class="crow">
             <button type="button" onClick={() => setOpen(s)}>
               <b>{String(s.payload.title || 'Untitled')}</b>
-              <span class="meta">{KIND_LABEL[s.kind]} · {String(s.payload.authorName || s.payload.org || '')} · {fmtDay(s.created_at)}</span>
+              <span class="meta">{KIND_LABEL[formFor(s.kind, s.payload)]}{s.payload.storyType ? ` (${String(s.payload.storyType)})` : ''} · {String(s.payload.authorName || s.payload.org || '')} · {fmtDay(s.created_at)}</span>
             </button>
             <span class={`pill ${STAGES[s.status].tone}`}>{STAGES[s.status].label}</span>
           </li>
@@ -94,7 +101,7 @@ function Review({ s, onClose, openEdition, openNew }: { s: Sub; onClose: () => v
       if (clash) id = `${id}-${Date.now().toString(36).slice(-4)}`;
       const { error } = await sb.from('articles').insert({
         id, title: p.title, dek: p.summary || '', topic: p.topic || '', published_at: new Date().toISOString().slice(0, 10),
-        status: 'draft', body_md: s.draft_text || '', source: 'submission', submission_id: s.id,
+        status: 'draft', body_md: s.draft_text || (p.story ? storyOutline(p) : ''), source: 'submission', submission_id: s.id,
       });
       if (error) throw error;
       if (authorId) await sb.from('article_authors').insert({ article_id: id, author_id: authorId, position: 0 });
@@ -106,11 +113,11 @@ function Review({ s, onClose, openEdition, openNew }: { s: Sub; onClose: () => v
     }
   };
 
-  const fields = FORMS[s.kind].fields;
+  const fields = FORMS[formFor(s.kind, p)].fields;
   return (
     <section class="panel">
       <div class="secHead" style="margin-bottom:12px">
-        <div><p class="kicker">{KIND_LABEL[s.kind]} · received {fmtDay(s.created_at)}</p><h2 style="font-size:1.5rem">{String(p.title || 'Untitled')}</h2></div>
+        <div><p class="kicker">{KIND_LABEL[formFor(s.kind, p)]} · received {fmtDay(s.created_at)}</p><h2 style="font-size:1.5rem">{String(p.title || 'Untitled')}</h2></div>
         <button class="btn line sm" type="button" onClick={onClose}>← Back</button>
       </div>
       <p><span class={`pill ${STAGES[s.status].tone}`}>{STAGES[s.status].label}</span></p>
