@@ -219,7 +219,9 @@ html.menu-open { overflow: hidden; }
 .stPanel .go { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .14); color: #7cc8f2; transition: background-color .3s, color .3s, transform .45s cubic-bezier(.34, 1.4, .64, 1); }
 .stPanel .go svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .stPanel ol a:hover .go { background: var(--blue); color: #fff; transform: translateX(3px); }
-.stGuide { display: inline-flex; gap: 6px; margin-top: 16px; font: 700 .95rem var(--sans); color: #8fd0f5; text-decoration: none; }
+.stGuide { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font: 700 .95rem var(--sans); color: #8fd0f5; text-decoration: none; }
+.stGuide svg { width: 1.05em; height: 1.05em; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s; }
+.stGuide:hover svg { transform: translateX(3px); }
 .stGuide:hover { text-decoration: underline; color: #fff; }
 
 /* Switching paths: the heading fades in, then the cards arrive one by one from the side you moved towards. */
