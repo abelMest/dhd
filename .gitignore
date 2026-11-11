@@ -32,3 +32,4 @@ playwright-report/
 # LinkedIn importer cache and report (re-created on each run)
 scripts/data/linkedin-cache/
 scripts/data/linkedin-import.json
+scripts/covers/out/
