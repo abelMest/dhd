@@ -40,6 +40,13 @@ h1 { font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -.01e
 .row .card .n { display: inline; margin-right: 12px; }
 .row .card p { font-size: 27px; margin-top: 0; }
 
+.grid.cards { gap: 16px; }
+.grid .card { padding: 18px 22px 20px; }
+.grid .card .ic { width: 54px; height: 54px; }
+.grid .card .n { margin-top: 8px; font-size: 18px; }
+.grid .card h3 { font-size: 27px; }
+.grid .card p { font-size: 23px; margin-top: 6px; }
+
 /* steps */
 .steps { display: grid; width: 100%; position: relative; align-content: start; }
 .steps .line { position: absolute; left: 60px; right: 60px; top: 54px; height: 4px; background: linear-gradient(90deg, #f5a524, #4fb0e6 40%, #298fc9); border-radius: 2px; }
@@ -91,9 +98,9 @@ window.renderFigure = (f) => {
   document.getElementById('title').textContent = f.title || '';
   const body = document.getElementById('body');
   if (f.type === 'points') {
-    const n = f.items.length, rows = n > 3 && f.layout === 'rows';
-    const cols = rows ? 1 : n === 4 ? 4 : n === 5 ? 5 : 3;
-    body.innerHTML = `<div class="cards ${rows ? 'row' : ''}" style="grid-template-columns:repeat(${cols},1fr)">${f.items.map((it, i) => `
+    const n = f.items.length, rows = n > 3 && f.layout === 'rows', grid = f.layout === 'grid';
+    const cols = rows ? 1 : grid ? 4 : n === 4 ? 4 : n === 5 ? 5 : 3;
+    body.innerHTML = `<div class="cards ${rows ? 'row' : grid ? 'grid' : ''}" style="grid-template-columns:repeat(${cols},1fr)">${f.items.map((it, i) => `
       <div class="card">${icon(it.icon)}<div><div class="n">${pad(i)}</div><h3>${esc(it.head)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ''}</div></div>`).join('')}</div>`;
   } else if (f.type === 'steps') {
     body.innerHTML = `<div class="steps" style="grid-template-columns:repeat(${f.steps.length},1fr)"><div class="line"></div>${f.steps.map((s, i) => `

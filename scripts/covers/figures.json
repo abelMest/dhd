@@ -3879,5 +3879,75 @@
         }
       ]
     }
+  ],
+  "emrs-to-trusted-healthcare": [
+    {
+      "after": "The survey suggests that the transition from EMRs to trusted healthcare",
+      "type": "compare",
+      "kicker": "A shift in mindset",
+      "title": "Replacing paper with software is not enough",
+      "left": {
+        "head": "Digitisation only",
+        "items": [
+          "Paper records replaced by software",
+          "Inaccurate or incomplete records",
+          "Access too broad, or poorly controlled",
+          "Data protection left to IT"
+        ]
+      },
+      "right": {
+        "head": "Trusted healthcare",
+        "items": [
+          "Data fit for purpose",
+          "Protected throughout its lifecycle",
+          "Available only to authorised users",
+          "Governed to respect patients' rights"
+        ]
+      }
+    },
+    {
+      "after": "Trusted healthcare will not be achieved by deploying more EMRs alone.",
+      "type": "points",
+      "layout": "grid",
+      "kicker": "The framework",
+      "title": "Seven areas to govern on the way to trusted data",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Leadership",
+          "text": "Named owners and a governance committee."
+        },
+        {
+          "icon": "news",
+          "head": "Privacy and law",
+          "text": "Clear notices, patient rights, retention rules."
+        },
+        {
+          "icon": "shield",
+          "head": "Security and access",
+          "text": "Least access needed, encryption, logging."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Data quality",
+          "text": "Standard coding, checks and routine audits."
+        },
+        {
+          "icon": "learn",
+          "head": "Workforce",
+          "text": "Recurring training for every role."
+        },
+        {
+          "icon": "network",
+          "head": "Safe sharing",
+          "text": "Standards and written sharing agreements."
+        },
+        {
+          "icon": "flask",
+          "head": "Monitoring",
+          "text": "Audits, risk reviews and breach exercises."
+        }
+      ]
+    }
   ]
 }
