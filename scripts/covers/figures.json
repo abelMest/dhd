@@ -222,5 +222,3662 @@
         }
       ]
     }
+  ],
+  "dpi-national-health-systems": [
+    {
+      "after": "At its core, this cross-sectoral infrastructure is typically composed",
+      "type": "points",
+      "kicker": "Three pillars",
+      "title": "The shared systems every digital service builds on",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Digital identity",
+          "text": "A secure way for people and organisations to prove who they are."
+        },
+        {
+          "icon": "phone",
+          "head": "Digital payments",
+          "text": "Send and receive money instantly and at low cost, whatever bank you use."
+        },
+        {
+          "icon": "network",
+          "head": "Data exchange",
+          "text": "Information flows between organisations, but only with the owner's consent."
+        }
+      ]
+    },
+    {
+      "after": "The elegance of this layered architecture lies in its strategic response",
+      "type": "steps",
+      "kicker": "Built in layers",
+      "title": "How a national digital health system is stacked",
+      "steps": [
+        {
+          "head": "Foundation",
+          "text": "Digital identity and secure log-in: the base of trust for every sector."
+        },
+        {
+          "head": "Health registries",
+          "text": "One trusted list of patients, health workers and facilities."
+        },
+        {
+          "head": "Shared health services",
+          "text": "Common tools such as medicine supply, scheduling and insurance claims."
+        },
+        {
+          "head": "Everyday applications",
+          "text": "Health records, health wallets and insurance tools people use daily."
+        }
+      ]
+    },
+    {
+      "after": "Modernizing Procurement: Governments must fundamentally rethink how they procure",
+      "type": "compare",
+      "kicker": "Escaping lock-in",
+      "title": "Openness is the way out of the vendor trap",
+      "left": {
+        "head": "Vendor lock-in",
+        "items": [
+          "One vendor's closed, non-standard formats",
+          "Switching is costly and technically painful",
+          "Less competition and higher costs",
+          "A foreign vendor's interests shape the country's path"
+        ]
+      },
+      "right": {
+        "head": "Openness",
+        "items": [
+          "Open standards so all products can talk",
+          "Open-source software the country owns and adapts",
+          "Local teams trained to run and maintain it",
+          "Flexible buying that values long-term fit"
+        ]
+      }
+    }
+  ],
+  "agentic-ai-healthcare": [
+    {
+      "after": "Agentic AI is transforming various aspects of healthcare, enhancing efficiency",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Uses today",
+      "title": "Where agentic AI is already at work",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Virtual health assistants",
+          "text": "Instant guidance, symptom tracking, mental health support."
+        },
+        {
+          "icon": "pill",
+          "head": "Personalised medicine",
+          "text": "Treatment plans fitted to history, genes and lifestyle."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Diagnostic support",
+          "text": "Spots early signs of disease in medical images."
+        },
+        {
+          "icon": "flask",
+          "head": "Drug discovery",
+          "text": "Helps find and design new drug candidates faster."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Patient monitoring",
+          "text": "Combines data from devices into one view of the patient."
+        }
+      ]
+    },
+    {
+      "after": "The integration of Agentic AI into healthcare presents a myriad",
+      "type": "points",
+      "kicker": "Ethical risks",
+      "title": "The concerns that come with autonomous AI",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Patient data privacy",
+          "text": "Sensitive records need encryption and access controls."
+        },
+        {
+          "icon": "ai",
+          "head": "Black-box decisions",
+          "text": "Hard to see how the AI reached its recommendation."
+        },
+        {
+          "icon": "people",
+          "head": "Bias and fairness",
+          "text": "Skewed training data can deepen health inequities."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "The human touch",
+          "text": "Compassionate care may fade as AI does more."
+        }
+      ]
+    },
+    {
+      "after": "The establishment of robust auditing processes and adherence to best practices",
+      "type": "points",
+      "kicker": "Governance",
+      "title": "What it takes to keep autonomous AI accountable",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Explainable AI",
+          "text": "Tools that show how the system reached a decision."
+        },
+        {
+          "icon": "shield",
+          "head": "Legal and ethical rules",
+          "text": "Frameworks that make responsibility clear."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Regular audits",
+          "text": "Checks that systems meet data protection rules."
+        },
+        {
+          "icon": "people",
+          "head": "Public participation",
+          "text": "The public and other stakeholders take part in decisions."
+        }
+      ]
+    }
+  ],
+  "ntd-ai-diagnostics": [
+    {
+      "after": "This capacity not only improves diagnostic accuracy but also facilitates",
+      "type": "points",
+      "kicker": "AI in the field",
+      "title": "How AI is helping detect neglected diseases",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Skin disease app",
+          "text": "Helps frontline health workers spot neglected diseases that show on the skin."
+        },
+        {
+          "icon": "flask",
+          "head": "Phone microscopy",
+          "text": "Mobile phone microscopes detect schistosomiasis at the point of care."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Decision support",
+          "text": "Pulls together patient history, tests and genetics to suggest treatment."
+        }
+      ]
+    },
+    {
+      "after": "The analysis of confusion matrices has provided further insights",
+      "type": "points",
+      "kicker": "Accuracy",
+      "title": "AI-supported diagnosis is getting it right more often",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Buruli ulcer: 88%",
+          "text": "Correctly diagnosed, the highest rate reported."
+        },
+        {
+          "icon": "ai",
+          "head": "Scabies: 85%",
+          "text": "Correctly diagnosed."
+        },
+        {
+          "icon": "learn",
+          "head": "With advanced training: 80%",
+          "text": "Diagnostic accuracy."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Clinical diagnosis: 77%",
+          "text": "Diagnostic accuracy."
+        }
+      ]
+    },
+    {
+      "after": "Continuous investment in these technologies and collaborative efforts",
+      "type": "points",
+      "kicker": "What comes next",
+      "title": "What will make AI work for neglected diseases",
+      "items": [
+        {
+          "icon": "learn",
+          "head": "More training data",
+          "text": "Bigger photo libraries to teach AI to read skin diseases."
+        },
+        {
+          "icon": "network",
+          "head": "Wider partnerships",
+          "text": "Non-profits, universities and companies pooling resources."
+        },
+        {
+          "icon": "flask",
+          "head": "Faster research",
+          "text": "Quicker pathogen identification and better surveillance."
+        },
+        {
+          "icon": "globe",
+          "head": "Reaching more regions",
+          "text": "Copying models that work to other affected areas."
+        }
+      ]
+    }
+  ],
+  "what-ai-means-africa": [
+    {
+      "after": "That mix of urgent need and better connectivity sparked",
+      "type": "steps",
+      "kicker": "A short history",
+      "title": "From small trials to a continent-wide movement",
+      "steps": [
+        {
+          "head": "1980s: first trials",
+          "text": "Kenya, Egypt and The Gambia test small medical AI projects."
+        },
+        {
+          "head": "1990s to 2000s",
+          "text": "AI stays mostly in universities; banks use it before health care does."
+        },
+        {
+          "head": "2010s and COVID-19",
+          "text": "About 160 million more Africans come online between 2019 and 2022."
+        },
+        {
+          "head": "Today",
+          "text": "Homegrown health-tech start-ups build AI for local needs."
+        }
+      ]
+    },
+    {
+      "after": "West Africa is equally active.",
+      "type": "points",
+      "kicker": "AI in action",
+      "title": "AI is already at work across the continent",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Southern Africa",
+          "text": "AI X-rays speed up TB screening in South Africa."
+        },
+        {
+          "icon": "truck",
+          "head": "East Africa",
+          "text": "Cancer care, health assistants, drone supply routes."
+        },
+        {
+          "icon": "mic",
+          "head": "West Africa",
+          "text": "Ubenwa listens for signs of birth asphyxia in newborns."
+        },
+        {
+          "icon": "medkit",
+          "head": "North Africa",
+          "text": "Egypt uses AI for diabetes and early tumour detection."
+        }
+      ]
+    },
+    {
+      "after": "Another worry is outside control.",
+      "type": "points",
+      "kicker": "The hurdles",
+      "title": "Four hurdles between AI and better care",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Too little local data",
+          "text": "Models trained abroad may not fit African patients."
+        },
+        {
+          "icon": "network",
+          "head": "Weak infrastructure",
+          "text": "Unreliable internet and power in many rural clinics."
+        },
+        {
+          "icon": "people",
+          "head": "Few skilled people",
+          "text": "Too few specialists, and many leave for jobs abroad."
+        },
+        {
+          "icon": "shield",
+          "head": "Ethics and control",
+          "text": "Data protection, black-box tools and outside control."
+        }
+      ]
+    }
+  ],
+  "synthetic-data": [
+    {
+      "after": "The point is clear: AI has evolved from a curious intern",
+      "type": "steps",
+      "kicker": "How we got here",
+      "title": "AI's growing hunger for patient data",
+      "steps": [
+        {
+          "head": "1970s: MYCIN",
+          "text": "An early rule-based system for diagnosing bacterial infections."
+        },
+        {
+          "head": "21st century: big data",
+          "text": "Machine learning makes AI smarter, and far more data-hungry."
+        },
+        {
+          "head": "Today: the data dilemma",
+          "text": "AI needs millions of patient records that are private by nature."
+        }
+      ]
+    },
+    {
+      "after": "Synthetic data is an artificially generated dataset that meticulously",
+      "type": "compare",
+      "kicker": "A stunt double for data",
+      "title": "What synthetic data changes for AI training",
+      "left": {
+        "head": "Real patient data",
+        "items": [
+          "Private records that must be protected",
+          "Can carry the bias of who was recorded",
+          "Locked away in separate hospital systems",
+          "Scarce for rare conditions"
+        ]
+      },
+      "right": {
+        "head": "Synthetic data",
+        "items": [
+          "No real person's information exposed",
+          "Can be built to be more balanced",
+          "Free to use for testing and training",
+          "Virtual patient groups for rare diseases"
+        ]
+      }
+    },
+    {
+      "after": "Finally, we must guard against the bias echo.",
+      "type": "points",
+      "kicker": "Healthy scepticism",
+      "title": "Three cautions before trusting synthetic data",
+      "items": [
+        {
+          "icon": "flask",
+          "head": "Quality control",
+          "text": "Synthetic data must be carefully checked against reality."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Doctors' trust",
+          "text": "Doctors may hesitate to trust AI trained on fake data."
+        },
+        {
+          "icon": "layers",
+          "head": "Bias echo",
+          "text": "Biased source data produces equally biased synthetic data."
+        }
+      ]
+    }
+  ],
+  "digital-health-needs-operating-system": [
+    {
+      "after": "Written from implementation. The lessons come from real rollouts",
+      "type": "points",
+      "kicker": "What makes it different",
+      "title": "Three commitments behind Digital Health OS",
+      "items": [
+        {
+          "icon": "rocket",
+          "head": "Practical over aspirational",
+          "text": "Every module ends in a checklist, template or decision rule usable this week."
+        },
+        {
+          "icon": "layers",
+          "head": "Built on what exists",
+          "text": "Points to global frameworks, and reuses national systems before buying new ones."
+        },
+        {
+          "icon": "learn",
+          "head": "Written from implementation",
+          "text": "Lessons from real rollouts across the continent, including the ones that stalled."
+        }
+      ]
+    }
+  ],
+  "can-ai-cure-healthcare-faster-than-it": [
+    {
+      "after": "For instance, a study conducted by",
+      "type": "stat",
+      "kicker": "One study",
+      "title": "AI beat doctors at spotting prostate cancer",
+      "value": "84%",
+      "label": "accuracy of an AI tool in detecting prostate cancer.",
+      "bars": [
+        {
+          "label": "AI tool",
+          "value": 84
+        },
+        {
+          "label": "Human doctors",
+          "value": 67
+        }
+      ],
+      "source": "Study by UCLA, as reported in this edition."
+    },
+    {
+      "after": "Moreover, challenges related to data privacy, security, and equitable access",
+      "type": "points",
+      "kicker": "Ethical debates",
+      "title": "The questions AI diagnosis still has to answer",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Who is accountable?",
+          "text": "AI misdiagnoses raise questions about malpractice."
+        },
+        {
+          "icon": "phone",
+          "head": "Self-diagnosis",
+          "text": "Patients need to learn the limits of these tools."
+        },
+        {
+          "icon": "layers",
+          "head": "Privacy and security",
+          "text": "Health data must be protected and kept secure."
+        },
+        {
+          "icon": "people",
+          "head": "Bias and access",
+          "text": "Unrepresentative data can deepen health disparities."
+        }
+      ]
+    }
+  ],
+  "ethical-regulatory-knowledge-with-global-perspective": [
+    {
+      "after": "This situation underscores the importance of navigating the ethical",
+      "type": "steps",
+      "kicker": "A Nairobi story",
+      "title": "How a well-meant app ran into a privacy gap",
+      "steps": [
+        {
+          "head": "The app launches",
+          "text": "Patients connect with therapists through a mobile app."
+        },
+        {
+          "head": "Use grows",
+          "text": "More people share sensitive mental health data."
+        },
+        {
+          "head": "Concerns rise",
+          "text": "Questions emerge about how secure that data is."
+        },
+        {
+          "head": "The gap is found",
+          "text": "It met local rules, but not international privacy standards."
+        }
+      ]
+    },
+    {
+      "after": "In conclusion, ethical and regulatory knowledge with a global perspective",
+      "type": "points",
+      "kicker": "When rules lag",
+      "title": "Four duties when local rules are still catching up",
+      "items": [
+        {
+          "icon": "learn",
+          "head": "Real consent",
+          "text": "Simple, visual forms so patients truly understand."
+        },
+        {
+          "icon": "shield",
+          "head": "Protect privacy",
+          "text": "Encryption and secure storage, even for HIV care."
+        },
+        {
+          "icon": "news",
+          "head": "Be transparent",
+          "text": "Tell patients how their data is used and by whom."
+        },
+        {
+          "icon": "people",
+          "head": "Push for better rules",
+          "text": "Help shape laws that protect patients and allow innovation."
+        }
+      ]
+    }
+  ],
+  "building-healthier-world-future-healthcare-innovation-digital": [
+    {
+      "after": "However, there are also challenges to be addressed in implementing AI",
+      "type": "compare",
+      "kicker": "AI in the balance",
+      "title": "What AI offers, and what must be addressed",
+      "left": {
+        "head": "What AI offers",
+        "items": [
+          "Fast, accurate analysis of large data sets",
+          "Quicker diagnosis in fields like radiology",
+          "Treatment plans fitted to each patient",
+          "Chatbots giving real-time medical advice"
+        ]
+      },
+      "right": {
+        "head": "What must be addressed",
+        "items": [
+          "Ethical use of patient data for training",
+          "The risk of algorithmic bias",
+          "Careful planning to fit existing systems"
+        ]
+      }
+    },
+    {
+      "after": "In conclusion, healthcare innovation and digital health are transforming",
+      "type": "points",
+      "kicker": "Four drivers",
+      "title": "Four technologies changing how care is delivered",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Artificial intelligence",
+          "text": "Finds patterns in health records to guide decisions."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Big data",
+          "text": "Reveals risk factors and tracks disease spread."
+        },
+        {
+          "icon": "phone",
+          "head": "Telemedicine",
+          "text": "Brings care to remote areas and to people's homes."
+        },
+        {
+          "icon": "wearable",
+          "head": "Wearable devices",
+          "text": "Track heart rate, sleep and activity remotely."
+        }
+      ]
+    }
+  ],
+  "change-management-with-cultural-sensitivity": [
+    {
+      "after": "This culturally sensitive approach helped ease the transition",
+      "type": "steps",
+      "kicker": "Rural India",
+      "title": "How one telemedicine project won over older patients",
+      "steps": [
+        {
+          "head": "Notice the reluctance",
+          "text": "Older patients preferred in-person visits to a screen."
+        },
+        {
+          "head": "Meet in person first",
+          "text": "Introductory sessions with their own doctors."
+        },
+        {
+          "head": "Add telemedicine slowly",
+          "text": "As a supplement to traditional care, not a replacement."
+        },
+        {
+          "head": "Comfort grows",
+          "text": "Patients get used to the new technology over time."
+        }
+      ]
+    },
+    {
+      "after": "For example, in some Southeast Asian countries, involving community elders",
+      "type": "points",
+      "kicker": "Leading change",
+      "title": "What helps communities embrace new digital tools",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Involve the community",
+          "text": "Family, elders and traditional healers shape decisions."
+        },
+        {
+          "icon": "learn",
+          "head": "Explain and train",
+          "text": "Share the benefits; train both staff and patients."
+        },
+        {
+          "icon": "layers",
+          "head": "Complement, don't replace",
+          "text": "Use apps alongside existing practices."
+        },
+        {
+          "icon": "shield",
+          "head": "Be ready to pause",
+          "text": "Slow down and adjust if a rollout does more harm than good."
+        }
+      ]
+    }
+  ],
+  "telehealth-digital-divide": [
+    {
+      "after": "Telehealth depends heavily on a stable internet connection",
+      "type": "stat",
+      "kicker": "The broadband gap",
+      "title": "Many homes lack the internet telehealth needs",
+      "value": "43%",
+      "label": "of households in rural high-need areas have broadband access.",
+      "bars": [
+        {
+          "label": "High-need areas",
+          "value": 53
+        },
+        {
+          "label": "Rural high-need areas",
+          "value": 43
+        }
+      ],
+      "source": "Household broadband access in the U.S., as reported in this edition."
+    },
+    {
+      "after": "Policymakers, healthcare providers, and tech companies all have a role",
+      "type": "compare",
+      "kicker": "Closing the divide",
+      "title": "What blocks telehealth, and what helps",
+      "left": {
+        "head": "Barriers",
+        "items": [
+          "Limited broadband in rural and low-income areas",
+          "Internet and devices cost too much",
+          "Few homes have a laptop or tablet",
+          "Low digital skills and language gaps"
+        ]
+      },
+      "right": {
+        "head": "What helps",
+        "items": [
+          "Invest in broadband where it is missing",
+          "Expand internet and device subsidies",
+          "Digital skills training for seniors and others",
+          "Easy platforms in multiple languages"
+        ]
+      }
+    }
+  ],
+  "digital-health-can-achieve-health-equity-2023": [
+    {
+      "after": "Digital health is not only about developing cutting-edge technologies",
+      "type": "points",
+      "kicker": "Health equity",
+      "title": "Four ways digital tools can narrow health gaps",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Bridge care gaps",
+          "text": "Telehealth and remote monitoring reach rural patients."
+        },
+        {
+          "icon": "people",
+          "head": "Expand access",
+          "text": "Low-cost tools that reach more people for less."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Personalise treatment",
+          "text": "Care matched to each person's needs and preferences."
+        },
+        {
+          "icon": "globe",
+          "head": "Remove distance barriers",
+          "text": "Support that adapts to people's place and culture."
+        }
+      ]
+    },
+    {
+      "after": "Another challenge of health equity is that not everyone can afford",
+      "type": "points",
+      "kicker": "Expanding access",
+      "title": "What simple tools let community health workers do",
+      "items": [
+        {
+          "icon": "medkit",
+          "head": "Register pregnancies",
+          "text": "Keep track of expectant mothers in the community."
+        },
+        {
+          "icon": "globe",
+          "head": "Track outbreaks",
+          "text": "Follow disease outbreaks to help prevent epidemics."
+        },
+        {
+          "icon": "truck",
+          "head": "Monitor vaccine stock",
+          "text": "Know when vaccine supplies are running low."
+        },
+        {
+          "icon": "phone",
+          "head": "Reach patients by SMS",
+          "text": "Communicate with patients through text messages."
+        }
+      ]
+    }
+  ],
+  "digital-health-weekly-news": [
+    {
+      "after": "October 2024 is marked by significant advancements and discussions",
+      "type": "points",
+      "kicker": "October at a glance",
+      "title": "This month's digital health highlights",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Victorian Healthcare Week",
+          "text": "Over 2,000 professionals and 90 speakers in Melbourne."
+        },
+        {
+          "icon": "globe",
+          "head": "World Health Summit",
+          "text": "Berlin talks on building trust for a healthier world."
+        },
+        {
+          "icon": "phone",
+          "head": "Mental health campaign",
+          "text": "Northern Ireland curates self-help apps online."
+        },
+        {
+          "icon": "rocket",
+          "head": "Global Digital Health Summit",
+          "text": "Nearly 2,000 decision-makers meet in Mumbai."
+        }
+      ]
+    }
+  ],
+  "unlocking-power-data-science-digital-health-insights": [
+    {
+      "after": "Healthcare professionals can anticipate patients' demands",
+      "type": "steps",
+      "kicker": "Predictive analytics",
+      "title": "How data helps health teams act before needs arise",
+      "steps": [
+        {
+          "head": "Study past data",
+          "text": "Examine historical records and data patterns."
+        },
+        {
+          "head": "Find high-risk patients",
+          "text": "Spot who is most likely to need care."
+        },
+        {
+          "head": "Forecast the disease",
+          "text": "Predict how an illness is likely to develop."
+        },
+        {
+          "head": "Plan resources",
+          "text": "Put staff and supplies where they will be needed."
+        }
+      ]
+    },
+    {
+      "after": "The possibilities are unlimited as data science continues",
+      "type": "points",
+      "kicker": "What data makes possible",
+      "title": "Four ways data science is reshaping care",
+      "items": [
+        {
+          "icon": "pill",
+          "head": "Personalised treatment",
+          "text": "Care built on genes, lifestyle and patient data."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Predictive analytics",
+          "text": "Spot high-risk patients and plan resources."
+        },
+        {
+          "icon": "wearable",
+          "head": "Real-time monitoring",
+          "text": "Track vital signs and medication from a distance."
+        },
+        {
+          "icon": "globe",
+          "head": "Population health",
+          "text": "Spot outbreaks and guide public health action."
+        }
+      ]
+    }
+  ],
+  "do-you-want-work-digital-health-sector": [
+    {
+      "after": "In conclusion, there are many exciting opportunities in the digital health",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Where to start",
+      "title": "Five areas worth exploring",
+      "items": [
+        {
+          "icon": "hospital",
+          "head": "Electronic health records",
+          "text": "Know their features, benefits and limits."
+        },
+        {
+          "icon": "phone",
+          "head": "Telemedicine",
+          "text": "Care at a distance by video, monitoring and messaging."
+        },
+        {
+          "icon": "medkit",
+          "head": "Mobile health",
+          "text": "Apps for chronic conditions and medication reminders."
+        },
+        {
+          "icon": "ai",
+          "head": "AI and machine learning",
+          "text": "Predict outbreaks, diagnose and personalise treatment."
+        },
+        {
+          "icon": "shield",
+          "head": "Data privacy",
+          "text": "Rules and best practice to keep patient data secure."
+        }
+      ]
+    }
+  ],
+  "south-south-innovation": [
+    {
+      "after": "From the policy-driven testbeds of Rwanda to the fintech-fueled platforms of Ghana",
+      "type": "points",
+      "kicker": "Specialised hubs",
+      "title": "Three countries, three different strengths",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Rwanda: governance",
+          "text": "Clear government policy turns the whole country into a testbed for digital health."
+        },
+        {
+          "icon": "phone",
+          "head": "Ghana: mobile money",
+          "text": "Trusted mobile payments let health services plug into an existing money system."
+        },
+        {
+          "icon": "ai",
+          "head": "Egypt: AI diagnostics",
+          "text": "Building its own AI on a national store of over half a billion medical images."
+        }
+      ]
+    },
+    {
+      "after": "mPharma's strategy effectively inverts the typical tech startup model.",
+      "type": "compare",
+      "kicker": "Operations first",
+      "title": "mPharma builds the network before the app",
+      "left": {
+        "head": "Typical tech startup",
+        "items": [
+          "Leads with a purely digital app",
+          "Struggles to gain traction",
+          "Has to build trust from scratch"
+        ]
+      },
+      "right": {
+        "head": "mPharma's approach",
+        "items": [
+          "Fixes stockouts and high prices for pharmacies",
+          "Earns trust and revenue first",
+          "Then adds telehealth on top of the network"
+        ]
+      }
+    },
+    {
+      "after": "Finally, there is a renewed focus on seed-stage deals",
+      "type": "points",
+      "kicker": "Flight to quality",
+      "title": "How investing in African health tech has changed",
+      "items": [
+        {
+          "icon": "globe",
+          "head": "Money is concentrated",
+          "text": "Four big markets took 83% of startup funding in early 2025."
+        },
+        {
+          "icon": "medkit",
+          "head": "The pandemic boost is gone",
+          "text": "Investors now want a credible path to profit."
+        },
+        {
+          "icon": "rocket",
+          "head": "Seed deals are back",
+          "text": "Seed-stage deals rose 48% year on year in early 2025."
+        }
+      ]
+    }
+  ],
+  "safeguarding-data-privacy-digital-health-era": [
+    {
+      "after": "Health data is a treasure trove of information, from your name",
+      "type": "compare",
+      "kicker": "Two sides",
+      "title": "The same health data can heal or harm",
+      "left": {
+        "head": "In the right hands",
+        "items": [
+          "Treatment tailored to the person",
+          "Progress tracked in real time",
+          "Patterns spotted early for prevention"
+        ]
+      },
+      "right": {
+        "head": "In the wrong hands",
+        "items": [
+          "Identity theft and false insurance claims",
+          "Discrimination at work and in insurance",
+          "Broken trust, so people avoid care"
+        ]
+      }
+    },
+    {
+      "after": "Just as a lock is useless without a key, data protection regulations",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Locks and keys",
+      "title": "Five ways health platforms keep data safe",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Encryption",
+          "text": "Scrambles data so only key holders can read it."
+        },
+        {
+          "icon": "people",
+          "head": "Access controls",
+          "text": "Only authorised people can open your data."
+        },
+        {
+          "icon": "news",
+          "head": "Audit trails",
+          "text": "A record of who opened your data, and when."
+        },
+        {
+          "icon": "layers",
+          "head": "Anonymisation",
+          "text": "Removes details that could link data back to you."
+        },
+        {
+          "icon": "globe",
+          "head": "Laws and penalties",
+          "text": "Set protection standards and punish violations."
+        }
+      ]
+    },
+    {
+      "after": "It’s crucial for individuals to be proactive in safeguarding their health data.",
+      "type": "points",
+      "kicker": "Your part",
+      "title": "Everyday habits that keep your health data safe",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Strong, unique passwords",
+          "text": "Hard to guess and hard to copy."
+        },
+        {
+          "icon": "phone",
+          "head": "A second login step",
+          "text": "Stops someone who has copied your password."
+        },
+        {
+          "icon": "globe",
+          "head": "Skip public Wi-Fi",
+          "text": "Public networks can be easily broken into."
+        },
+        {
+          "icon": "news",
+          "head": "Beware of phishing",
+          "text": "Ignore unexpected messages asking for login details."
+        }
+      ]
+    }
+  ],
+  "key-factors-implementing-digital-health": [
+    {
+      "after": "The synergy of robust ICT infrastructure, sustainable financial resources",
+      "type": "steps",
+      "kicker": "The foundations",
+      "title": "What turns digital health plans into working services",
+      "steps": [
+        {
+          "head": "Build the connections",
+          "text": "Broadband, reliable power and internet access, even in remote clinics."
+        },
+        {
+          "head": "Fund it for the long term",
+          "text": "Pay for development, rollout and ongoing maintenance."
+        },
+        {
+          "head": "Train the people",
+          "text": "From nurses to data scientists, able to use digital tools every day."
+        }
+      ]
+    },
+    {
+      "after": "By prioritizing community engagement, comprehensive health worker training, and interoperability",
+      "type": "points",
+      "kicker": "Making it stick",
+      "title": "How digital health becomes part of everyday care",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Community engagement",
+          "text": "Teach local volunteers and families to use health apps for prevention."
+        },
+        {
+          "icon": "learn",
+          "head": "Health worker training",
+          "text": "Build skills with health records, AI tools and leading digital change."
+        },
+        {
+          "icon": "network",
+          "head": "Interoperability",
+          "text": "Let different systems share information so every clinician sees the full record."
+        }
+      ]
+    }
+  ],
+  "digital-tools-can-help-health-workers-make": [
+    {
+      "after": "That tool is called a clinical decision support algorithm (CDSA)",
+      "type": "points",
+      "kicker": "Why they matter",
+      "title": "What decision-support tools can improve",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Quality of care",
+          "text": "Fewer errors, delays and differences in diagnosis."
+        },
+        {
+          "icon": "pill",
+          "head": "Use of resources",
+          "text": "Fewer unnecessary tests, drugs or referrals."
+        },
+        {
+          "icon": "medkit",
+          "head": "Patient outcomes",
+          "text": "Safer and more effective treatment."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Health system performance",
+          "text": "Data and insights for tracking and evaluation."
+        }
+      ]
+    },
+    {
+      "after": "Developing and implementing CDSAs is not a trivial task.",
+      "type": "steps",
+      "kicker": "From idea to clinic",
+      "title": "How a decision-support tool is built and tested",
+      "steps": [
+        {
+          "head": "Define the scope",
+          "text": "Which health problems, and which health workers."
+        },
+        {
+          "head": "Review the evidence",
+          "text": "Best practice and guidelines for each problem."
+        },
+        {
+          "head": "Build the algorithm",
+          "text": "Combine signs, symptoms and tests into advice."
+        },
+        {
+          "head": "Validate and test",
+          "text": "With local experts, then with real users."
+        },
+        {
+          "head": "Measure the impact",
+          "text": "On health worker performance and patient health."
+        }
+      ]
+    },
+    {
+      "after": "I hope that this article has given you a glimpse",
+      "type": "compare",
+      "kicker": "What comes next",
+      "title": "The gaps still open, and what will help close them",
+      "left": {
+        "head": "Still to solve",
+        "items": [
+          "Availability and quality of data and evidence",
+          "Fitting with existing health systems",
+          "Rules and oversight for the tools and their data",
+          "Acceptance by health workers and patients"
+        ]
+      },
+      "right": {
+        "head": "What will help",
+        "items": [
+          "More collaboration among all the players",
+          "Researchers, funders and regulators working together",
+          "Artificial intelligence to strengthen the tools",
+          "Game-like design to keep users engaged"
+        ]
+      }
+    }
+  ],
+  "pill-problem": [
+    {
+      "after": "We're all participants in a multi-billion dollar mistake.",
+      "type": "points",
+      "kicker": "The pill problem",
+      "title": "Half of all medicines are used the wrong way",
+      "items": [
+        {
+          "icon": "pill",
+          "head": "Over half of medicines",
+          "text": "Prescribed, dispensed or sold inappropriately."
+        },
+        {
+          "icon": "people",
+          "head": "Half of patients",
+          "text": "Do not take their medicines correctly."
+        },
+        {
+          "icon": "globe",
+          "head": "Who reports it",
+          "text": "The World Health Organization."
+        }
+      ]
+    },
+    {
+      "after": "The ethical tightrope they walk, balancing profit motives",
+      "type": "points",
+      "kicker": "Why it is hard",
+      "title": "Why medicines end up being used the wrong way",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Too many pills at once",
+          "text": "Each added medicine raises the risk of harm."
+        },
+        {
+          "icon": "pill",
+          "head": "Antibiotic overuse",
+          "text": "Often given for viral infections, fuelling superbugs."
+        },
+        {
+          "icon": "people",
+          "head": "A pill for every ill",
+          "text": "Patients push for prescriptions they do not need."
+        },
+        {
+          "icon": "news",
+          "head": "Drug company pressure",
+          "text": "Marketing and incentives can sway prescribing."
+        }
+      ]
+    },
+    {
+      "after": "What makes Medrafa truly remarkable is that it's built in Ethiopia for Ethiopia.",
+      "type": "compare",
+      "kicker": "Built in Ethiopia",
+      "title": "How a local startup tackles medicine mistakes",
+      "left": {
+        "head": "The problem",
+        "items": [
+          "Handwritten prescriptions that are hard to read",
+          "Pharmacy stockouts and expired drugs",
+          "Patients unsure about their own medicines",
+          "Unreliable internet in many areas"
+        ]
+      },
+      "right": {
+        "head": "Medrafa's answer",
+        "items": [
+          "Secure electronic prescriptions",
+          "Real-time stock management tools",
+          "A place to track prescriptions and learn about them",
+          "Works offline"
+        ]
+      }
+    }
+  ],
+  "integration-african-traditional-medicine-digitization-complement-orthodox": [
+    {
+      "after": "The digitization of traditional medicine involves recording and organizing",
+      "type": "points",
+      "kicker": "Why digitise",
+      "title": "What going digital does for traditional medicine",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Standard remedies",
+          "text": "Agreed doses and uses make treatments safer."
+        },
+        {
+          "icon": "flask",
+          "head": "Evidence alongside tradition",
+          "text": "Easier to combine with modern medical protocols."
+        },
+        {
+          "icon": "news",
+          "head": "Knowledge preserved",
+          "text": "Healing knowledge is kept for future generations."
+        },
+        {
+          "icon": "people",
+          "head": "Healers and doctors connect",
+          "text": "A shared place to cross-check treatments."
+        }
+      ]
+    },
+    {
+      "after": "A study in Mali showed that 70% of respondents",
+      "type": "points",
+      "kicker": "Widely used",
+      "title": "Most West Africans still rely on traditional medicine",
+      "items": [
+        {
+          "icon": "people",
+          "head": "80–90% rely on it",
+          "text": "Rural people in Nigeria, Ghana, Senegal and Mali use it for primary care."
+        },
+        {
+          "icon": "globe",
+          "head": "60% in Ghana",
+          "text": "Still use traditional medicine."
+        },
+        {
+          "icon": "hospital",
+          "head": "70% in Mali",
+          "text": "Prefer a mixed system of both."
+        }
+      ]
+    },
+    {
+      "after": "In conclusion, Digitizing traditional medicine and it’s integration",
+      "type": "compare",
+      "kicker": "The hurdles",
+      "title": "What stands in the way, and what would fix it",
+      "left": {
+        "head": "Challenges",
+        "items": [
+          "Practices vary from community to community",
+          "No clear rules for traditional treatments",
+          "Many healers are new to digital tools"
+        ]
+      },
+      "right": {
+        "head": "What is needed",
+        "items": [
+          "Standard remedies, doses and uses",
+          "Rules that protect patients and healers",
+          "Training and support for healers"
+        ]
+      }
+    }
+  ],
+  "ai-diagnostics-data-sovereignty": [
+    {
+      "after": "The result: AI tools arrive in African health systems pre-loaded",
+      "type": "stat",
+      "kicker": "The data gap",
+      "title": "A quarter of the disease, under 4% of the data",
+      "value": "<4%",
+      "label": "of the data used to train global medical AI comes from Africa.",
+      "bars": [
+        {
+          "label": "Africa's share of world disease burden",
+          "value": 25
+        },
+        {
+          "label": "Africa's share of medical AI training data",
+          "value": 4
+        }
+      ],
+      "source": "Figures as reported in this edition."
+    },
+    {
+      "after": "Third, we need African-led AI model development, not only African deployment",
+      "type": "points",
+      "kicker": "Build, not buy",
+      "title": "Three things Africa needs to build for its own AI",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Data that stays at home",
+          "text": "Clinical data used to train AI without leaving the country."
+        },
+        {
+          "icon": "shield",
+          "head": "Home-grown AI rules",
+          "text": "Who checks tools, what proof is needed, and who is liable for harm."
+        },
+        {
+          "icon": "ai",
+          "head": "African-led AI models",
+          "text": "African researchers building models, not just using outside ones."
+        }
+      ]
+    }
+  ],
+  "innovation-problem-solving-skills-challenging-contexts": [
+    {
+      "after": "For instance, in South Sudan, where frequent power outages",
+      "type": "compare",
+      "kicker": "Creative fixes",
+      "title": "Hard limits met with practical solutions",
+      "left": {
+        "head": "The constraint",
+        "items": [
+          "Few health facilities in remote areas",
+          "Advanced imaging out of reach",
+          "Basic phones and weak connections",
+          "Frequent power outages"
+        ]
+      },
+      "right": {
+        "head": "The fix",
+        "items": [
+          "A mobile health unit that travels to patients",
+          "A low-cost, portable ultrasound device",
+          "Telemedicine built for basic mobile phones",
+          "Manual backups and off-grid solar power"
+        ]
+      }
+    },
+    {
+      "after": "In conclusion, innovation and problem-solving skills are crucial",
+      "type": "points",
+      "kicker": "The mindset",
+      "title": "Four habits of health innovators in tough settings",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Spot the problem",
+          "text": "Identify gaps and think creatively about them."
+        },
+        {
+          "icon": "phone",
+          "head": "Reuse what exists",
+          "text": "Adapt tools already within reach, like a farming app."
+        },
+        {
+          "icon": "rocket",
+          "head": "Build what is missing",
+          "text": "Create new tools that fit local needs and limits."
+        },
+        {
+          "icon": "people",
+          "head": "Work with communities",
+          "text": "Respect local languages and practices so tools are used."
+        }
+      ]
+    }
+  ],
+  "user-centered-design-with-focus-accessibility": [
+    {
+      "after": "By incorporating user feedback throughout the development process",
+      "type": "steps",
+      "kicker": "Design with users",
+      "title": "Building health tools with users, not just for them",
+      "steps": [
+        {
+          "head": "Involve users early",
+          "text": "Patients, community health workers and clinic staff."
+        },
+        {
+          "head": "Design around their needs",
+          "text": "Easy to navigate and culturally relevant."
+        },
+        {
+          "head": "Gather feedback",
+          "text": "Throughout development, not just at the end."
+        },
+        {
+          "head": "Refine and repeat",
+          "text": "Until the tool is functional and embraced."
+        }
+      ]
+    },
+    {
+      "after": "By prioritizing simplicity, ensuring usability for people with limited literacy",
+      "type": "points",
+      "kicker": "Accessible by design",
+      "title": "Four rules for health apps everyone can use",
+      "items": [
+        {
+          "icon": "dashboard",
+          "head": "Keep it simple",
+          "text": "Large icons, minimal text and audio guidance."
+        },
+        {
+          "icon": "mic",
+          "head": "Design for low literacy",
+          "text": "Voice messages and prompts in local languages."
+        },
+        {
+          "icon": "people",
+          "head": "Plan for disabilities",
+          "text": "Screen-reader support, text options, easy menus."
+        },
+        {
+          "icon": "phone",
+          "head": "Work on basic phones",
+          "text": "Run offline and on simple feature phones."
+        }
+      ]
+    }
+  ],
+  "interdisciplinary-collaboration-across-sectors": [
+    {
+      "after": "Collaboration often extends beyond just IT professionals and healthcare providers",
+      "type": "points",
+      "kicker": "Many hands",
+      "title": "Who needs a seat at the digital health table",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Health workers",
+          "text": "Know the patients and their clinical needs."
+        },
+        {
+          "icon": "ai",
+          "head": "Tech experts",
+          "text": "Build the apps and platforms."
+        },
+        {
+          "icon": "shield",
+          "head": "Government agencies",
+          "text": "Align tools with national health policies and rules."
+        },
+        {
+          "icon": "people",
+          "head": "NGOs and communities",
+          "text": "Build trust, run outreach and know local needs."
+        }
+      ]
+    },
+    {
+      "after": "Together, they created a tool that was not only functional",
+      "type": "compare",
+      "kicker": "Idea to tool",
+      "title": "A good idea needs more than one discipline",
+      "left": {
+        "head": "Working alone",
+        "items": [
+          "A health worker spots a need",
+          "No technical skills to build the tool",
+          "The idea stays just an idea"
+        ]
+      },
+      "right": {
+        "head": "Working together",
+        "items": [
+          "Developers and data scientists join in",
+          "The tool gets built and works",
+          "User-friendly and fitted to daily work"
+        ]
+      }
+    }
+  ],
+  "ai-game-changer-diagnostics-early-detection": [
+    {
+      "after": "AI in pathology has several applications including cancer diagnosis",
+      "type": "compare",
+      "kicker": "Two fields",
+      "title": "Where AI is changing how disease is found",
+      "left": {
+        "head": "Radiology",
+        "items": [
+          "Reads X-rays, CT scans and MRIs",
+          "Spots abnormalities faster and more accurately",
+          "Checks chest X-rays for 14 conditions in seconds"
+        ]
+      },
+      "right": {
+        "head": "Pathology",
+        "items": [
+          "Reads digital images of tissue slides",
+          "Gives rapid and accurate results",
+          "Frees pathologists for harder diagnostic tasks"
+        ]
+      }
+    }
+  ],
+  "health-policy-regulatory-updates": [
+    {
+      "after": "Health policies and regulations play a crucial role in shaping",
+      "type": "points",
+      "kicker": "Four updates",
+      "title": "Where the rules for digital health are changing",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Data privacy",
+          "text": "Stronger laws give people more control over health data."
+        },
+        {
+          "icon": "phone",
+          "head": "Telehealth",
+          "text": "Wider access and looser payment rules for remote care."
+        },
+        {
+          "icon": "wearable",
+          "head": "Medical devices",
+          "text": "Checks that apps and wearables are safe and effective."
+        },
+        {
+          "icon": "network",
+          "head": "Interoperability",
+          "text": "Shared standards so systems can exchange data."
+        }
+      ]
+    },
+    {
+      "after": "It is important to stay updated on health policy and regulatory changes",
+      "type": "points",
+      "kicker": "Why it matters",
+      "title": "What keeping up with the rules makes possible",
+      "items": [
+        {
+          "icon": "news",
+          "head": "Compliance",
+          "text": "Organisations stay within the law as the rules change."
+        },
+        {
+          "icon": "medkit",
+          "head": "Patient safety",
+          "text": "Tools that are safe, effective and give reliable data."
+        },
+        {
+          "icon": "rocket",
+          "head": "Responsible innovation",
+          "text": "New digital health tools developed and used responsibly."
+        }
+      ]
+    }
+  ],
+  "digital-health-medical-office-practice": [
+    {
+      "after": "The panel comprised of a technical advisor to the ministry of health",
+      "type": "points",
+      "kicker": "One panel",
+      "title": "Different fields, one goal: better access to care",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Ministry of Health",
+          "text": "A technical advisor to the ministry."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Clinical practice",
+          "text": "A senior consultant physician and founder."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Business research",
+          "text": "A researcher looking at the business side."
+        }
+      ]
+    },
+    {
+      "after": "Overall, the adoption of digital health technologies in medical office practice",
+      "type": "points",
+      "kicker": "The payoff",
+      "title": "Four ways digital health can strengthen care",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Wider access",
+          "text": "Telemedicine links remote patients to city doctors."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Better quality",
+          "text": "Real-time records cut errors and aid decisions."
+        },
+        {
+          "icon": "layers",
+          "head": "More efficiency",
+          "text": "Less paperwork and automatic appointment reminders."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Faster outbreak response",
+          "text": "Real-time monitoring helps spot and stop outbreaks."
+        }
+      ]
+    }
+  ],
+  "healthcare-interoperability-standardization-efforts": [
+    {
+      "after": "In order to facilitate seamless communication and data exchange",
+      "type": "compare",
+      "kicker": "Breaking silos",
+      "title": "Why health systems need to speak the same language",
+      "left": {
+        "head": "Data in silos",
+        "items": [
+          "Each system keeps its own records",
+          "Hard to see the whole patient",
+          "Care is poorly coordinated"
+        ]
+      },
+      "right": {
+        "head": "Connected systems",
+        "items": [
+          "Common frameworks, rules and formats",
+          "A full view of the patient's health",
+          "Better coordinated, continuous care"
+        ]
+      }
+    },
+    {
+      "after": "In conclusion, initiatives to standardize and increase healthcare interoperability",
+      "type": "points",
+      "kicker": "The building blocks",
+      "title": "What makes health data flow between systems",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Data exchange",
+          "text": "Records, test results and medicine histories shared."
+        },
+        {
+          "icon": "hospital",
+          "head": "Secure sharing networks",
+          "text": "Link providers whatever record system they use."
+        },
+        {
+          "icon": "layers",
+          "head": "Common standards",
+          "text": "Shared specifications such as FHIR and HL7."
+        },
+        {
+          "icon": "shield",
+          "head": "Laws and policies",
+          "text": "Require data sharing and give patients access."
+        }
+      ]
+    }
+  ],
+  "seven-building-blocks": [
+    {
+      "after": "WHO’s advice: tighten the weakest block first, iterate yearly, repeat.",
+      "type": "steps",
+      "kicker": "Action plan",
+      "title": "Five steps to strengthen a national strategy",
+      "steps": [
+        {
+          "head": "Map your gaps",
+          "text": "Score each block in a two-day workshop."
+        },
+        {
+          "head": "Secure the foundations",
+          "text": "Governance, a data protection law, basic data links."
+        },
+        {
+          "head": "Budget for talent",
+          "text": "Set aside 10–20% of every project for skills."
+        },
+        {
+          "head": "Go open",
+          "text": "Open standards and open source avoid vendor lock-in."
+        },
+        {
+          "head": "Measure and repeat",
+          "text": "Reassess yearly; fix the weakest block next."
+        }
+      ]
+    }
+  ],
+  "role-attitude-implementation-digital-health-africa": [
+    {
+      "after": "Research indicates that a favourable attitude among healthcare professionals",
+      "type": "stat",
+      "kicker": "Attitude gap",
+      "title": "Provider attitudes to telemedicine still lag behind",
+      "value": "64%",
+      "label": "of healthcare providers report positive attitudes towards telemedicine.",
+      "bars": [
+        {
+          "label": "Providers in these studies",
+          "value": 64
+        },
+        {
+          "label": "Similar contexts",
+          "value": 80
+        }
+      ],
+      "source": "Share of healthcare providers with positive attitudes to telemedicine, as reported in this edition."
+    },
+    {
+      "after": "Regression analysis identified key determinants influencing the attitudes",
+      "type": "points",
+      "kicker": "Key drivers",
+      "title": "What shapes health workers' attitudes to digital tools",
+      "items": [
+        {
+          "icon": "dashboard",
+          "head": "Owning a computer",
+          "text": "Owners were about 2.6 times more likely to feel positive."
+        },
+        {
+          "icon": "rocket",
+          "head": "Feeling innovative",
+          "text": "About 2.7 times more likely to have a positive attitude."
+        },
+        {
+          "icon": "phone",
+          "head": "Past digital experience",
+          "text": "Having supported patients with digital tools before."
+        },
+        {
+          "icon": "learn",
+          "head": "Skills and awareness",
+          "text": "Computer skills and knowing about remote monitoring."
+        }
+      ]
+    },
+    {
+      "after": "Improving the intention and skill of healthcare professionals",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "What helps",
+      "title": "Five ways to build positive attitudes",
+      "items": [
+        {
+          "icon": "news",
+          "head": "Raise awareness",
+          "text": "Show how useful and easy digital tools are."
+        },
+        {
+          "icon": "learn",
+          "head": "Structured training",
+          "text": "Hands-on training before and during rollout."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Equip and encourage",
+          "text": "Help staff get digital tools and build computer skills."
+        },
+        {
+          "icon": "people",
+          "head": "Mind gender and skills",
+          "text": "Tailor support to gender and technical skill gaps."
+        },
+        {
+          "icon": "network",
+          "head": "Peer networks",
+          "text": "Mentors and peers who share what works."
+        }
+      ]
+    }
+  ],
+  "digital-health-enterprises-comprehensive-overview": [
+    {
+      "after": "Digital Health Enterprises are organizations that provide digital healthcare",
+      "type": "points",
+      "kicker": "The architecture",
+      "title": "Four building blocks of a digital health enterprise",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Standards",
+          "text": "The rules that let systems share data safely."
+        },
+        {
+          "icon": "people",
+          "head": "Workforce",
+          "text": "Skilled people who run and improve the services."
+        },
+        {
+          "icon": "network",
+          "head": "Platform",
+          "text": "The core system that connects apps and devices."
+        },
+        {
+          "icon": "phone",
+          "head": "Applications",
+          "text": "Programs on phones and wearables that deliver care."
+        }
+      ]
+    },
+    {
+      "after": "However, adopting and implementing standards in the healthcare sector",
+      "type": "compare",
+      "kicker": "Standards",
+      "title": "Why standards stall, and what moves them forward",
+      "left": {
+        "head": "The challenges",
+        "items": [
+          "Little awareness of existing standards",
+          "Standards bodies poorly aligned",
+          "Few incentives or resources to adopt them",
+          "Weak regulation and enforcement"
+        ]
+      },
+      "right": {
+        "head": "What helps",
+        "items": [
+          "Train staff and partners on standards",
+          "Work with others to harmonise standards",
+          "Funding, technical help and recognition",
+          "Accreditation, certification and audits"
+        ]
+      }
+    },
+    {
+      "after": "Digital health applications are software programs that provide",
+      "type": "points",
+      "kicker": "Applications",
+      "title": "Four kinds of apps that bring care to people",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Telemedicine",
+          "text": "Virtual visits by voice, video, text or chat."
+        },
+        {
+          "icon": "wearable",
+          "head": "Remote monitoring",
+          "text": "Track blood pressure, glucose and heart rate at home."
+        },
+        {
+          "icon": "pill",
+          "head": "Digital therapeutics",
+          "text": "Therapy, medication support and lifestyle coaching by app."
+        },
+        {
+          "icon": "learn",
+          "head": "Health education",
+          "text": "Learn about nutrition, exercise and stress."
+        }
+      ]
+    }
+  ],
+  "can-african-health-tech-startups-become-next": [
+    {
+      "after": "However, these advancements are hindered by a range of",
+      "type": "points",
+      "kicker": "Roadblocks",
+      "title": "The roadblocks, in numbers",
+      "items": [
+        {
+          "icon": "rocket",
+          "head": "$189 million",
+          "text": "Raised by health tech startups in 2022, under 10% of all."
+        },
+        {
+          "icon": "news",
+          "head": "27% of countries",
+          "text": "Have national policies supporting digital health."
+        },
+        {
+          "icon": "hospital",
+          "head": "56% underserved",
+          "text": "Share of rural people without essential health services."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "1 doctor per 5,000",
+          "text": "About one doctor for every 5,000 people."
+        }
+      ]
+    },
+    {
+      "after": "One promising solution for overcoming barriers in the digital",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "What could help",
+      "title": "Five ways to clear the path to scale",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Public-private partnerships",
+          "text": "Build power and internet infrastructure together."
+        },
+        {
+          "icon": "globe",
+          "head": "Know the local context",
+          "text": "Match solutions to local needs and skills."
+        },
+        {
+          "icon": "layers",
+          "head": "Blended capital",
+          "text": "Grants first, then investment as the business grows."
+        },
+        {
+          "icon": "rocket",
+          "head": "Incubators and accelerators",
+          "text": "Mentoring and guidance through fundraising."
+        },
+        {
+          "icon": "shield",
+          "head": "Simpler regulation",
+          "text": "Simpler rules and more open government buying."
+        }
+      ]
+    },
+    {
+      "after": "Africa’s health tech revolution isn’t about chasing unicorns",
+      "type": "compare",
+      "kicker": "The balance",
+      "title": "What stands in the way, and what could open it",
+      "left": {
+        "head": "Barriers",
+        "items": [
+          "Limited investment and government support",
+          "Complex rules that add fees and delays",
+          "Weak infrastructure in rural areas",
+          "Low spending power and weak insurance"
+        ]
+      },
+      "right": {
+        "head": "Opportunities",
+        "items": [
+          "Public-private partnerships",
+          "Solutions built for local needs",
+          "Evidence from trials that builds trust",
+          "Growing markets such as Kenya and Ethiopia"
+        ]
+      }
+    }
+  ],
+  "people-animals-planet": [
+    {
+      "after": "This is a stark reminder that human health, animal health",
+      "type": "points",
+      "kicker": "One Health",
+      "title": "Human, animal and environmental health are linked",
+      "items": [
+        {
+          "icon": "globe",
+          "head": "Environment",
+          "text": "When we cut down forests, people come closer to new viruses in wildlife."
+        },
+        {
+          "icon": "onehealth",
+          "head": "Animals",
+          "text": "When livestock get sick, the disease can jump to the farmer."
+        },
+        {
+          "icon": "medkit",
+          "head": "Water",
+          "text": "When we pollute the water, both people and animals fall ill."
+        }
+      ]
+    },
+    {
+      "after": "It may seem new, but the idea that health is connected",
+      "type": "steps",
+      "kicker": "A short history",
+      "title": "From a cholera map to One Digital Health",
+      "steps": [
+        {
+          "head": "1854: Snow's cholera map",
+          "text": "Data used to trace an outbreak to one water pump."
+        },
+        {
+          "head": "2004: One Health begins",
+          "text": "12 principles call for experts to work together."
+        },
+        {
+          "head": "2006: Early warning system",
+          "text": "Global agencies start watching animal diseases."
+        },
+        {
+          "head": "2020: COVID-19",
+          "text": "Forces more data sharing and remote care."
+        },
+        {
+          "head": "2021: One Digital Health",
+          "text": "A plan to use digital tools for One Health goals."
+        }
+      ]
+    },
+    {
+      "after": "The technology for ODH is wide-ranging and active.",
+      "type": "points",
+      "kicker": "Tools in use",
+      "title": "How digital tools watch over people, animals and nature",
+      "items": [
+        {
+          "icon": "globe",
+          "head": "Drones and sensors",
+          "text": "Track deforestation, pollution and wildlife migration."
+        },
+        {
+          "icon": "ai",
+          "head": "AI outbreak detectors",
+          "text": "Spot outbreaks like Ebola and avian flu before they spread."
+        },
+        {
+          "icon": "wearable",
+          "head": "Wearables for animals",
+          "text": "Smart collars and ear tags catch sickness early."
+        },
+        {
+          "icon": "phone",
+          "head": "Vets on call",
+          "text": "Apps that give farmers and vets remote support."
+        }
+      ]
+    }
+  ],
+  "toralv-ostvang-life-saved-by-wearable-technology": [
+    {
+      "after": "Paramedics immediately took Toralv to a nearby hospital.",
+      "type": "steps",
+      "kicker": "A fall near Oslo",
+      "title": "How a watch raised the alarm when no one heard",
+      "steps": [
+        {
+          "head": "He faints in the night",
+          "text": "A sudden drop in blood pressure."
+        },
+        {
+          "head": "Watch detects a hard fall",
+          "text": "Then waits a minute for any movement."
+        },
+        {
+          "head": "Police are alerted",
+          "text": "The watch called for help; his friends heard nothing."
+        },
+        {
+          "head": "His wife gives the address",
+          "text": "Police reach her and find where he is staying."
+        },
+        {
+          "head": "Paramedics take him in",
+          "text": "He had three fractures to his face."
+        }
+      ]
+    },
+    {
+      "after": "Wearables make healthcare more accessible, personalized, and effective.",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Beyond fitness",
+      "title": "Five ways wearables support health",
+      "items": [
+        {
+          "icon": "wearable",
+          "head": "Track daily health",
+          "text": "Heart rate, sleep and activity, in real time."
+        },
+        {
+          "icon": "hospital",
+          "head": "Remote monitoring",
+          "text": "Doctors follow chronic patients outside the clinic."
+        },
+        {
+          "icon": "phone",
+          "head": "Telemedicine",
+          "text": "Share live readings during virtual visits."
+        },
+        {
+          "icon": "people",
+          "head": "Mental health",
+          "text": "Track stress and sleep to spot triggers."
+        },
+        {
+          "icon": "shield",
+          "head": "Emergency alerts",
+          "text": "Fall detection and SOS that call for help."
+        }
+      ]
+    }
+  ],
+  "open-health-stack-can-accelerate-digital-health": [
+    {
+      "after": "OHS is a set of modular components that developers",
+      "type": "points",
+      "kicker": "Open Health Stack",
+      "title": "Three building blocks developers can mix and match",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Android toolkit",
+          "text": "Build secure Android apps that work offline and sync when the internet returns."
+        },
+        {
+          "icon": "shield",
+          "head": "Info Gateway",
+          "text": "Controls who can see patient data, so patients can grant or revoke access."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Analytics",
+          "text": "Turns health records into dashboards that show trends across places and time."
+        }
+      ]
+    },
+    {
+      "after": "OHS also provides developer resources such as documentation",
+      "type": "steps",
+      "kicker": "End to end",
+      "title": "How the pieces work together in the field",
+      "steps": [
+        {
+          "head": "Collect data offline",
+          "text": "Patient data recorded on a phone, no internet needed."
+        },
+        {
+          "head": "Sync when back online",
+          "text": "Data goes to a cloud server when connection returns."
+        },
+        {
+          "head": "Guide the care",
+          "text": "Clinical rules help with diagnosis and treatment."
+        },
+        {
+          "head": "Control access",
+          "text": "Patients choose who can see their records."
+        },
+        {
+          "head": "See the trends",
+          "text": "Dashboards show patterns across places and time."
+        }
+      ]
+    },
+    {
+      "after": "By using OHS, developers and implementers can benefit from:",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "The benefits",
+      "title": "What developers and implementers gain",
+      "items": [
+        {
+          "icon": "rocket",
+          "head": "Faster development",
+          "text": "Ready-made parts mean less custom coding and testing."
+        },
+        {
+          "icon": "shield",
+          "head": "Stronger privacy",
+          "text": "Encryption, sign-in checks and access control built in."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Useful insights",
+          "text": "Data analysis that guides better care decisions."
+        },
+        {
+          "icon": "network",
+          "head": "Systems that connect",
+          "text": "Share health information across systems and devices."
+        },
+        {
+          "icon": "ai",
+          "head": "Room to innovate",
+          "text": "Build smarter tools with AI and cloud computing."
+        }
+      ]
+    }
+  ],
+  "kaiser-permanente-ai-putting-patients-doctors-first": [
+    {
+      "after": "Buckle up as we dive into this exciting journey",
+      "type": "points",
+      "kicker": "AI in practice",
+      "title": "Four ways AI is working for patients and doctors",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "24/7 chatbot",
+          "text": "Guides patients to care options and cuts wait times."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Early warning",
+          "text": "Flags patients at high risk so doctors can act early."
+        },
+        {
+          "icon": "news",
+          "head": "Reading medical reports",
+          "text": "Finds key details, such as signs of a heart valve disease."
+        },
+        {
+          "icon": "flask",
+          "head": "Funding research",
+          "text": "$3 million for health systems to use AI."
+        }
+      ]
+    },
+    {
+      "after": "This program is like a crystal ball, using the power",
+      "type": "steps",
+      "kicker": "Predict, then prevent",
+      "title": "How early warnings turn into earlier care",
+      "steps": [
+        {
+          "head": "AI scans patient data",
+          "text": "Spots patients at high risk of serious events."
+        },
+        {
+          "head": "Doctors step in early",
+          "text": "Before problems turn into complications."
+        },
+        {
+          "head": "Patients get timely care",
+          "text": "The right care at the right time."
+        }
+      ]
+    }
+  ],
+  "exploring-promise-pitfalls-remote-patient-monitoring-digital": [
+    {
+      "after": "Remote Patient Monitoring (RPM) involves using technology to gather",
+      "type": "steps",
+      "kicker": "Remote monitoring",
+      "title": "How remote monitoring works, step by step",
+      "steps": [
+        {
+          "head": "Devices take readings",
+          "text": "Blood pressure monitors, glucose meters, wearables."
+        },
+        {
+          "head": "Data is sent securely",
+          "text": "Through phones, tablets or connected hubs."
+        },
+        {
+          "head": "Care teams watch remotely",
+          "text": "Doctors and nurses track changes from afar."
+        },
+        {
+          "head": "Alerts flag problems",
+          "text": "When readings fall outside safe ranges."
+        },
+        {
+          "head": "Patients stay involved",
+          "text": "They follow their own data and share decisions."
+        }
+      ]
+    },
+    {
+      "after": "As we journey into the future of digital health, Remote",
+      "type": "compare",
+      "kicker": "Promise and pitfalls",
+      "title": "What remote monitoring promises, and what to watch",
+      "left": {
+        "head": "The promise",
+        "items": [
+          "Patients take an active part in their care",
+          "Problems caught early, before they escalate",
+          "Better control of diabetes and blood pressure",
+          "Fewer hospital stays and lower costs"
+        ]
+      },
+      "right": {
+        "head": "The pitfalls",
+        "items": [
+          "Sensitive data at risk on networks",
+          "Not everyone has devices or internet",
+          "Too much data for staff to sort",
+          "Technology replacing the human touch"
+        ]
+      }
+    }
+  ],
+  "may-2025-africa-edition": [
+    {
+      "after": "Welcome to the May 2025 Africa Edition of the Digital",
+      "type": "points",
+      "kicker": "May 2025",
+      "title": "Four signals shaping digital health in Africa",
+      "items": [
+        {
+          "icon": "hospital",
+          "head": "Kenya: 51% digital",
+          "text": "Of public health facilities now use digital systems."
+        },
+        {
+          "icon": "medkit",
+          "head": "Mpox: 52,082 cases",
+          "text": "And over 1,770 deaths across Africa in 2025."
+        },
+        {
+          "icon": "ai",
+          "head": "AI diagnostics",
+          "text": "Faster early detection in rural Kenya."
+        },
+        {
+          "icon": "shield",
+          "head": "Cybersecurity",
+          "text": "Strong data protection to keep trust in telehealth."
+        }
+      ]
+    },
+    {
+      "after": "From Kenya’s digital health milestones to Ethiopia’s adoption challenges",
+      "type": "points",
+      "kicker": "What matters most",
+      "title": "Three keys to unlocking digital health in Africa",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Equity",
+          "text": "Put inclusion first so digital health reaches those who need it most."
+        },
+        {
+          "icon": "learn",
+          "head": "Usability",
+          "text": "Train health workers and manage change; technology alone is not enough."
+        },
+        {
+          "icon": "shield",
+          "head": "Trust",
+          "text": "Protect patient data, because breaches erode confidence in digital health."
+        }
+      ]
+    }
+  ],
+  "revolutionizing-clinical-trials-ai-transforming-way-we": [
+    {
+      "after": "We will explore how AI is streamlining study design",
+      "type": "steps",
+      "kicker": "Three stages",
+      "title": "Where AI speeds up each stage of a trial",
+      "steps": [
+        {
+          "head": "Design the study",
+          "text": "Cuts protocol writing time by up to 75% using past trials."
+        },
+        {
+          "head": "Find the right patients",
+          "text": "Matches patients to trials and spots who may drop out."
+        },
+        {
+          "head": "Analyse the data",
+          "text": "Finds patterns and side effects, and flags problems early."
+        }
+      ]
+    },
+    {
+      "after": "AI is transforming this process by personalizing patient recruitment.",
+      "type": "compare",
+      "kicker": "Recruitment",
+      "title": "Finding trial patients: old way versus AI",
+      "left": {
+        "head": "Traditional recruitment",
+        "items": [
+          "Broad advertising campaigns",
+          "Relies on doctors to spot patients",
+          "Slow and costly",
+          "Often too few participants"
+        ]
+      },
+      "right": {
+        "head": "AI-powered recruitment",
+        "items": [
+          "Searches health records and genetic data",
+          "Finds patients likely to be eligible",
+          "Faster enrolment at lower cost",
+          "Spots who may drop out early"
+        ]
+      }
+    }
+  ],
+  "continuous-learning-adaptability-dynamic-environment": [
+    {
+      "after": "A commitment to lifelong learning means being proactive",
+      "type": "points",
+      "kicker": "Lifelong learning",
+      "title": "Four ways health workers keep their skills current",
+      "items": [
+        {
+          "icon": "learn",
+          "head": "Online courses",
+          "text": "Coursera, edX and WHO Academy, from anywhere."
+        },
+        {
+          "icon": "network",
+          "head": "Professional networks",
+          "text": "Online forums and global peers to swap ideas."
+        },
+        {
+          "icon": "mic",
+          "head": "Virtual events",
+          "text": "Webinars, conferences and workshops with experts."
+        },
+        {
+          "icon": "layers",
+          "head": "Adapt on the job",
+          "text": "Adjust workflows and find workarounds when resources lack."
+        }
+      ]
+    },
+    {
+      "after": "For example, Amina became an active member of a global",
+      "type": "steps",
+      "kicker": "One doctor in Lagos",
+      "title": "How one doctor kept pace with a changing system",
+      "steps": [
+        {
+          "head": "A new record system",
+          "text": "Her hospital swaps paper for electronic records."
+        },
+        {
+          "head": "Constant updates",
+          "text": "New features arrive regularly, beyond first training."
+        },
+        {
+          "head": "Online courses",
+          "text": "She masters the system through online lessons."
+        },
+        {
+          "head": "Trains her colleagues",
+          "text": "She becomes a local expert."
+        },
+        {
+          "head": "Joins a global network",
+          "text": "She swaps ideas and joins research with peers."
+        }
+      ]
+    }
+  ],
+  "dawn-generative-ai-healthcare": [
+    {
+      "after": "Generative AI is not just making waves - it's causing",
+      "type": "points",
+      "kicker": "Generative AI",
+      "title": "Four places generative AI is changing care",
+      "items": [
+        {
+          "icon": "flask",
+          "head": "Drug discovery",
+          "text": "Designs new molecules to find new drugs faster."
+        },
+        {
+          "icon": "pill",
+          "head": "Personal treatment",
+          "text": "Plans and doses fitted to each patient's genes and history."
+        },
+        {
+          "icon": "layers",
+          "head": "Medical imaging",
+          "text": "Sharper scans and 3D models from 2D images."
+        },
+        {
+          "icon": "mic",
+          "head": "Mental health support",
+          "text": "Chatbots that may help mild stress, anxiety and depression."
+        }
+      ]
+    }
+  ],
+  "data-literacy-resource-limited-environments": [
+    {
+      "after": "Yet, health professionals in these settings must still find",
+      "type": "compare",
+      "kicker": "Doing more with less",
+      "title": "Making data useful without the high-tech kit",
+      "left": {
+        "head": "Often missing",
+        "items": [
+          "Reliable internet",
+          "Advanced analysis software",
+          "Enough training",
+          "Complete data"
+        ]
+      },
+      "right": {
+        "head": "What still works",
+        "items": [
+          "Basic phones and spreadsheets",
+          "Paper forms and simple apps",
+          "Comparing with past records",
+          "Hand-drawn charts and maps"
+        ]
+      }
+    },
+    {
+      "after": "This example highlights how health professionals must be adept",
+      "type": "steps",
+      "kicker": "Data to action",
+      "title": "How one health worker turned notes into action",
+      "steps": [
+        {
+          "head": "Collect simple data",
+          "text": "Paper forms and basic mobile apps."
+        },
+        {
+          "head": "Spot a pattern",
+          "text": "More breathing problems in certain months."
+        },
+        {
+          "head": "Raise the alarm",
+          "text": "Alert local authorities to a likely seasonal issue."
+        },
+        {
+          "head": "Act on it",
+          "text": "A targeted response cuts respiratory illness."
+        }
+      ]
+    }
+  ],
+  "ethiopia-digital-health": [
+    {
+      "after": "Digital health in Ethiopia is in its early stages",
+      "type": "compare",
+      "kicker": "Next steps",
+      "title": "Where Ethiopia stands, and what comes next",
+      "left": {
+        "head": "Where things stand",
+        "items": [
+          "Over 70% of primary facilities use electronic records",
+          "Many of these systems are not connected",
+          "Limited training and financing",
+          "Not yet part of mainstream care"
+        ]
+      },
+      "right": {
+        "head": "What to do next",
+        "items": [
+          "Raise awareness of the benefits",
+          "Bring digital tools into health policy",
+          "Pool resources with partners",
+          "Fund research and investment"
+        ]
+      }
+    },
+    {
+      "after": "EMR in Ethiopia is developing rapidly.",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "The obstacles",
+      "title": "Five barriers holding back electronic records",
+      "items": [
+        {
+          "icon": "medkit",
+          "head": "Cost",
+          "text": "High prices, limited funding and costly foreign suppliers."
+        },
+        {
+          "icon": "shield",
+          "head": "Data security",
+          "text": "Fear that breaches could expose patient information."
+        },
+        {
+          "icon": "learn",
+          "head": "Lack of training",
+          "text": "Staff unsure how to use systems safely."
+        },
+        {
+          "icon": "network",
+          "head": "Weak infrastructure",
+          "text": "Poor internet coverage and low bandwidth."
+        },
+        {
+          "icon": "people",
+          "head": "Cultural doubts",
+          "text": "Doubts about technology among staff and citizens."
+        }
+      ]
+    }
+  ],
+  "rise-vr-ar-medical-education-training": [
+    {
+      "after": "VR and AR technologies offer unique opportunities for medical",
+      "type": "compare",
+      "kicker": "New ways to learn",
+      "title": "From textbooks to safe, hands-on virtual practice",
+      "left": {
+        "head": "Traditional training",
+        "items": [
+          "Textbooks",
+          "Lectures",
+          "Hands-on experience"
+        ]
+      },
+      "right": {
+        "head": "Virtual and augmented reality",
+        "items": [
+          "Interactive, immersive lessons",
+          "Practice in a safe, controlled space",
+          "Clearer view of anatomy and procedures"
+        ]
+      }
+    },
+    {
+      "after": "In addition to surgical training, VR and AR can be used",
+      "type": "points",
+      "kicker": "Where it helps",
+      "title": "Where virtual and augmented reality help most",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Surgical training",
+          "text": "Surgeons practise procedures in a virtual space before real operations."
+        },
+        {
+          "icon": "people",
+          "head": "Patient education",
+          "text": "Patients understand their condition and treatment, and stick to their plans."
+        },
+        {
+          "icon": "learn",
+          "head": "Better learning",
+          "text": "Students who learned surgery in virtual reality remembered more."
+        }
+      ]
+    }
+  ],
+  "integrating-behavioral-health-digital-health-promising-approach": [
+    {
+      "after": "Here are some ways that integrating behavioral health",
+      "type": "points",
+      "kicker": "Behavioral health",
+      "title": "Four ways digital tools strengthen mental health care",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Better access",
+          "text": "Online therapy reaches remote areas, no travel needed."
+        },
+        {
+          "icon": "network",
+          "head": "Joined-up care",
+          "text": "Mental health and primary care teams share information."
+        },
+        {
+          "icon": "wearable",
+          "head": "Personal care",
+          "text": "Apps and wearables track symptoms and suggest self-care."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Better outcomes",
+          "text": "Data shows patterns that lead to better treatment."
+        }
+      ]
+    }
+  ],
+  "podcast-digital-health-africa": [
+    {
+      "after": "We’ll explore how mobile health solutions, telemedicine",
+      "type": "points",
+      "kicker": "In this episode",
+      "title": "How digital health is reshaping care across Africa",
+      "items": [
+        {
+          "icon": "rocket",
+          "head": "What's changing",
+          "text": "Mobile health, telemedicine, AI diagnostics and digital infrastructure."
+        },
+        {
+          "icon": "shield",
+          "head": "What's hard",
+          "text": "Challenges from policy gaps to connectivity."
+        },
+        {
+          "icon": "people",
+          "head": "Who's solving it",
+          "text": "Local innovators turning challenges into opportunities."
+        }
+      ]
+    }
+  ],
+  "convergence-wearables-at-home-devices": [
+    {
+      "after": "Moreover, the integration of wearable data into telemedicine and e-health platforms",
+      "type": "points",
+      "kicker": "The rise of wearables",
+      "title": "What wearables add beyond the clinic walls",
+      "items": [
+        {
+          "icon": "wearable",
+          "head": "Continuous monitoring",
+          "text": "Heart rate, sleep and stress tracked in real time, anytime, anywhere."
+        },
+        {
+          "icon": "medkit",
+          "head": "Earlier care",
+          "text": "Spotting problems early allows timely care before they become critical."
+        },
+        {
+          "icon": "phone",
+          "head": "Better remote consultations",
+          "text": "Real-time data helps providers make better decisions in remote care."
+        }
+      ]
+    },
+    {
+      "after": "At-home devices also contribute to the broader goal of preventive healthcare.",
+      "type": "points",
+      "kicker": "The at-home orchestra",
+      "title": "Home devices that let patients manage their condition",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Blood pressure monitors",
+          "text": "Can catch high blood pressure before symptoms, allowing early changes."
+        },
+        {
+          "icon": "medkit",
+          "head": "Glucose meters",
+          "text": "People with diabetes check blood sugar quickly and painlessly at home."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Portable spirometers",
+          "text": "People with lung disease check their lung capacity and spot decline early."
+        }
+      ]
+    },
+    {
+      "after": "The stories of Sarah and Alex highlight the profound impact",
+      "type": "compare",
+      "kicker": "Two lives",
+      "title": "Same technology, very different needs",
+      "left": {
+        "head": "Sarah, busy executive",
+        "items": [
+          "Wears a smartwatch",
+          "Nudges her to stand after hours of calls",
+          "Tracks heart rate and sleep patterns",
+          "Acts as her wellness coach"
+        ]
+      },
+      "right": {
+        "head": "Alex, retiree",
+        "items": [
+          "Wears a discreet pulse oximeter",
+          "Monitors his oxygen levels",
+          "Alerts him to any dips in real time",
+          "A lifeline that gives peace of mind"
+        ]
+      }
+    }
+  ],
+  "role-leadership-governance-digital-health": [
+    {
+      "after": "Leadership plays a crucial role in cultivating an innovative culture.",
+      "type": "points",
+      "kicker": "Culture of innovation",
+      "title": "What an innovative health organisation looks like",
+      "items": [
+        {
+          "icon": "learn",
+          "head": "Creative thinking",
+          "text": "Open dialogue, brainstorming and tools to explore ideas."
+        },
+        {
+          "icon": "flask",
+          "head": "Failure as learning",
+          "text": "A no-blame space where people can take risks."
+        },
+        {
+          "icon": "people",
+          "head": "Empowered teams",
+          "text": "Freedom to decide, building ownership and accountability."
+        },
+        {
+          "icon": "rocket",
+          "head": "Leaders who set the tone",
+          "text": "Trust, open communication and leading by example."
+        }
+      ]
+    },
+    {
+      "after": "Healthcare organizations often collaborate with technology partners who offer",
+      "type": "points",
+      "kicker": "Protecting data",
+      "title": "Keeping patient data safe is ongoing work",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Strong rules",
+          "text": "Frameworks that set the standard for protecting data."
+        },
+        {
+          "icon": "layers",
+          "head": "Locked-down data",
+          "text": "Encryption and several checks before anyone can sign in."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Regular audits",
+          "text": "Continuous monitoring of who accesses health information."
+        },
+        {
+          "icon": "learn",
+          "head": "Staff training",
+          "text": "Human error is a leading cause of data breaches."
+        }
+      ]
+    },
+    {
+      "after": "Providing education and training to staff is crucial",
+      "type": "steps",
+      "kicker": "Driving change",
+      "title": "How leaders bring in new technology without resistance",
+      "steps": [
+        {
+          "head": "Plan and test carefully",
+          "text": "Thorough testing, expert advice, roll out in phases."
+        },
+        {
+          "head": "Involve staff early",
+          "text": "Bring them into planning and implementation."
+        },
+        {
+          "head": "Address concerns",
+          "text": "Engage stakeholders early and listen to worries."
+        },
+        {
+          "head": "Explain the why",
+          "text": "Be clear on the reasons, benefits and the plan."
+        },
+        {
+          "head": "Train everyone",
+          "text": "Build skills and ease fears about the new tools."
+        }
+      ]
+    }
+  ],
+  "role-leadership-governance-shaping-future-digital-health": [
+    {
+      "after": "Central to the program is a structured course divided into four modules:",
+      "type": "steps",
+      "kicker": "Leadership program",
+      "title": "How the program builds digital health leaders",
+      "steps": [
+        {
+          "head": "Leading Self",
+          "text": "Self-reflection and authentic leadership."
+        },
+        {
+          "head": "Managing Processes",
+          "text": "Improving how the organisation works."
+        },
+        {
+          "head": "Managing People",
+          "text": "Evidence-based management practices."
+        },
+        {
+          "head": "Leading Organizations",
+          "text": "Guidance on managing change."
+        },
+        {
+          "head": "Hands-on project",
+          "text": "Putting the learning into practice to graduate."
+        }
+      ]
+    },
+    {
+      "after": "A robust governance framework is necessary for integrating digital health solutions",
+      "type": "compare",
+      "kicker": "Why governance matters",
+      "title": "What a national framework changes",
+      "left": {
+        "head": "Without it",
+        "items": [
+          "Solutions driven by market forces",
+          "Digital tools that stay disconnected",
+          "Weak links to national health goals",
+          "Tools that can widen health inequities"
+        ]
+      },
+      "right": {
+        "head": "With it",
+        "items": [
+          "Solutions that meet each country's needs",
+          "Tools joined up into one system",
+          "Aligned with the national health strategy",
+          "Responsible, ethical use of health data"
+        ]
+      }
+    },
+    {
+      "after": "The effectiveness of leadership and governance in implementing and advancing",
+      "type": "points",
+      "kicker": "What holds it back",
+      "title": "Four barriers facing digital health leaders",
+      "items": [
+        {
+          "icon": "people",
+          "head": "Political appointments",
+          "text": "Leaders picked for connections, not skills."
+        },
+        {
+          "icon": "network",
+          "head": "Weak infrastructure",
+          "text": "Little investment in hardware, software and connectivity."
+        },
+        {
+          "icon": "layers",
+          "head": "Limited funding",
+          "text": "Scarce funds, sometimes mismanaged or diverted."
+        },
+        {
+          "icon": "phone",
+          "head": "Usability and staff",
+          "text": "Unreliable internet, few computers, high staff turnover."
+        }
+      ]
+    }
+  ],
+  "digital-health-in-africa": [
+    {
+      "after": "Despite these advancements, the historical context of digital health in Africa",
+      "type": "steps",
+      "kicker": "A long history",
+      "title": "From the telephone to virtual consultations",
+      "steps": [
+        {
+          "head": "1876: the telephone",
+          "text": "By 1879 doctors saw it could help them listen remotely."
+        },
+        {
+          "head": "1959: video exams",
+          "text": "Clinicians in Nebraska examine patients over video."
+        },
+        {
+          "head": "Early 2000s: Africa",
+          "text": "South Africa adds telemedicine to its health system."
+        },
+        {
+          "head": "COVID-19 pandemic",
+          "text": "Virtual consultations expand to keep care going."
+        },
+        {
+          "head": "Today: national programs",
+          "text": "Rwanda offers digital-first primary care nationwide."
+        }
+      ]
+    },
+    {
+      "after": "Artificial intelligence (AI) is emerging as a transformative force in digital health.",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Key components",
+      "title": "The tools that make up digital health",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Telemedicine",
+          "text": "Remote diagnosis and treatment by video, cutting travel."
+        },
+        {
+          "icon": "phone",
+          "head": "Mobile health apps",
+          "text": "Track your health, learn and talk to providers."
+        },
+        {
+          "icon": "wearable",
+          "head": "Wearable devices",
+          "text": "Continuous monitoring of vital signs, shared with providers."
+        },
+        {
+          "icon": "layers",
+          "head": "Electronic health records",
+          "text": "Collect, store and share patient information."
+        },
+        {
+          "icon": "ai",
+          "head": "Artificial intelligence",
+          "text": "Analyses medical data and supports early diagnosis."
+        }
+      ]
+    },
+    {
+      "after": "External factors, such as the ongoing COVID-19 pandemic",
+      "type": "points",
+      "kicker": "Challenges",
+      "title": "Four barriers slowing digital health in Africa",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Infrastructure",
+          "text": "Erratic power supply and unstable internet."
+        },
+        {
+          "icon": "layers",
+          "head": "Funding",
+          "text": "High costs and short-term grants threaten sustainability."
+        },
+        {
+          "icon": "people",
+          "head": "Skilled workers",
+          "text": "Too few health workers trained in digital tools."
+        },
+        {
+          "icon": "shield",
+          "head": "Rules and policy",
+          "text": "Fragmented regulation and few supporting policies."
+        }
+      ]
+    }
+  ],
+  "chatbot-handle-that": [
+    {
+      "after": "Now, in the epoch of generative AI and expansive language models",
+      "type": "steps",
+      "kicker": "AI in medicine",
+      "title": "From rigid rules to AI that creates",
+      "steps": [
+        {
+          "head": "1970s: expert systems",
+          "text": "Rigid, rule-based tools that failed to transform care."
+        },
+        {
+          "head": "2000 to 2010: data era",
+          "text": "Health records and deep learning; AI to help doctors, not replace them."
+        },
+        {
+          "head": "2020s: generative AI",
+          "text": "AI now creates, from synthetic images to clinical notes."
+        }
+      ]
+    },
+    {
+      "after": "Augmentation, Not Replacement (Mostly): Experts generally concur that AI will",
+      "type": "points",
+      "kicker": "The worries",
+      "title": "Three big questions about AI in care",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Can we trust it?",
+          "text": "Biased data, hidden reasoning and the loss of the human touch."
+        },
+        {
+          "icon": "shield",
+          "head": "Is my data safe?",
+          "text": "Huge amounts of sensitive data; even anonymised data can be traced back."
+        },
+        {
+          "icon": "people",
+          "head": "Will it take my job?",
+          "text": "Repetitive tasks may be automated; most roles will be supported, not replaced."
+        }
+      ]
+    },
+    {
+      "after": "The Hybrid Approach: Preserving the virtues of traditional care",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Adopt or adapt",
+      "title": "How hospitals can adopt AI and stay human",
+      "items": [
+        {
+          "icon": "dashboard",
+          "head": "Invest steadily",
+          "text": "Fund AI as ongoing operations, not one-off projects."
+        },
+        {
+          "icon": "learn",
+          "head": "Train staff",
+          "text": "Help doctors, nurses and support staff use AI as partners."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Design for humans",
+          "text": "Free clinicians to spend more time with patients."
+        },
+        {
+          "icon": "shield",
+          "head": "Put ethics first",
+          "text": "Tackle bias, be transparent, get informed consent."
+        },
+        {
+          "icon": "hospital",
+          "head": "Keep a hybrid approach",
+          "text": "Keep face-to-face care while using AI's efficiency."
+        }
+      ]
+    }
+  ],
+  "health-data-analytics-powerful-combination-digital-health": [
+    {
+      "after": "Moreover, with the emergence of wearable technology and the Internet of Things",
+      "type": "points",
+      "kicker": "Where the data comes from",
+      "title": "More health data than ever before",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Electronic health records",
+          "text": "Collect, store and share patient data so care can be coordinated."
+        },
+        {
+          "icon": "wearable",
+          "head": "Wearables",
+          "text": "Smartwatches and fitness trackers record heart rate, blood pressure and sleep."
+        },
+        {
+          "icon": "network",
+          "head": "Connected medical devices",
+          "text": "Glucose meters and blood pressure monitors send real-time data."
+        }
+      ]
+    },
+    {
+      "after": "Analytics is an essential tool for unlocking the potential of health data.",
+      "type": "steps",
+      "kicker": "From data to care",
+      "title": "How analytics turns raw data into better care",
+      "steps": [
+        {
+          "head": "Collect the data",
+          "text": "From health records, wearables and connected devices."
+        },
+        {
+          "head": "Sift with analytics",
+          "text": "Tools search large datasets for patterns and trends."
+        },
+        {
+          "head": "Spot risks and gaps",
+          "text": "High-risk patients, missed follow-ups, skipped medicines."
+        },
+        {
+          "head": "Act early",
+          "text": "Targeted interventions to prevent or manage conditions."
+        }
+      ]
+    },
+    {
+      "after": "Another important application of AI in health data analytics is",
+      "type": "points",
+      "kicker": "Where AI helps",
+      "title": "Three ways AI gets more out of health data",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Finding hidden patterns",
+          "text": "Analyses huge datasets to find links humans would struggle to see."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Predicting risk",
+          "text": "Flags patients most likely to develop a condition, so care starts early."
+        },
+        {
+          "icon": "flask",
+          "head": "Personalised treatment",
+          "text": "Uses a patient's genetic profile and health data to tailor treatment."
+        }
+      ]
+    }
+  ],
+  "clinical-decision-support-systems-new-era-digital": [
+    {
+      "after": "And then there’s another example, where CDSS is helping surgeons",
+      "type": "points",
+      "kicker": "Already at work",
+      "title": "Where decision support is helping hospitals today",
+      "items": [
+        {
+          "icon": "ai",
+          "head": "Reading scans",
+          "text": "Flags signs of stroke or concerns on lung X-rays."
+        },
+        {
+          "icon": "flask",
+          "head": "Cancer treatment",
+          "text": "Suggests chemotherapy most likely to work for each patient."
+        },
+        {
+          "icon": "hospital",
+          "head": "High-risk surgery",
+          "text": "Tracks vital signs and alerts on unusual changes."
+        },
+        {
+          "icon": "pill",
+          "head": "Medicine safety",
+          "text": "Warns of drug interactions, allergies and dose errors."
+        }
+      ]
+    },
+    {
+      "after": "And, as with any tool that handles sensitive patient information, privacy",
+      "type": "points",
+      "kicker": "What stands in the way",
+      "title": "Three hurdles before decision support spreads",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Patchy data",
+          "text": "Health record systems that don't talk to each other leave information scattered."
+        },
+        {
+          "icon": "stethoscope",
+          "head": "Clinician trust",
+          "text": "Some find it intrusive; training shows it enhances their judgement."
+        },
+        {
+          "icon": "shield",
+          "head": "Privacy",
+          "text": "Tools must follow strict privacy rules to protect patient information."
+        }
+      ]
+    }
+  ],
+  "digital-health-platform-dhp-africas-strategic-shift": [
+    {
+      "after": "By leveraging the DHP, African countries can overcome the limitations",
+      "type": "compare",
+      "kicker": "From silos to a platform",
+      "title": "One platform instead of many disconnected apps",
+      "left": {
+        "head": "Siloed apps",
+        "items": [
+          "Each app works on its own",
+          "Data scattered across many platforms",
+          "Duplicated effort and gaps in data",
+          "No full view of the health sector"
+        ]
+      },
+      "right": {
+        "head": "Digital Health Platform",
+        "items": [
+          "Apps joined up using recognised standards",
+          "One shared national information system",
+          "Accurate, timely data feedback loops",
+          "Better decisions at every level"
+        ]
+      }
+    },
+    {
+      "after": "Moreover, the adoption of digital health packages signifies a move",
+      "type": "points",
+      "kicker": "A global shift",
+      "title": "What countries gain from digital health packages",
+      "items": [
+        {
+          "icon": "globe",
+          "head": "Proven at scale",
+          "text": "40 countries have added them to national health information systems."
+        },
+        {
+          "icon": "layers",
+          "head": "One shared platform",
+          "text": "Health data collected, analysed and shared in one place."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Real-time decisions",
+          "text": "Health workers decide using live data, improving patient care."
+        }
+      ]
+    }
+  ],
+  "state-of-ai-ethiopian-healthcare-2025": [
+    {
+      "after": "A call for regulation. About 86% want strict government regulation.",
+      "type": "points",
+      "kicker": "Survey of 449",
+      "title": "Health workers know AI, fear it, and want rules",
+      "items": [
+        {
+          "icon": "learn",
+          "head": "75% know the basics",
+          "text": "Correctly identified basic AI definitions."
+        },
+        {
+          "icon": "people",
+          "head": "33% fear replacement",
+          "text": "Worry AI will replace physicians."
+        },
+        {
+          "icon": "shield",
+          "head": "86% want regulation",
+          "text": "Want strict government regulation of AI."
+        }
+      ]
+    },
+    {
+      "after": "More teaching about what AI is now brings diminishing returns.",
+      "type": "steps",
+      "kicker": "What should change",
+      "title": "Four shifts that would do more than teaching",
+      "steps": [
+        {
+          "head": "Infrastructure first",
+          "text": "Fund subsidised data and verified hardware, not awareness workshops."
+        },
+        {
+          "head": "Teach AI hygiene",
+          "text": "Train clinicians to question and check AI outputs."
+        },
+        {
+          "head": "Back regional innovation",
+          "text": "Fund emerging hotspots like Sidama, beyond Addis Ababa."
+        },
+        {
+          "head": "Keep humans in the loop",
+          "text": "Policy should say AI supports clinicians, not replaces them."
+        }
+      ]
+    }
+  ],
+  "digital-logistics": [
+    {
+      "after": "The Industrial Revolution brought trains and steamships, offering",
+      "type": "steps",
+      "kicker": "A short history",
+      "title": "From arm-to-arm vaccines to smart networks",
+      "steps": [
+        {
+          "head": "Arm-to-arm",
+          "text": "Early vaccines carried from person to person."
+        },
+        {
+          "head": "Trains and steamships",
+          "text": "The Industrial Revolution adds speed and scale."
+        },
+        {
+          "head": "Cold chain and computers",
+          "text": "Refrigeration and early inventory computers."
+        },
+        {
+          "head": "Just-in-Time",
+          "text": "Efficient and lean, but fragile in global shocks."
+        },
+        {
+          "head": "Digital networks",
+          "text": "Sensors, smart routes and real-time stock tracking."
+        }
+      ]
+    },
+    {
+      "after": "The End of \"Sorry, We're Out\" (Real-time Stock Management):",
+      "type": "points",
+      "kicker": "Three pillars",
+      "title": "What keeps medicines and vaccines moving safely",
+      "items": [
+        {
+          "icon": "dashboard",
+          "head": "Supply-chain visibility",
+          "text": "Sensors track location, temperature, humidity and shocks for each shipment."
+        },
+        {
+          "icon": "truck",
+          "head": "Smart routes",
+          "text": "AI weighs traffic, weather and delivery windows to find the smartest path."
+        },
+        {
+          "icon": "pill",
+          "head": "Real-time stock",
+          "text": "Predicts demand and reorders automatically to avoid running out."
+        }
+      ]
+    }
+  ],
+  "harnessing-digital-health-essential-skills-transforming-healthcare": [
+    {
+      "after": "Similarly, telemedicine platforms may need to function with low-bandwidth options",
+      "type": "points",
+      "kicker": "Adapting to local realities",
+      "title": "Digital tools that work where power and internet fail",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "Offline health records",
+          "text": "Records that work offline and sync when a connection returns."
+        },
+        {
+          "icon": "phone",
+          "head": "Low-bandwidth telemedicine",
+          "text": "Consultations that still run where internet coverage is poor."
+        },
+        {
+          "icon": "medkit",
+          "head": "Solar-powered devices",
+          "text": "A tablet and solar battery link a rural clinic to a distant specialist."
+        }
+      ]
+    },
+    {
+      "after": "This might involve developing protocols for securely transferring data",
+      "type": "points",
+      "kicker": "Protecting patient data",
+      "title": "Keeping patient data safe with limited infrastructure",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Encrypt local devices",
+          "text": "Data on devices is encrypted and password-protected."
+        },
+        {
+          "icon": "news",
+          "head": "Paper backups",
+          "text": "Secure paper records kept as a backup."
+        },
+        {
+          "icon": "network",
+          "head": "Safe transfers",
+          "text": "Clear rules for moving data from phones to databases."
+        },
+        {
+          "icon": "learn",
+          "head": "Staff training",
+          "text": "Teach staff why data privacy matters."
+        }
+      ]
+    }
+  ],
+  "from-echis-go-data-digital-health-improving": [
+    {
+      "after": "These are just some of the examples of how digital health",
+      "type": "points",
+      "kicker": "Four examples",
+      "title": "Digital tools improving health in low-resource settings",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "eCHIS, Ethiopia",
+          "text": "Health extension workers' app, in over 4,000 facilities."
+        },
+        {
+          "icon": "network",
+          "head": "mHero, Liberia",
+          "text": "Two-way messaging linking health workers and authorities."
+        },
+        {
+          "icon": "people",
+          "head": "MomConnect, South Africa",
+          "text": "Free maternal health advice by SMS; over two million women."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Go.Data",
+          "text": "Tracks cases and contacts in outbreaks, including COVID-19."
+        }
+      ]
+    }
+  ],
+  "spicy-blend-personalized-healthcare-digital-health": [
+    {
+      "after": "Genetic Testing: Genetic testing is a type of medical test",
+      "type": "points",
+      "kicker": "Genetic testing",
+      "title": "What a genetic test can tell you",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Confirm a condition",
+          "text": "Confirm or rule out a suspected genetic condition."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Your future risk",
+          "text": "Your chance of developing a genetic disorder."
+        },
+        {
+          "icon": "people",
+          "head": "Family risk",
+          "text": "Your chance of passing a disorder on."
+        },
+        {
+          "icon": "globe",
+          "head": "Ancestry",
+          "text": "Insights into your ancestry."
+        }
+      ]
+    },
+    {
+      "after": "These advancements are just the tip of the iceberg.",
+      "type": "points",
+      "kicker": "The secret ingredients",
+      "title": "Four tools that make care personal",
+      "items": [
+        {
+          "icon": "flask",
+          "head": "Genetic testing",
+          "text": "Reveals genetic risks so you can take preventive steps."
+        },
+        {
+          "icon": "wearable",
+          "head": "Wearable tech",
+          "text": "Tracks heart rate, sleep and activity for tailored advice."
+        },
+        {
+          "icon": "phone",
+          "head": "Telemedicine",
+          "text": "Virtual doctor visits from the comfort of home."
+        },
+        {
+          "icon": "ai",
+          "head": "AI and machine learning",
+          "text": "Analyses records to suggest a personalised treatment plan."
+        }
+      ]
+    }
+  ],
+  "digital-health-pandemic-lessons-learned-opportunities-growth": [
+    {
+      "after": "But beyond its immediate benefits, the pandemic has also revealed key lessons",
+      "type": "points",
+      "kicker": "Four lessons",
+      "title": "What the pandemic taught us about digital health",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Telemedicine is here to stay",
+          "text": "Video visits kept care going when visits were limited."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Data is key",
+          "text": "It tracked the virus and found high-risk groups."
+        },
+        {
+          "icon": "wearable",
+          "head": "Care at home",
+          "text": "Patients manage diabetes and high blood pressure remotely."
+        },
+        {
+          "icon": "onehealth",
+          "head": "Part of public health",
+          "text": "Contact tracing apps and vaccine distribution systems."
+        }
+      ]
+    },
+    {
+      "after": "As such, we can expect to see continued investment in digital health infrastructure",
+      "type": "points",
+      "kicker": "What comes next",
+      "title": "Where digital health investment is heading",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Telemedicine infrastructure",
+          "text": "More providers and patients using virtual visits."
+        },
+        {
+          "icon": "ai",
+          "head": "Analytics and AI",
+          "text": "Predictive tools and personalised treatment algorithms."
+        },
+        {
+          "icon": "wearable",
+          "head": "Remote monitoring",
+          "text": "Wearables and apps that share data with care providers."
+        },
+        {
+          "icon": "shield",
+          "head": "Public health data systems",
+          "text": "Standards so providers and health agencies connect."
+        }
+      ]
+    }
+  ],
+  "blockchain-potential-applications-healthcare": [
+    {
+      "after": "One of the most significant applications of blockchain technology in healthcare",
+      "type": "compare",
+      "kicker": "A different way to store data",
+      "title": "Moving patient data out of one central database",
+      "left": {
+        "head": "Traditional systems",
+        "items": [
+          "Data kept in central databases",
+          "Vulnerable to hacking and data breaches",
+          "Run by a central authority"
+        ]
+      },
+      "right": {
+        "head": "Blockchain",
+        "items": [
+          "Data stored on a shared, distributed ledger",
+          "Tamper-proof and transparent",
+          "Patients control who gets access"
+        ]
+      }
+    },
+    {
+      "after": "Another potential application of blockchain technology in healthcare is supply chain",
+      "type": "points",
+      "kicker": "Three uses",
+      "title": "Where blockchain could help healthcare",
+      "items": [
+        {
+          "icon": "shield",
+          "head": "Sharing patient data",
+          "text": "Tamper-proof records; patients choose who can see their data."
+        },
+        {
+          "icon": "flask",
+          "head": "Clinical trials",
+          "text": "A secure shared platform that cuts time and cost and improves accuracy."
+        },
+        {
+          "icon": "truck",
+          "head": "Supply chains",
+          "text": "Tracks products from maker to patient to stop counterfeits."
+        }
+      ]
+    }
+  ],
+  "digital-health-weekly-news-digest": [
+    {
+      "after": "Let’s dive into the latest updates!",
+      "type": "steps",
+      "kicker": "November 2024",
+      "title": "A month of digital health events",
+      "steps": [
+        {
+          "head": "Digital Health Week",
+          "text": "November 4-10. Focus on Universal Health Coverage."
+        },
+        {
+          "head": "Lisbon and Perth",
+          "text": "November 7-8. AI, wearables, telehealth, workforce."
+        },
+        {
+          "head": "London",
+          "text": "November 13-14. eHealth and telemedicine forum."
+        },
+        {
+          "head": "Funchal, Portugal",
+          "text": "November 26-27. Innovation and cybersecurity."
+        },
+        {
+          "head": "Berlin, Germany",
+          "text": "November 28. Policy and technology integration."
+        }
+      ]
+    }
   ]
 }

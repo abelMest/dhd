@@ -74,7 +74,9 @@ for (const a of arts) {
   const blocks = backup[a.id].split(/\n{2,}/);
   for (const [i, f] of plan[a.id].entries()) {
     try {
-      const at = blocks.findIndex((b) => b.replace(/[*_>]/g, '').trim().startsWith(f.after));
+      // Match the start of a paragraph, or of any line in a list; the figure then goes after the whole block.
+      const plain = (line) => line.replace(/[*_>]/g, '').replace(/^\s*(?:[-+]|\d+\\?\.)\s+/, '').trim();
+      const at = blocks.findIndex((b) => b.split('\n').some((line) => plain(line).startsWith(f.after)));
       if (at < 0) throw new Error(`no paragraph starts with "${f.after}"`);
       const path = `editions/figures/${a.id}-${i + 1}.jpg`;
       const up = await db.storage.from('photos').upload(path, readFileSync(new URL(`${a.id}-${i + 1}.jpg`, outDir)), { contentType: 'image/jpeg', upsert: true });
