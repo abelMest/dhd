@@ -1,0 +1,115 @@
+<!doctype html>
+<!--
+  Digital Health Digest figures that sit inside an edition, 1456×816, in the same style as the covers.
+  scripts/make-edition-figures.mjs calls window.renderFigure(spec) with one of four types:
+    points   { title, items: [{ icon, head, text }] }            3 to 5 cards
+    steps    { title, steps: [{ head, text }] }                  3 to 5 steps in order
+    compare  { title, left: { head, items }, right: { head, items } }   before and after
+    stat     { title, value, label, bars: [{ label, value }], source }  one headline number
+  Every word comes from the edition itself.
+-->
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'Spartan'; src: url('../../node_modules/@fontsource-variable/league-spartan/files/league-spartan-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Newsreader'; src: url('../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2') format('woff2'); font-weight: 200 800; }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1456px; height: 816px; overflow: hidden; }
+body { position: relative; font-family: 'Spartan', sans-serif; color: #eaf2f8; background: #071a29; }
+.bg { position: absolute; inset: 0; }
+.wrap { position: absolute; inset: 0; padding: 56px 72px 84px; display: flex; flex-direction: column; }
+.kick { font-weight: 800; font-size: 24px; letter-spacing: .24em; color: #f5a524; text-transform: uppercase; }
+h1 { font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -.01em; margin-top: 12px; max-width: 1180px; }
+.body { flex: 1; margin-top: 30px; display: flex; align-items: center; min-height: 0; }
+.brand { position: absolute; right: 64px; bottom: 34px; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 16px; letter-spacing: .16em; color: #c9dceb; }
+.brand svg { width: 34px; height: 34px; }
+
+/* points */
+.cards { display: grid; gap: 22px; width: 100%; }
+.card { background: rgba(14, 44, 69, .92); border: 1.5px solid rgba(79, 176, 230, .35); border-radius: 22px; padding: 28px 30px 30px; display: flex; flex-direction: column; min-height: 0; }
+.card .ic { width: 100px; height: 100px; }
+.card .n { font-weight: 800; font-size: 22px; letter-spacing: .14em; color: #4fb0e6; margin-top: 14px; }
+.card:first-child .n { color: #f5a524; }
+.card h3 { font-weight: 800; font-size: 38px; line-height: 1.1; margin-top: 6px; }
+.card p { font-family: 'Newsreader', serif; font-size: 31px; line-height: 1.28; color: #c9dceb; margin-top: 10px; }
+.row .card { flex-direction: row; gap: 24px; align-items: center; padding: 10px 26px; }
+.row.cards { gap: 12px; }
+.row .card h3 { line-height: 1.05; }
+.row .card .ic { width: 56px; height: 56px; flex: none; }
+.row .card .n { margin-top: 0; }
+.row .card h3 { font-size: 32px; margin-top: 0; display: inline; }
+.row .card .n { display: inline; margin-right: 12px; }
+.row .card p { font-size: 27px; margin-top: 0; }
+
+/* steps */
+.steps { display: grid; width: 100%; position: relative; align-content: start; }
+.steps .line { position: absolute; left: 60px; right: 60px; top: 54px; height: 4px; background: linear-gradient(90deg, #f5a524, #4fb0e6 40%, #298fc9); border-radius: 2px; }
+.step { position: relative; padding: 0 14px; text-align: center; }
+.step .dot { width: 112px; height: 112px; margin: 0 auto; border-radius: 50%; background: #0e2c45; border: 3px solid #4fb0e6; display: grid; place-items: center; font-weight: 900; font-size: 46px; color: #4fb0e6; position: relative; }
+.step:first-child .dot { border-color: #f5a524; color: #f5a524; }
+.step h3 { font-weight: 800; font-size: 38px; line-height: 1.08; margin-top: 28px; }
+.step p { font-family: 'Newsreader', serif; font-size: 30px; line-height: 1.26; color: #c9dceb; margin-top: 10px; }
+
+/* compare */
+.cmp { display: grid; grid-template-columns: 1fr 90px 1fr; width: 100%; align-items: stretch; }
+.side { border-radius: 24px; padding: 30px 34px; }
+.side.l { background: rgba(255, 255, 255, .04); border: 1.5px dashed rgba(201, 220, 235, .3); }
+.side.r { background: rgba(41, 143, 201, .16); border: 2px solid #4fb0e6; }
+.side h3 { font-weight: 800; font-size: 40px; letter-spacing: .02em; }
+.side.l h3 { color: #9fb6c8; }
+.side.r h3 { color: #7cc8f2; }
+.side ul { list-style: none; padding: 0; margin-top: 20px; display: grid; gap: 16px; }
+.side li { display: flex; gap: 16px; align-items: flex-start; font-family: 'Newsreader', serif; font-size: 32px; line-height: 1.22; }
+.side.l li { color: #a9bccb; }
+.side li i { flex: none; width: 34px; height: 34px; border-radius: 50%; margin-top: 4px; display: grid; place-items: center; font-style: normal; font-family: 'Spartan'; font-weight: 900; font-size: 17px; }
+.side.l li i { border: 2px solid #6d8597; color: #6d8597; }
+.side.r li i { background: #4fb0e6; color: #071a29; }
+.arrow { display: grid; place-items: center; }
+.arrow svg { width: 60px; height: 60px; }
+
+/* stat */
+.stat { display: grid; grid-template-columns: 520px 1fr; gap: 60px; width: 100%; align-items: center; }
+.big { font-weight: 900; font-size: 230px; line-height: .85; color: #f5a524; letter-spacing: -.03em; }
+.biglabel { font-family: 'Newsreader', serif; font-size: 36px; line-height: 1.3; color: #eaf2f8; margin-top: 18px; }
+.bars { display: grid; gap: 30px; }
+.bar b { display: block; font-weight: 700; font-size: 28px; letter-spacing: .06em; color: #c9dceb; text-transform: uppercase; }
+.bar .track { margin-top: 12px; height: 70px; background: rgba(255, 255, 255, .06); border-radius: 12px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; font-weight: 900; font-size: 36px; color: #071a29; }
+.src { font-size: 22px; color: #8fb3cc; margin-top: 26px; }
+</style></head>
+<body>
+<svg class="bg" width="1456" height="816"><path d="M0 0 H1456 V120 L0 380 Z" fill="#0b2236"/><path d="M700 816 L1456 360 V816 Z" fill="#0e2c45" opacity=".7"/></svg>
+<div class="wrap"><div class="kick" id="kick"></div><h1 id="title"></h1><div class="body" id="body"></div></div>
+<div class="brand"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#15202b"/><path d="M3 18h6l3-9 5 17 4-13 2 5h6" fill="none" stroke="#6cb4e4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>DIGITAL HEALTH DIGEST</div>
+<script src="icons.js"></script>
+<script>
+const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const icon = (name) => `<svg class="ic" viewBox="-190 -190 380 380">${(window.ICONS[name] || window.ICONS.medkit)()}</svg>`;
+const pad = (i) => String(i + 1).padStart(2, '0');
+
+window.renderFigure = (f) => {
+  document.getElementById('kick').textContent = f.kicker || '';
+  document.getElementById('title').textContent = f.title || '';
+  const body = document.getElementById('body');
+  if (f.type === 'points') {
+    const n = f.items.length, rows = n > 3 && f.layout === 'rows';
+    const cols = rows ? 1 : n === 4 ? 4 : n === 5 ? 5 : 3;
+    body.innerHTML = `<div class="cards ${rows ? 'row' : ''}" style="grid-template-columns:repeat(${cols},1fr)">${f.items.map((it, i) => `
+      <div class="card">${icon(it.icon)}<div><div class="n">${pad(i)}</div><h3>${esc(it.head)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ''}</div></div>`).join('')}</div>`;
+  } else if (f.type === 'steps') {
+    body.innerHTML = `<div class="steps" style="grid-template-columns:repeat(${f.steps.length},1fr)"><div class="line"></div>${f.steps.map((s, i) => `
+      <div class="step"><div class="dot">${i + 1}</div><h3>${esc(s.head)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</div>`).join('')}</div>`;
+  } else if (f.type === 'compare') {
+    const side = (k, d, mark) => `<div class="side ${k}"><h3>${esc(d.head)}</h3><ul>${d.items.map((t) => `<li><i>${mark}</i><span>${esc(t)}</span></li>`).join('')}</ul></div>`;
+    body.innerHTML = `<div class="cmp">${side('l', f.left, '–')}<div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 5l7 7-7 7"/></svg></div>${side('r', f.right, '✓')}</div>`;
+  } else if (f.type === 'stat') {
+    const max = Math.max(...f.bars.map((b) => b.value));
+    body.innerHTML = `<div class="stat"><div><div class="big">${esc(f.value)}</div><p class="biglabel">${esc(f.label)}</p></div>
+      <div><div class="bars">${f.bars.map((b, i) => `<div class="bar"><b>${esc(b.label)}</b><div class="track"><div class="fill" style="width:${(b.value / max) * 100}%;background:${i === f.bars.length - 1 ? '#f5a524' : '#4fb0e6'}">${esc(b.value)}%</div></div></div>`).join('')}</div>
+      ${f.source ? `<p class="src">${esc(f.source)}</p>` : ''}</div></div>`;
+  }
+  // Report whether the content fits the frame, so the plan can be adjusted rather than the text shrunk.
+  const inner = body.firstElementChild.getBoundingClientRect(), box = body.getBoundingClientRect();
+  return { fits: inner.height <= box.height + 2 && inner.width <= box.width + 2, over: Math.round(inner.height - box.height) };
+};
+</script>
+</body></html>

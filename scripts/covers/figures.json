@@ -1,0 +1,226 @@
+{
+  "why-pilots-fail": [
+    {
+      "after": "Even well-designed tools struggle to scale",
+      "type": "compare",
+      "kicker": "From pilots to platforms",
+      "title": "Countries that scale stop running projects and start building platforms",
+      "left": {
+        "head": "Projects",
+        "items": [
+          "Each partner brings its own platform and data model",
+          "Separate logins and reporting for every tool",
+          "Data stuck inside vertical programmes",
+          "Ends when the donor funding cycle ends"
+        ]
+      },
+      "right": {
+        "head": "Platforms",
+        "items": [
+          "One government-owned national architecture",
+          "Shared registries, services and standards",
+          "Systems that exchange data with each other",
+          "Funded as long-term infrastructure"
+        ]
+      }
+    },
+    {
+      "after": "This shift rests on three foundational pillars.",
+      "type": "points",
+      "kicker": "Three pillars",
+      "title": "What a national digital health system rests on",
+      "items": [
+        {
+          "icon": "network",
+          "head": "Architecture and standards",
+          "text": "Core registries, interoperability standards and data exchange, owned by government."
+        },
+        {
+          "icon": "people",
+          "head": "Workforce and change",
+          "text": "Training, clear roles, accountability and capacity inside government, not vendors."
+        },
+        {
+          "icon": "shield",
+          "head": "Governance and financing",
+          "text": "Multi-year budgets, clear data ownership and procurement that rewards reuse."
+        }
+      ]
+    },
+    {
+      "after": "None of these require new technology.",
+      "type": "steps",
+      "kicker": "Start now",
+      "title": "Four steps governments can take with what they already have",
+      "steps": [
+        {
+          "head": "Map and rationalise",
+          "text": "Know every digital health system already running."
+        },
+        {
+          "head": "Enforce interoperability",
+          "text": "Make it a requirement in every procurement."
+        },
+        {
+          "head": "Treat EMRs and data exchange as infrastructure",
+          "text": ""
+        },
+        {
+          "head": "Build internal capability",
+          "text": "Not long-term dependency on vendors."
+        }
+      ]
+    }
+  ],
+  "health-workforce-crisis": [
+    {
+      "after": "Almost none of this is taught in African medical schools",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Empty competencies",
+      "title": "What AI-ready health systems need",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Clinicians",
+          "text": "Know when to trust an algorithm and when to override it."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Public health officers",
+          "text": "Read a model's confidence and ask the right second question."
+        },
+        {
+          "icon": "shield",
+          "head": "Ministry staff",
+          "text": "Write procurement specs that include bias testing, not just accuracy."
+        },
+        {
+          "icon": "ai",
+          "head": "Data scientists",
+          "text": "Understand the clinical workflows they are trying to improve."
+        },
+        {
+          "icon": "hospital",
+          "head": "Facility managers",
+          "text": "Know what data protection means when the vendor is abroad."
+        }
+      ]
+    },
+    {
+      "after": "AI literacy is not about becoming a data scientist.",
+      "type": "steps",
+      "kicker": "AI literacy",
+      "title": "Three layers, each at a different depth",
+      "steps": [
+        {
+          "head": "Foundational",
+          "text": "Every health worker: how AI is built, why it fails, when to call for human review."
+        },
+        {
+          "head": "Applied",
+          "text": "Digital health staff and clinicians using AI: evaluate tools, monitor drift, fit them into workflows."
+        },
+        {
+          "head": "Strategic",
+          "text": "Policymakers and leaders: procurement specs, governance, vendor claims, data protection, equity."
+        }
+      ]
+    },
+    {
+      "after": "No single person needs all seven.",
+      "type": "points",
+      "kicker": "A practical path",
+      "title": "Which free courses to take first, by role",
+      "items": [
+        {
+          "icon": "stethoscope",
+          "head": "Clinicians",
+          "text": "Courses 1, 3 and 7. About 20 hours over four weekends."
+        },
+        {
+          "icon": "network",
+          "head": "Implementers",
+          "text": "Courses 1, 2 and 4. About 40 to 50 hours over two to three months."
+        },
+        {
+          "icon": "people",
+          "head": "Ministries and donors",
+          "text": "Courses 1, 6 and 7. About 15 to 20 hours, within a month."
+        }
+      ]
+    }
+  ],
+  "fhir-universal-language": [
+    {
+      "after": "Three years ago, asking whether FHIR",
+      "type": "stat",
+      "kicker": "The debate is over",
+      "title": "FHIR is now the expected standard for health data exchange",
+      "value": "80%",
+      "label": "of countries with electronic health data regulations mandate or advise FHIR.",
+      "bars": [
+        {
+          "label": "2023",
+          "value": 56
+        },
+        {
+          "label": "Today",
+          "value": 80
+        }
+      ],
+      "source": "Share of countries with electronic health data regulations, as reported in this edition."
+    },
+    {
+      "after": "Second, mandating FHIR in a national strategy document",
+      "type": "points",
+      "kicker": "Beyond the strategy document",
+      "title": "What countries making real progress invest in, at the same time",
+      "items": [
+        {
+          "icon": "news",
+          "head": "National implementation guides",
+          "text": "Tailored to their own health system."
+        },
+        {
+          "icon": "learn",
+          "head": "Workforce development",
+          "text": "Training developers and health informaticists in FHIR."
+        },
+        {
+          "icon": "flask",
+          "head": "Testing infrastructure",
+          "text": "Like SIL-Africa, where systems are checked before going live."
+        }
+      ]
+    },
+    {
+      "after": "The countries doing this well share a pattern.",
+      "type": "steps",
+      "kicker": "One exchange at a time",
+      "title": "How countries that are making progress do it",
+      "steps": [
+        {
+          "head": "Pick a use case",
+          "text": "Specific and high value."
+        },
+        {
+          "head": "Write a national guide",
+          "text": "An implementation guide for it."
+        },
+        {
+          "head": "Test it",
+          "text": ""
+        },
+        {
+          "head": "Deploy it",
+          "text": ""
+        },
+        {
+          "head": "Pick the next one",
+          "text": "And build outward."
+        }
+      ]
+    }
+  ]
+}
