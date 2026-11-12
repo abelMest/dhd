@@ -3949,5 +3949,74 @@
         }
       ]
     }
+  ],
+  "who-decides-digital-health-governance": [
+    {
+      "after": "Governance does not have to be complicated.",
+      "type": "points",
+      "kicker": "Three decisions",
+      "title": "Every health system needs a clear owner for these",
+      "items": [
+        {
+          "icon": "layers",
+          "head": "What gets built",
+          "text": "Every new project fits the national plan and architecture."
+        },
+        {
+          "icon": "shield",
+          "head": "Who can see what",
+          "text": "Clear rules on access, sharing and consent, and someone accountable."
+        },
+        {
+          "icon": "dashboard",
+          "head": "When to scale, or stop",
+          "text": "Success criteria written down before a pilot starts."
+        }
+      ]
+    },
+    {
+      "after": "The answer is not to say no more often.",
+      "type": "compare",
+      "kicker": "Saying no",
+      "title": "Make it about the rules, not the people",
+      "left": {
+        "head": "Without clear rules",
+        "items": [
+          "Decisions follow the money or the loudest voice",
+          "Every partner brings its own system",
+          "Nobody can say no",
+          "Progress depends on one person"
+        ]
+      },
+      "right": {
+        "head": "With clear rules",
+        "items": [
+          "Rules agreed before projects arrive",
+          "Every project checked against the national plan",
+          "A no is about the checklist, not the person",
+          "The institution owns the decisions"
+        ]
+      }
+    },
+    {
+      "after": "Governance is not the most exciting module of Digital Health OS.",
+      "type": "steps",
+      "kicker": "Start this month",
+      "title": "Three steps that need no new law",
+      "steps": [
+        {
+          "head": "Name the decision-makers",
+          "text": "Write down who decides each of the three things."
+        },
+        {
+          "head": "Adopt the checklist",
+          "text": "A one-page approval checklist for every new project."
+        },
+        {
+          "head": "Meet and record",
+          "text": "A steering group that meets monthly and keeps minutes."
+        }
+      ]
+    }
   ]
 }

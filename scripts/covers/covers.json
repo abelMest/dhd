@@ -601,5 +601,14 @@
       "Staff training",
       "Clear accountability"
     ]
+  },
+  "who-decides-digital-health-governance": {
+    "icon": "people",
+    "labels": [
+      "What gets built",
+      "Who sees the data",
+      "When to scale",
+      "When to stop"
+    ]
   }
 }
