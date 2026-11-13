@@ -63,8 +63,16 @@ const siteLd = {
   '@graph': [
     {
       '@type': 'Organization', '@id': `${siteUrl}#org`, name: SITE_NAME, url: siteUrl,
-      logo: new URL('/brand/logo-original.webp', Astro.site).href,
+      // Google wants a square logo of at least 112 px for search results.
+      logo: { '@type': 'ImageObject', url: new URL('/brand/logo-square.png', Astro.site).href, width: 512, height: 512 },
+      image: new URL('/og/default.jpg', Astro.site).href,
+      founder: { '@type': 'Person', name: 'Dr. Abel Mestie Mekonnen', url: new URL('/authors/abel/', Astro.site).href },
       sameAs: [settings.substackUrl, settings.linkedinUrl].filter(Boolean),
+    },
+    {
+      '@type': 'WebPage', '@id': `${siteUrl}#home`, url: siteUrl, name: fullTitle, description: desc,
+      isPartOf: { '@id': `${siteUrl}#site` }, about: { '@id': `${siteUrl}#org` },
+      primaryImageOfPage: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
     },
     {
       '@type': 'WebSite', '@id': `${siteUrl}#site`, name: SITE_NAME, url: siteUrl, inLanguage: 'en', publisher: { '@id': `${siteUrl}#org` },
@@ -81,7 +89,7 @@ const siteLd = {
     <title>{fullTitle}</title>
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex ? <meta name="robots" content="noindex" /> : <meta name="robots" content="max-image-preview:large, max-snippet:-1" />}
     {settings.revenue.adsense.client && <meta name="google-adsense-account" content={settings.revenue.adsense.client} />}
     {settings.revenue.adsense.client && !path.startsWith('/console') && (
       <script is:inline async crossorigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${settings.revenue.adsense.client}`}></script>
