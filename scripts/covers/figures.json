@@ -4018,5 +4018,64 @@
         }
       ]
     }
+  ],
+  "built-for-him-digital-health-missing-women": [
+    {
+      "after": "Put those three together.",
+      "type": "points",
+      "kicker": "Three gaps that compound",
+      "title": "Who digital health misses, and why",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "29% less likely online",
+          "text": "Women in Sub-Saharan Africa, compared with men, on mobile internet."
+        },
+        {
+          "icon": "hospital",
+          "head": "About 70% of maternal deaths",
+          "text": "Happened in Sub-Saharan Africa in 2023, most of them preventable."
+        },
+        {
+          "icon": "ai",
+          "head": "Less accurate AI",
+          "text": "Tools trained mostly on one sex work worse for the other."
+        }
+      ]
+    },
+    {
+      "after": "Make cost part of the design.",
+      "type": "points",
+      "layout": "rows",
+      "kicker": "Different defaults",
+      "title": "Five changes, no new technology",
+      "items": [
+        {
+          "icon": "phone",
+          "head": "Design for her phone",
+          "text": "Basic and shared phones, voice messages, short codes."
+        },
+        {
+          "icon": "dashboard",
+          "head": "Count women properly",
+          "text": "Record sex and age; report results for women and men."
+        },
+        {
+          "icon": "ai",
+          "head": "Test AI on women first",
+          "text": "Ask vendors who was in the training data."
+        },
+        {
+          "icon": "people",
+          "head": "Women in the design room",
+          "text": "Test with the women who will use it, where they live."
+        },
+        {
+          "icon": "pill",
+          "head": "Make cost part of design",
+          "text": "Free or low-cost services and device support."
+        }
+      ]
+    }
   ]
 }

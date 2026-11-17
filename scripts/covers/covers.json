@@ -610,5 +610,14 @@
       "When to scale",
       "When to stop"
     ]
+  },
+  "built-for-him-digital-health-missing-women": {
+    "icon": "phone",
+    "labels": [
+      "Whose phone?",
+      "Who is online?",
+      "Who is in the data?",
+      "Who is in the room?"
+    ]
   }
 }
