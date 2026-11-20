@@ -1,0 +1,210 @@
+[
+ {
+  "id": "who-wpro-tag-ai",
+  "title": "Call for experts: WHO Technical Advisory Group on AI for Health (TAG-AI)",
+  "org": "WHO Western Pacific Regional Office",
+  "kind": "Collaboration",
+  "url": "https://www.who.int/westernpacific/articles/item/call-for-experts--technical-advisory-group-on-artificial-intelligence-for-health-(tag-ai)",
+  "deadline": "2026-10-20",
+  "eligibility": "Experts in AI for health, digital health governance, ethics or regulation. Check the call page for regional and conflict-of-interest requirements.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-13",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-19T11:03:29.063118+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "mie-2027-cfp",
+  "title": "Call for papers: Medical Informatics Europe (MIE) 2027, Tallinn",
+  "org": "European Federation for Medical Informatics",
+  "kind": "Call for papers",
+  "url": "https://efmi.org/2026/09/08/call-for-papers-open-mie-2027-tallinn-26-to-30-april-2027/",
+  "deadline": "2026-10-20",
+  "eligibility": "Researchers and practitioners in health informatics. Submissions open to authors worldwide.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-13",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-19T11:03:29.063118+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "nih-fogarty-k43",
+  "title": "NIH Fogarty Emerging Global Leader Award (K43, PAR-24-296)",
+  "org": "NIH Fogarty International Center",
+  "kind": "Fellowship",
+  "url": "https://grants.nih.gov/grants/guide/pa-files/PAR-24-296.html",
+  "deadline": "2026-12-03",
+  "eligibility": "Early-career researchers based at institutions in low- and middle-income countries, with a mentor team that includes an NIH-funded investigator. AIDS-related applications are not accepted in this final cycle (NIH notice NOT-OD-26-029).",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:39:54.762838+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "cphia-2026",
+  "title": "CPHIA 2026 delegate registration (23 to 27 Nov 2026, Addis Ababa)",
+  "org": "Africa CDC",
+  "kind": "Event",
+  "url": "https://cphia.africacdc.org/register",
+  "deadline": "2026-11-23",
+  "eligibility": "Open to public health professionals, researchers, policymakers and implementers.",
+  "countries": [
+   "Africa (regional)",
+   "Ethiopia"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:39:56.440997+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "openwho-ai-ethics",
+  "title": "Ethics and Governance of AI for Health (free online course)",
+  "org": "OpenWHO",
+  "kind": "Training",
+  "url": "https://openwho.org/courses/ethics-ai",
+  "deadline": null,
+  "eligibility": "Free and self-paced. Open to anyone.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "pending",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:39:57.910989+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "wellcome-early-career",
+  "title": "Wellcome Early-Career Awards",
+  "org": "Wellcome",
+  "kind": "Grant",
+  "url": "https://wellcome.org/research-funding/schemes/wellcome-early-career-awards",
+  "deadline": null,
+  "eligibility": "Early-career researchers (PhD, no more than three years of postdoctoral experience) ready to lead their own project. Open all year, no deadline. The lead applicant must be based in the UK or an eligible low- or middle-income country in Africa, South Asia or South-East Asia.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:40:07.196485+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "wellcome-career-development",
+  "title": "Wellcome Career Development Awards",
+  "org": "Wellcome",
+  "kind": "Grant",
+  "url": "https://wellcome.org/research-funding/schemes/wellcome-career-development-awards",
+  "deadline": null,
+  "eligibility": "Mid-career researchers ready to lead a substantial research programme. Open all year, no deadline. The lead applicant must be based in the UK or an eligible low- or middle-income country in Africa, South Asia or South-East Asia.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:40:07.77212+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "wellcome-discovery",
+  "title": "Wellcome Discovery Awards",
+  "org": "Wellcome",
+  "kind": "Grant",
+  "url": "https://wellcome.org/research-funding/schemes/wellcome-discovery-awards",
+  "deadline": null,
+  "eligibility": "Established research leaders with a permanent or long-term contract, leading teams of two to eight. Open all year, no deadline. The lead applicant must be based in the UK or an eligible low- or middle-income country in Africa, South Asia or South-East Asia.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-19T11:03:29.063118+00:00",
+  "updated_at": "2026-10-31T14:40:08.0458+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "gates-ai-fellows-africa-2027",
+  "title": "Gates Foundation AI Fellows Programme 2027, Africa Regional Offices",
+  "org": "Gates Foundation",
+  "kind": "Fellowship",
+  "url": "https://gatesfoundation.wd1.myworkdayjobs.com/Gates/job/Nairobi-Kenya/AI-Fellow---Africa-Regional-Offices_B021830-1",
+  "deadline": "2026-11-11",
+  "eligibility": "A full-time, 12-month role applying AI to health, public finance or supply chains, based in Nairobi, Abuja, Addis Ababa or Johannesburg. Needs a technical degree and at least two years applying AI, ideally in health or agriculture, plus hands-on work with large language models. You must already have the right to work in the country; no visa sponsorship.",
+  "countries": [
+   "Kenya",
+   "Nigeria",
+   "Ethiopia",
+   "South Africa"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-31T14:44:24.331165+00:00",
+  "updated_at": "2026-10-31T14:44:24.331165+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "ist-africa-2027-cfp",
+  "title": "Call for papers: IST-Africa 2027 (virtual, May 2027)",
+  "org": "IST-Africa (supported by the European Commission and African Union Commission)",
+  "kind": "Call for papers",
+  "url": "http://www.ist-africa.org/Conference2027/default.asp",
+  "deadline": "2026-11-20",
+  "eligibility": "Researchers, policymakers and practitioners. Technology-enabled healthcare (mHealth and eHealth) is one of the themes. Papers are double-blind peer reviewed; the deadline has been extended to 20 November 2026.",
+  "countries": [
+   "Africa (regional)"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-31T14:44:24.331165+00:00",
+  "updated_at": "2026-10-31T14:44:24.331165+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "gdhf-2026",
+  "title": "Global Digital Health Forum 2026 (2 to 4 Dec, Bangkok and online)",
+  "org": "Global Digital Health Network",
+  "kind": "Event",
+  "url": "https://www.gdhf.digital/registration",
+  "deadline": "2026-12-02",
+  "eligibility": "Open to all. Virtual attendance is free for participants from low- and middle-income countries. In-person standard pricing (US$450 for low- and middle-income country participants) ends 20 November.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-31T14:44:24.331165+00:00",
+  "updated_at": "2026-10-31T14:44:24.331165+00:00",
+  "featured_until": null
+ },
+ {
+  "id": "medinfo-2027-cfp",
+  "title": "Call for papers: MEDINFO 2027 (29 Aug to 2 Sep 2027, Dubai and online)",
+  "org": "International Medical Informatics Association (IMIA)",
+  "kind": "Call for papers",
+  "url": "https://www.medinfo-2027.org/",
+  "deadline": "2026-12-04",
+  "eligibility": "Health and biomedical informatics researchers and practitioners. Submissions open 2 November 2026; papers, posters, panels and workshops are due 4 December 2026.",
+  "countries": [
+   "Global"
+  ],
+  "verified_at": "2026-10-31",
+  "status": "published",
+  "created_at": "2026-10-31T14:44:24.331165+00:00",
+  "updated_at": "2026-10-31T14:44:24.331165+00:00",
+  "featured_until": null
+ }
+]
