@@ -4077,5 +4077,30 @@
         }
       ]
     }
+  ],
+  "signals-november-2026": [
+    {
+      "after": "WHO's Africa office assessed the health information systems",
+      "type": "points",
+      "kicker": "WHO baseline, 2026",
+      "title": "Good at reporting, weak on records and budgets",
+      "items": [
+        {
+          "icon": "dashboard",
+          "head": "43 of 47 countries",
+          "text": "Now report routine health data on a digital platform."
+        },
+        {
+          "icon": "hospital",
+          "head": "20% of countries",
+          "text": "Reported digital patient records, among those assessed."
+        },
+        {
+          "icon": "layers",
+          "head": "18% of countries",
+          "text": "Had a dedicated budget line for health information systems."
+        }
+      ]
+    }
   ]
 }

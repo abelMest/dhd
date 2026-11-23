@@ -619,5 +619,14 @@
       "Who is in the data?",
       "Who is in the room?"
     ]
+  },
+  "signals-november-2026": {
+    "icon": "news",
+    "labels": [
+      "Data governance",
+      "Health information",
+      "AI for health",
+      "Funding"
+    ]
   }
 }
